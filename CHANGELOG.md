@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2.1.3] - 2026-03-14
+
+### Changed
+- **Recovery screen** — Replaced flat protocol list and series filter tabs with evidence-grouped accordion layout (Strong / Moderate / Emerging); protocols ranked within each group by relevance to user's current subsystem deficits
+- **Ranking algorithm** — New `rankByRelevance()` scores each protocol by average deficit across its targeted subsystems, with +20 bonus for phenotype-specific picks from the protocol engine
+
+### Added
+- **TopPickCard** — Hero card highlighting the #1 best-match protocol per evidence tier with accent border, targeted subsystem pills, and dose sweet spot
+- **EvidenceSection** — Collapsible accordion component per evidence level with expand/collapse and "Show N more" toggle to prevent doom-scrolling
+- **Relevance score** — ProtocolSeriesCard now displays a relevance percentage badge
+- **Empty state** — Recovery tab shows "Start Check-In" prompt when no IACI data available
+- **IACI context** — Recovery header now shows IACI score and readiness tier alongside phenotype label
+
 ## [2.1.2] - 2026-03-14
 
 ### Added

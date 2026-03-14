@@ -3,41 +3,21 @@ import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { useProtocols } from '../../hooks/use-protocols';
 import { useDailyStore } from '../../store/daily-store';
+import { EvidenceSection } from '../../components/recovery/EvidenceSection';
 import { ProtocolSeriesCard } from '../../components/recovery/ProtocolSeriesCard';
 import { ThemedText } from '../../components/ui/ThemedText';
 import { Card } from '../../components/ui/Card';
 import { COLORS } from '../../lib/utils/constants';
-import { ProtocolSeries } from '../../lib/types/protocols';
-
-const SERIES_ORDER: { key: ProtocolSeries; label: string }[] = [
-  { key: 'classic', label: 'Classic Modalities' },
-  { key: 'breathwork', label: 'Breathwork' },
-  { key: 'foam_roll', label: 'Foam Roll / Myofascial' },
-  { key: 'dynamic_mobility', label: 'Dynamic Mobility' },
-  { key: 'static_stretch', label: 'Static Stretching' },
-  { key: 'banded', label: 'Banded Mobilizations' },
-  { key: 'ais', label: 'Active Isolated Stretching' },
-  { key: 'aquatic', label: 'Aquatic Recovery' },
-  { key: 'vagus_nerve', label: 'Vagus Nerve Calmer' },
-  { key: 'passive', label: 'Passive Recovery' },
-];
-
-type FilterMode = 'recommended' | 'all' | ProtocolSeries;
 
 export default function Recovery() {
-  const { protocols, recommended, loading } = useProtocols();
+  const { protocols, grouped, loading } = useProtocols();
   const { iaci } = useDailyStore();
-  const [filter, setFilter] = useState<FilterMode>('recommended');
+  const [showAll, setShowAll] = useState(false);
 
-  const displayProtocols = filter === 'recommended'
-    ? recommended
-    : filter === 'all'
-    ? protocols
-    : protocols.filter(p => p.series === filter);
-
-  const recommendedSlugs = new Set(
-    iaci?.protocol.recommendedModalities ?? [],
-  );
+  const hasRecommendations =
+    grouped.strong.length > 0 ||
+    grouped.moderate.length > 0 ||
+    grouped.emerging.length > 0;
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -50,77 +30,87 @@ export default function Recovery() {
           <ThemedText variant="body" style={styles.contextText}>
             {iaci.phenotype.label}
           </ThemedText>
+          <View style={styles.scoreRow}>
+            <ThemedText variant="caption" color={COLORS.textMuted}>
+              IACI Score: {iaci.score}
+            </ThemedText>
+            <ThemedText variant="caption" color={COLORS.textMuted}>
+              {iaci.readinessTier.charAt(0).toUpperCase() + iaci.readinessTier.slice(1)} Tier
+            </ThemedText>
+          </View>
         </Card>
       )}
 
-      {/* Filter tabs */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll} contentContainerStyle={styles.filterScrollContent}>
-        <View style={styles.filters}>
-          <FilterTab
-            label="Recommended"
-            active={filter === 'recommended'}
-            onPress={() => setFilter('recommended')}
-            count={recommended.length}
-          />
-          <FilterTab
-            label="All"
-            active={filter === 'all'}
-            onPress={() => setFilter('all')}
-            count={protocols.length}
-          />
-          {SERIES_ORDER.map(({ key, label }) => (
-            <FilterTab
-              key={key}
-              label={label}
-              active={filter === key}
-              onPress={() => setFilter(key)}
-              count={protocols.filter(p => p.series === key).length}
-            />
-          ))}
-        </View>
-      </ScrollView>
-
-      {/* Protocol list */}
-      {displayProtocols.map((protocol) => (
-        <ProtocolSeriesCard
-          key={protocol.id}
-          protocol={protocol}
-          isRecommended={recommendedSlugs.has(protocol.slug)}
-          onPress={() => router.push(`/protocol/${protocol.slug}`)}
-        />
-      ))}
-
-      {displayProtocols.length === 0 && !loading && (
-        <View style={styles.empty}>
-          <ThemedText variant="body" color={COLORS.textSecondary}>
-            {filter === 'recommended'
-              ? 'Complete your morning check-in to get personalized recommendations.'
-              : 'No protocols found.'}
+      {/* No check-in state */}
+      {!iaci && !loading && (
+        <Card style={styles.emptyCard}>
+          <ThemedText variant="body" style={styles.emptyIcon}>
+            {'\u{1F9ED}'}
           </ThemedText>
+          <ThemedText variant="subtitle" style={styles.emptyTitle}>
+            Personalized Recovery
+          </ThemedText>
+          <ThemedText variant="body" color={COLORS.textSecondary} style={styles.emptyText}>
+            Complete your morning check-in to get recovery protocols ranked by evidence and matched to your current state.
+          </ThemedText>
+          <TouchableOpacity
+            onPress={() => router.push('/morning-checkin')}
+            style={styles.checkinBtn}
+          >
+            <ThemedText variant="body" color="#fff" style={styles.checkinBtnText}>
+              Start Check-In
+            </ThemedText>
+          </TouchableOpacity>
+        </Card>
+      )}
+
+      {/* Evidence-grouped recommendations */}
+      {hasRecommendations && (
+        <>
+          <EvidenceSection
+            level="strong"
+            protocols={grouped.strong}
+            defaultExpanded
+          />
+          <EvidenceSection
+            level="moderate"
+            protocols={grouped.moderate}
+          />
+          <EvidenceSection
+            level="emerging"
+            protocols={grouped.emerging}
+          />
+        </>
+      )}
+
+      {/* Browse All Protocols */}
+      {protocols.length > 0 && (
+        <View style={styles.browseAll}>
+          <TouchableOpacity
+            onPress={() => setShowAll(!showAll)}
+            style={styles.browseAllBtn}
+          >
+            <ThemedText variant="body" color={COLORS.primary} style={styles.browseAllText}>
+              {showAll ? 'Hide All Protocols' : `Browse All ${protocols.length} Protocols`}
+            </ThemedText>
+          </TouchableOpacity>
+
+          {showAll && (
+            <View style={styles.allList}>
+              {protocols.map((protocol) => (
+                <ProtocolSeriesCard
+                  key={protocol.id}
+                  protocol={protocol}
+                  onPress={() => router.push(`/protocol/${protocol.slug}`)}
+                />
+              ))}
+            </View>
+          )}
         </View>
       )}
-    </ScrollView>
-  );
-}
 
-function FilterTab({ label, active, onPress, count }: {
-  label: string;
-  active: boolean;
-  onPress: () => void;
-  count: number;
-}) {
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={[styles.filterTab, active && styles.filterTabActive]}
-    >
-      <ThemedText
-        variant="caption"
-        style={[styles.filterLabel, active && styles.filterLabelActive]}
-      >
-        {label} ({count})
-      </ThemedText>
-    </TouchableOpacity>
+      <View style={styles.bottomSpacer} />
+    </ScrollView>
   );
 }
 
@@ -148,41 +138,59 @@ const styles = StyleSheet.create({
   },
   contextText: {
     fontWeight: '600',
+    marginBottom: 6,
   },
-  filterScroll: {
-    marginBottom: 16,
-    marginHorizontal: -16,
-    flexGrow: 0,
-  },
-  filterScrollContent: {
-    paddingHorizontal: 16,
-  },
-  filters: {
+  scoreRow: {
     flexDirection: 'row',
-    gap: 8,
+    justifyContent: 'space-between',
   },
-  filterTab: {
-    backgroundColor: COLORS.surface,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: COLORS.border,
+  emptyCard: {
+    alignItems: 'center',
+    padding: 32,
+    marginBottom: 16,
   },
-  filterTabActive: {
+  emptyIcon: {
+    fontSize: 40,
+    marginBottom: 12,
+  },
+  emptyTitle: {
+    fontWeight: '700',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  emptyText: {
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 20,
+  },
+  checkinBtn: {
     backgroundColor: COLORS.primary,
-    borderColor: COLORS.primary,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 10,
   },
-  filterLabel: {
-    fontSize: 12,
-    color: COLORS.textSecondary,
-  },
-  filterLabelActive: {
-    color: '#fff',
+  checkinBtnText: {
     fontWeight: '600',
   },
-  empty: {
-    padding: 40,
-    alignItems: 'center',
+  browseAll: {
+    marginTop: 8,
+  },
+  browseAllBtn: {
+    alignSelf: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: COLORS.primary + '40',
+    borderRadius: 10,
+  },
+  browseAllText: {
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  allList: {
+    marginTop: 16,
+  },
+  bottomSpacer: {
+    height: 20,
   },
 });

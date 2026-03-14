@@ -8,6 +8,7 @@ interface ProtocolSeriesCardProps {
   protocol: RecoveryProtocol;
   onPress: () => void;
   isRecommended?: boolean;
+  relevanceScore?: number;
 }
 
 const EVIDENCE_ICONS: Record<string, string> = {
@@ -16,7 +17,7 @@ const EVIDENCE_ICONS: Record<string, string> = {
   emerging: '○',
 };
 
-export function ProtocolSeriesCard({ protocol, onPress, isRecommended }: ProtocolSeriesCardProps) {
+export function ProtocolSeriesCard({ protocol, onPress, isRecommended, relevanceScore }: ProtocolSeriesCardProps) {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
       <Card style={[styles.card, isRecommended && styles.recommended]}>
@@ -24,11 +25,20 @@ export function ProtocolSeriesCard({ protocol, onPress, isRecommended }: Protoco
           <ThemedText variant="body" style={styles.name}>
             {protocol.name}
           </ThemedText>
-          {protocol.evidenceLevel && (
-            <ThemedText variant="caption" style={styles.evidence}>
-              {EVIDENCE_ICONS[protocol.evidenceLevel] ?? '?'} {protocol.evidenceLevel}
-            </ThemedText>
-          )}
+          <View style={styles.headerRight}>
+            {relevanceScore != null && relevanceScore > 0 && (
+              <View style={styles.relevanceBadge}>
+                <ThemedText variant="caption" style={styles.relevanceText}>
+                  {relevanceScore}%
+                </ThemedText>
+              </View>
+            )}
+            {protocol.evidenceLevel && (
+              <ThemedText variant="caption" style={styles.evidence}>
+                {EVIDENCE_ICONS[protocol.evidenceLevel] ?? '?'} {protocol.evidenceLevel}
+              </ThemedText>
+            )}
+          </View>
         </View>
         <View style={styles.meta}>
           <View style={styles.tag}>
@@ -77,6 +87,22 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     flex: 1,
     marginRight: 8,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  relevanceBadge: {
+    backgroundColor: COLORS.primary + '20',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  relevanceText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: COLORS.primary,
   },
   evidence: {
     color: COLORS.textSecondary,

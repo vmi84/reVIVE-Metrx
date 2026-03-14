@@ -2,14 +2,27 @@ import { useCallback, useEffect, useState } from 'react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useAuthStore } from '../store/auth-store';
 import { useDailyStore } from '../store/daily-store';
+import { SubsystemScores } from '../lib/types/iaci';
 import { RecoveryProtocol } from '../lib/types/protocols';
 import localProtocols from '../data/recovery-protocols.json';
+
+/** Protocol with a computed relevance score (higher = better match for current state) */
+export type RankedProtocol = RecoveryProtocol & { relevanceScore: number };
+
+export interface GroupedProtocols {
+  strong: RankedProtocol[];
+  moderate: RankedProtocol[];
+  emerging: RankedProtocol[];
+}
+
+const EMPTY_GROUPED: GroupedProtocols = { strong: [], moderate: [], emerging: [] };
 
 export function useProtocols() {
   const { user } = useAuthStore();
   const { iaci } = useDailyStore();
   const [protocols, setProtocols] = useState<RecoveryProtocol[]>([]);
   const [recommended, setRecommended] = useState<RecoveryProtocol[]>([]);
+  const [grouped, setGrouped] = useState<GroupedProtocols>(EMPTY_GROUPED);
   const [loading, setLoading] = useState(false);
 
   // Fetch all protocols — from Supabase or local seed data
@@ -37,7 +50,7 @@ export function useProtocols() {
     fetch();
   }, []);
 
-  // Filter recommended based on current IACI
+  // Filter recommended based on current IACI, rank by relevance, group by evidence
   useEffect(() => {
     if (!iaci || protocols.length === 0) return;
 
@@ -49,7 +62,7 @@ export function useProtocols() {
     const filtered = protocols.filter(p => {
       // Constraint enforcement
       if (p.cnsLowAvoid && autonomicScore < 40) return false;
-      if (p.offDayOnly) return false; // TODO: check if training is planned
+      if (p.offDayOnly) return false;
 
       // Match by recommended slugs first
       if (recommendedSlugs.includes(p.slug)) return true;
@@ -63,17 +76,20 @@ export function useProtocols() {
       return false;
     });
 
-    // Sort: recommended slugs first, then by phenotype match
-    filtered.sort((a, b) => {
-      const aIdx = recommendedSlugs.indexOf(a.slug);
-      const bIdx = recommendedSlugs.indexOf(b.slug);
-      if (aIdx !== -1 && bIdx === -1) return -1;
-      if (aIdx === -1 && bIdx !== -1) return 1;
-      if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
-      return 0;
-    });
+    // Rank by relevance to user's current subsystem scores
+    const ranked = rankByRelevance(filtered, iaci.subsystemScores, recommendedSlugs);
 
-    setRecommended(filtered);
+    setRecommended(ranked);
+
+    // Group by evidence level, sorted by relevance within each group
+    const groups: GroupedProtocols = { strong: [], moderate: [], emerging: [] };
+    for (const p of ranked) {
+      const level = p.evidenceLevel ?? 'emerging';
+      if (level === 'strong') groups.strong.push(p);
+      else if (level === 'moderate') groups.moderate.push(p);
+      else groups.emerging.push(p);
+    }
+    setGrouped(groups);
   }, [iaci, protocols]);
 
   const logProtocol = useCallback(async (
@@ -92,7 +108,47 @@ export function useProtocols() {
     });
   }, [user?.id]);
 
-  return { protocols, recommended, loading, logProtocol };
+  return { protocols, recommended, grouped, loading, logProtocol };
+}
+
+// ---------------------------------------------------------------------------
+// Relevance ranking
+// ---------------------------------------------------------------------------
+
+/**
+ * Score each protocol by how well it targets the user's weakest subsystems.
+ * Higher score = better match for current recovery needs.
+ */
+function rankByRelevance(
+  protocols: RecoveryProtocol[],
+  subsystemScores: SubsystemScores,
+  recommendedSlugs: string[],
+): RankedProtocol[] {
+  const ranked = protocols.map(p => {
+    let relevanceScore = 0;
+
+    const targeted = p.iaciSubsystemsTargeted ?? [];
+    if (targeted.length > 0) {
+      // Average deficit across targeted subsystems (higher deficit = more relevant)
+      const totalDeficit = targeted.reduce((sum, key) => {
+        const sub = (subsystemScores as any)[key];
+        const score = sub?.score ?? 70; // default to 70 if subsystem not found
+        return sum + (100 - score);
+      }, 0);
+      relevanceScore = totalDeficit / targeted.length;
+    }
+
+    // Bonus for phenotype-specific recommendations from protocol engine
+    if (recommendedSlugs.includes(p.slug)) {
+      relevanceScore += 20;
+    }
+
+    return { ...p, relevanceScore: Math.round(relevanceScore) };
+  });
+
+  // Sort descending by relevance score
+  ranked.sort((a, b) => b.relevanceScore - a.relevanceScore);
+  return ranked;
 }
 
 /** Map a Supabase row (snake_case) to RecoveryProtocol */
