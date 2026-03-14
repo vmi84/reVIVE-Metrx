@@ -202,3 +202,27 @@ export function getTierLabel(tier: ReadinessTier): string {
     case 'protect': return 'Protect';
   }
 }
+
+// --- Recovery Bands (6-tier user-facing labels) ---
+
+export type RecoveryBand = 'Optimum' | 'Strong' | 'Moderate' | 'Sufficient' | 'Insufficient' | 'Poor';
+
+export function getRecoveryBand(score: number): RecoveryBand {
+  if (score >= 81) return 'Optimum';
+  if (score >= 61) return 'Strong';
+  if (score >= 41) return 'Moderate';
+  if (score >= 21) return 'Sufficient';
+  if (score >= 1) return 'Insufficient';
+  return 'Poor';
+}
+
+export function getRecoveryBandColor(band: RecoveryBand): string {
+  switch (band) {
+    case 'Optimum': return '#00C853';
+    case 'Strong': return '#2196F3';
+    case 'Moderate': return '#FFC107';
+    case 'Sufficient': return '#FF9800';
+    case 'Insufficient': return '#F44336';
+    case 'Poor': return '#B71C1C';
+  }
+}
