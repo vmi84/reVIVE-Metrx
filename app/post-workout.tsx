@@ -3,11 +3,14 @@ import { View, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { router } from 'expo-router';
 import { useWorkoutLogger } from '../hooks/use-workout-logger';
 import { useWhoopSync } from '../hooks/use-whoop-sync';
+import { useRecoveryPlan } from '../hooks/use-recovery-plan';
 import { ThemedText } from '../components/ui/ThemedText';
 import { Button } from '../components/ui/Button';
 import { Slider } from '../components/ui/Slider';
 import { Card } from '../components/ui/Card';
+import { RecoveryPlanCard } from '../components/feed/RecoveryPlanCard';
 import { COLORS } from '../lib/utils/constants';
+import { RecoveryPlan } from '../lib/types/load-capacity';
 
 const WORKOUT_TYPES = [
   'Easy Run', 'Tempo Run', 'Interval', 'Long Run', 'Fartlek',
@@ -18,20 +21,26 @@ const WORKOUT_TYPES = [
 export default function PostWorkout() {
   const { logWorkout } = useWorkoutLogger();
   const { syncPostWorkout } = useWhoopSync();
+  const { generatePlan } = useRecoveryPlan();
   const [selectedType, setSelectedType] = useState('');
   const [durationMin, setDurationMin] = useState('');
   const [rpe, setRpe] = useState(5);
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [plan, setPlan] = useState<RecoveryPlan | null>(null);
+  const [showPlan, setShowPlan] = useState(false);
 
   async function handleSubmit() {
     if (!selectedType || !durationMin) return;
     setSubmitting(true);
 
     try {
+      const workoutType = selectedType.toLowerCase().replace(/ /g, '_');
+      const duration = parseInt(durationMin);
+
       await logWorkout({
-        workoutType: selectedType.toLowerCase().replace(/ /g, '_'),
-        durationMs: parseInt(durationMin) * 60000,
+        workoutType,
+        durationMs: duration * 60000,
         rpe,
         notes: notes || undefined,
       });
@@ -39,12 +48,44 @@ export default function PostWorkout() {
       // Try to sync Whoop post-workout data
       await syncPostWorkout();
 
-      router.back();
+      // Generate recovery plan
+      const result = generatePlan({
+        type: workoutType,
+        durationMin: duration,
+        strain: null, // Will be updated after Whoop sync
+        rpe,
+        bodyAreasLoaded: [], // TODO: infer from workout type
+        hrZones: {},
+      });
+
+      if (result?.plan) {
+        setPlan(result.plan);
+        setShowPlan(true);
+      } else {
+        router.back();
+      }
     } catch (err) {
       console.error('Post-workout error:', err);
     } finally {
       setSubmitting(false);
     }
+  }
+
+  // Show recovery plan after logging
+  if (showPlan && plan) {
+    return (
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+        <ThemedText variant="title" style={styles.planTitle}>
+          Your Recovery Plan
+        </ThemedText>
+        <RecoveryPlanCard plan={plan} />
+        <Button
+          title="Done"
+          onPress={() => router.back()}
+          style={styles.submit}
+        />
+      </ScrollView>
+    );
   }
 
   return (
@@ -152,5 +193,9 @@ const styles = StyleSheet.create({
   },
   submit: {
     marginTop: 24,
+  },
+  planTitle: {
+    marginBottom: 16,
+    textAlign: 'center',
   },
 });

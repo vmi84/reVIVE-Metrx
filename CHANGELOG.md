@@ -6,6 +6,41 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-03-14
+
+### Added
+
+#### Infinite Scroll Feed (Whoop Model)
+- `lib/types/feed.ts` — FeedDay, MetricSource, MetricValidation types
+- `store/feed-store.ts` — Zustand store for feed state (days, cursor, pagination, accordion)
+- `hooks/use-feed.ts` — Paginated data fetching with carry-forward yesterday's check-in
+- `components/feed/DailyCard.tsx` — Expandable card wrapper with tier-colored border
+- `components/feed/DailyCardCollapsed.tsx` — Compact 90px card (56px IACI ring, date, metrics)
+- `components/feed/DailyCardExpanded.tsx` — Full card with all subsystem data
+- `components/feed/CheckinPromptCard.tsx` — "Start Check-In" + "Use Yesterday's Data" prompt
+- `components/feed/WhoopMetricRow.tsx` — Editable metric with source badge + accept/edit buttons
+
+#### Systemic Load Stress Capacity Engine
+- `lib/types/load-capacity.ts` — LoadCapacityResult, SubsystemStressFactor, SystemStatusSummary, WorkoutImpactResult, RecoveryPlan, RecoveryDayPlan types
+- `lib/engine/load-capacity.ts` — Bottom-up systemic stress algorithm: per-subsystem stress factors with Whoop/load modifiers, weighted combination with cross-system amplifiers, area capacity from DOMS, workout focus classification
+- `lib/engine/workout-impact.ts` — Post-workout impact calculator (subsystem deltas, area soreness, recovery time estimates)
+- `lib/engine/recovery-plan.ts` — Post-workout recovery plan generator (immediate/short-term/evening/next-day)
+- `lib/engine/recovery-day-plan.ts` — Multi-systemic recovery day protocol for recovery-only days (4 time blocks, nutrition, sleep)
+- `hooks/use-load-capacity.ts` — Compute load capacity after IACI, auto-generate recovery day plan when recovery-only
+- `hooks/use-recovery-plan.ts` — Generate post-workout recovery plan after logging
+
+#### Feed UI Components
+- `components/feed/SystemStatusCard.tsx` — Stress level badge, headline, per-subsystem one-liners
+- `components/feed/WorkoutFocusBadge.tsx` — Fitness Building / Active Recovery / Recovery Only recommendation
+- `components/feed/AreaCapacityMap.tsx` — Body region capacity visualization (color-coded pills)
+- `components/feed/RecoveryPlanCard.tsx` — Post-workout recovery plan display
+- `components/feed/RecoveryDayPlanCard.tsx` — Full-day recovery protocol display with timeline
+
+### Changed
+- **Dashboard** — Completely rewritten from ScrollView to FlatList infinite scroll feed with accordion cards, pull-to-refresh, and infinite pagination (14 days per page)
+- **Morning Check-In** — Pre-fills sliders with yesterday's values when available, shows "Pre-filled with yesterday's responses" banner
+- **Post-Workout** — Generates and displays recovery plan after logging workout before dismissing
+
 ## [1.0.0] - 2026-03-13
 
 ### Added

@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, ScrollView, StyleSheet, Switch } from 'react-native';
 import { router } from 'expo-router';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useAuthStore } from '../store/auth-store';
 import { useDailyStore } from '../store/daily-store';
 import { ThemedText } from '../components/ui/ThemedText';
@@ -10,7 +10,7 @@ import { Slider } from '../components/ui/Slider';
 import { BodyMap } from '../components/checkin/BodyMap';
 import { Card } from '../components/ui/Card';
 import { COLORS } from '../lib/utils/constants';
-import { today } from '../lib/utils/date';
+import { today, daysAgo } from '../lib/utils/date';
 
 type Step = 1 | 2 | 3 | 4 | 5;
 
@@ -19,6 +19,7 @@ export default function MorningCheckin() {
   const { setCheckinCompleted } = useDailyStore();
   const [step, setStep] = useState<Step>(1);
   const [submitting, setSubmitting] = useState(false);
+  const [preFilled, setPreFilled] = useState(false);
 
   // Step 1: Quick State
   const [overallEnergy, setOverallEnergy] = useState(3);
@@ -44,6 +45,46 @@ export default function MorningCheckin() {
   // Step 5: Flags
   const [isTraveling, setIsTraveling] = useState(false);
   const [giIssues, setGiIssues] = useState(1);
+
+  // Pre-fill with yesterday's values
+  useEffect(() => {
+    async function loadYesterday() {
+      if (!isSupabaseConfigured || !user?.id) return;
+
+      try {
+        const { data } = await supabase
+          .from('subjective_entries')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('date', daysAgo(1))
+          .eq('entry_type', 'morning')
+          .single();
+
+        if (!data) return;
+
+        setOverallEnergy(data.overall_energy ?? 3);
+        setSleepQuality(data.subjective_sleep_quality ?? 3);
+        setSoreness((data.soreness as Record<string, number>) ?? {});
+        setStiffness(data.stiffness ?? 2);
+        setHeavyLegs(data.heavy_legs ?? false);
+        setMotivation(data.motivation ?? 3);
+        setStress(data.subjective_stress ?? 2);
+        setMentalFatigue(data.mental_fatigue ?? 2);
+        setHydration(data.hydration_glasses ?? 6);
+        setElectrolytes(data.electrolytes_taken ?? false);
+        setProteinAdequate(data.protein_adequate ?? true);
+        setLateCaffeine(data.late_caffeine ?? false);
+        setLateAlcohol(data.late_alcohol ?? false);
+        setIsTraveling(data.is_traveling ?? false);
+        setGiIssues(data.gi_disruption ?? 1);
+        setPreFilled(true);
+      } catch {
+        // No yesterday data — use defaults
+      }
+    }
+
+    loadYesterday();
+  }, [user?.id]);
 
   function handleRegionPress(region: string) {
     setSoreness(prev => {
@@ -95,6 +136,15 @@ export default function MorningCheckin() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      {/* Pre-fill banner */}
+      {preFilled && (
+        <View style={styles.banner}>
+          <ThemedText variant="caption" color={COLORS.textSecondary} style={styles.bannerText}>
+            Pre-filled with yesterday's responses. Adjust anything that changed.
+          </ThemedText>
+        </View>
+      )}
+
       {/* Progress indicator */}
       <View style={styles.progress}>
         {[1, 2, 3, 4, 5].map((s) => (
@@ -242,6 +292,18 @@ const styles = StyleSheet.create({
   content: {
     padding: 16,
     paddingBottom: 40,
+  },
+  banner: {
+    backgroundColor: COLORS.surfaceLight,
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
+    borderLeftWidth: 3,
+    borderLeftColor: COLORS.primary,
+  },
+  bannerText: {
+    fontSize: 12,
+    lineHeight: 16,
   },
   progress: {
     flexDirection: 'row',
