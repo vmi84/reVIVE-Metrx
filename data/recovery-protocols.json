@@ -1,0 +1,4391 @@
+[
+  {
+    "id": "cold-water-immersion",
+    "name": "Cold-Water Immersion (CWI)",
+    "slug": "cold-water-immersion",
+    "series": "classic",
+    "modalityType": "passive",
+    "cnsLowAvoid": true,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "full_body"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "relax_nervous_system",
+      "reduce_swelling"
+    ],
+    "equipmentNeeded": [
+      "immersion_tub"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "3-5 min",
+    "doseSweetSpot": "10-15 min at 10-15\u00b0C",
+    "doseUpperLimit": ">15-20 min",
+    "instructions": "Submerge body up to chest in cold water. Practice slow nasal breathing throughout. Exit immediately if shivering becomes uncontrollable.",
+    "avoidCautions": "Avoid during hypertrophy training blocks. Contraindicated for Raynaud's disease, open wounds, and uncontrolled hypertension.",
+    "idealTiming": "Best used between matches, in hot environments, or when quick turnaround is needed.",
+    "evidenceNotes": null,
+    "athleteTidbit": "Also known as the Cold Tank. Widely used in elite sport for rapid post-match recovery.",
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "high_training_load",
+      "high_soreness"
+    ],
+    "phenotypesAvoid": [
+      "cns_depleted"
+    ],
+    "environment": [
+      "gym"
+    ]
+  },
+  {
+    "id": "hot-water-immersion",
+    "name": "Hot-Water Immersion",
+    "slug": "hot-water-immersion",
+    "series": "classic",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory",
+      "joint_mobility"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "full_body"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "relax_nervous_system",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "immersion_tub"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "5-10 min",
+    "doseSweetSpot": "10-15 min at 40-42\u00b0C",
+    "doseUpperLimit": ">15-20 min",
+    "instructions": "Submerge in warm water at 40-42\u00b0C. Breathe slowly and relax fully. Hydrate before and after.",
+    "avoidCautions": "Avoid immediately before competition. Contraindicated with dehydration and cardiovascular disease.",
+    "idealTiming": "Ideal for back-to-back events and cold-environment recovery.",
+    "evidenceNotes": null,
+    "athleteTidbit": "Known as the Hot Tank. Helps restore tissue pliability and promotes parasympathetic activation.",
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "high_training_load",
+      "high_soreness"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "gym"
+    ]
+  },
+  {
+    "id": "contrast-water-therapy",
+    "name": "Contrast Water Therapy",
+    "slug": "contrast-water-therapy",
+    "series": "classic",
+    "modalityType": "passive",
+    "cnsLowAvoid": true,
+    "offDayOnly": false,
+    "primarySystem": "circulatory",
+    "secondarySystems": [
+      "muscular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "full_body"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "reduce_swelling"
+    ],
+    "equipmentNeeded": [
+      "immersion_tub"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "8-10 min",
+    "doseSweetSpot": "10-15 min alternating cycles",
+    "doseUpperLimit": "20 min",
+    "instructions": "Alternate between hot (40-42\u00b0C) and cold (10-15\u00b0C) water in 1-2 min cycles. End on cold. Maintain slow breathing throughout.",
+    "avoidCautions": "Same contraindications as hot and cold immersion. Avoid with Raynaud's, open wounds, CVD, and uncontrolled hypertension.",
+    "idealTiming": "Effective for DOMS reduction and rapid vascular flushing between sessions.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "high_training_load",
+      "high_soreness"
+    ],
+    "phenotypesAvoid": [
+      "cns_depleted"
+    ],
+    "environment": [
+      "gym"
+    ]
+  },
+  {
+    "id": "sauna",
+    "name": "Sauna",
+    "slug": "sauna",
+    "series": "classic",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "circulatory",
+    "secondarySystems": [
+      "nervous",
+      "cardiovascular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular"
+    ],
+    "targetAreasPrimary": [
+      "full_body"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "improve_circulation",
+      "relax_nervous_system",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [
+      "sauna"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "8-10 min",
+    "doseSweetSpot": "15-20 min at 80-90\u00b0C",
+    "doseUpperLimit": ">20 min",
+    "instructions": "Sit or lie in dry sauna at 80-90\u00b0C. Breathe steadily through the nose. Hydrate well before and after. Cool down gradually on exit.",
+    "avoidCautions": "Avoid before events or competition. Do not use when dehydrated or with uncontrolled hypertension.",
+    "idealTiming": "Best in the evening for sleep quality enhancement, or for heat acclimation protocols.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "high_training_load",
+      "high_soreness"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "gym"
+    ]
+  },
+  {
+    "id": "vibration-plate",
+    "name": "Vibration Plate",
+    "slug": "vibration-plate",
+    "series": "classic",
+    "modalityType": "passive",
+    "cnsLowAvoid": true,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "circulatory",
+      "nervous"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "glutes",
+      "back",
+      "core",
+      "full_body"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "improve_circulation",
+      "restore_mobility",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [
+      "vibration_plate"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "2-3 min",
+    "doseSweetSpot": "5-10 min at 30-50 Hz",
+    "doseUpperLimit": ">10-12 min",
+    "instructions": "Stand on vibration plate with soft knees. Shift weight between feet or hold gentle stretches. Keep core engaged lightly.",
+    "avoidCautions": "Avoid with acute injuries or stress fractures. Not suitable for post-surgical joints.",
+    "idealTiming": "Useful for DOMS management and pre-training warm-ups.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "high_training_load",
+      "high_soreness"
+    ],
+    "phenotypesAvoid": [
+      "cns_depleted"
+    ],
+    "environment": [
+      "gym"
+    ]
+  },
+  {
+    "id": "compex-nmes",
+    "name": "Compex / NMES",
+    "slug": "compex-nmes",
+    "series": "classic",
+    "modalityType": "passive",
+    "cnsLowAvoid": true,
+    "offDayOnly": false,
+    "primarySystem": "circulatory",
+    "secondarySystems": [
+      "muscular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "quads",
+      "hamstrings",
+      "calves",
+      "shoulders"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility",
+      "reduce_swelling"
+    ],
+    "equipmentNeeded": [
+      "nmes_device",
+      "electrode_pads"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "15-20 min",
+    "doseSweetSpot": "20-25 min",
+    "doseUpperLimit": "30 min",
+    "instructions": "Place electrodes on target muscle group. Set to active recovery program. Intensity should produce visible but comfortable contraction.",
+    "avoidCautions": "Contraindicated with pacemakers and during pregnancy. Do not place over the heart or throat.",
+    "idealTiming": "Between games and immediately post-training for accelerated recovery.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "high_training_load",
+      "high_soreness"
+    ],
+    "phenotypesAvoid": [
+      "cns_depleted"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "normatec",
+    "name": "Normatec / IPC",
+    "slug": "normatec",
+    "series": "classic",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "circulatory",
+    "secondarySystems": [
+      "muscular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "quads",
+      "hamstrings",
+      "calves",
+      "hips",
+      "full_body"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "reduce_swelling"
+    ],
+    "equipmentNeeded": [
+      "pneumatic_compression_boots"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "15 min",
+    "doseSweetSpot": "20-30 min at 80-100 mmHg",
+    "doseUpperLimit": "45 min",
+    "instructions": "Wear pneumatic compression boots. Set to sequential pulse mode at comfortable pressure (80-100 mmHg). Elevate legs slightly if possible.",
+    "avoidCautions": "Contraindicated with deep vein thrombosis (DVT), peripheral artery disease (PAD), and open wounds.",
+    "idealTiming": "After travel, heavy lower-body sessions, or between competition days.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "high_training_load",
+      "high_soreness"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "red-light-full-body",
+    "name": "Red Light Therapy (Full Body)",
+    "slug": "red-light-full-body",
+    "series": "classic",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "full_body"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "relax_nervous_system",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [
+      "full_body_red_light_panel"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "5-10 min",
+    "doseSweetSpot": "10-15 min at 660-850nm",
+    "doseUpperLimit": "20 min",
+    "instructions": "Stand or sit 6-12 inches from full-body panel. Expose skin directly. Wear protective eyewear. Rotate front and back exposure.",
+    "avoidCautions": "Avoid direct eye exposure. Contraindicated with photosensitizing medications.",
+    "idealTiming": "After training or in the evening for systemic recovery support.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "high_training_load",
+      "high_soreness"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "red-light-handheld",
+    "name": "Red Light Therapy (Handheld)",
+    "slug": "red-light-handheld",
+    "series": "classic",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "quads",
+      "hamstrings",
+      "shoulders",
+      "calves"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [
+      "handheld_red_light_device"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "5 min",
+    "doseSweetSpot": "10-15 min targeted per area",
+    "doseUpperLimit": "20 min per muscle",
+    "instructions": "Hold device 2-4 inches from target muscle. Move slowly across the tissue. Expose skin directly for best absorption.",
+    "avoidCautions": "Avoid eyes, open wounds, and photosensitizing medications.",
+    "idealTiming": "Post-session spot treatment for localized soreness or tightness.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "high_training_load",
+      "high_soreness"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "sleep-nap-strategy",
+    "name": "Sleep & Nap Strategy",
+    "slug": "sleep-nap-strategy",
+    "series": "classic",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "nervous",
+    "secondarySystems": [
+      "cardiovascular",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "sleep_circadian"
+    ],
+    "targetAreasPrimary": [
+      "full_body",
+      "mental_clarity"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "relax_nervous_system",
+      "improve_circulation"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "strong",
+    "doseMin": "Night 7h / Nap 20 min",
+    "doseSweetSpot": "Night 8-10h / Nap 20-90 min",
+    "doseUpperLimit": "Night 11h / Nap \u226490 min",
+    "instructions": "Prioritize consistent sleep and wake times. Use 20-min power naps or 90-min full-cycle naps. Keep room cool, dark, and quiet.",
+    "avoidCautions": "Avoid unmanaged insomnia without professional support. Avoid late naps (after 3 PM) as they may disrupt nighttime sleep.",
+    "idealTiming": "Critical during heavy training blocks, travel across time zones, and when HRV is low.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "high_sympathetic",
+      "poor_sleep",
+      "travel_fatigued"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "travel"
+    ]
+  },
+  {
+    "id": "box-breathing",
+    "name": "Box Breathing",
+    "slug": "box-breathing",
+    "series": "breathwork",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "nervous",
+    "secondarySystems": [
+      "cardiovascular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "sleep_circadian"
+    ],
+    "targetAreasPrimary": [
+      "mental_clarity"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "relax_nervous_system"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "emerging",
+    "doseMin": "2-3 min",
+    "doseSweetSpot": "5-10 min",
+    "doseUpperLimit": "15-20 min",
+    "instructions": "Inhale through the nose for 4 seconds. Hold for 4 seconds. Exhale through the nose for 4 seconds. Hold for 4 seconds. Repeat.",
+    "avoidCautions": "Avoid if prone to hyperventilation or panic episodes. Discontinue if dizziness occurs.",
+    "idealTiming": "Pre-competition focus, post-training cooldown, or before bed for nervous system regulation.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_sympathetic",
+      "poor_sleep",
+      "high_stress"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "anywhere"
+    ]
+  },
+  {
+    "id": "extended-exhale-breathing",
+    "name": "Extended Exhale Breathing (4-6 / 4-8)",
+    "slug": "extended-exhale-breathing",
+    "series": "breathwork",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "nervous",
+    "secondarySystems": [
+      "cardiovascular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "sleep_circadian"
+    ],
+    "targetAreasPrimary": [
+      "mental_clarity"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "relax_nervous_system"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "emerging",
+    "doseMin": "3 min",
+    "doseSweetSpot": "5-10 min",
+    "doseUpperLimit": "20 min",
+    "instructions": "Inhale through the nose for 4 seconds. Exhale slowly through the nose or mouth for 6-8 seconds. Focus on fully emptying the lungs.",
+    "avoidCautions": "Discontinue if lightheadedness occurs. Adjust ratio if exhale feels forced.",
+    "idealTiming": "Nighttime wind-down, after games, or during travel for sleep onset support.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_sympathetic",
+      "poor_sleep",
+      "high_stress"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "anywhere"
+    ]
+  },
+  {
+    "id": "physiological-sigh",
+    "name": "Physiological Sigh",
+    "slug": "physiological-sigh",
+    "series": "breathwork",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "nervous",
+    "secondarySystems": [],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "sleep_circadian"
+    ],
+    "targetAreasPrimary": [
+      "mental_clarity"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "relax_nervous_system"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "emerging",
+    "doseMin": "1-2 min",
+    "doseSweetSpot": "3-5 min",
+    "doseUpperLimit": "10 min",
+    "instructions": "Take two sharp nasal inhales (first fills lungs, second tops them off), then one long slow exhale through the mouth. Repeat.",
+    "avoidCautions": "Avoid if hyperventilation-prone. Stop if dizziness develops.",
+    "idealTiming": "Acute stress moments, immediately after competition, or during high-arousal states.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_sympathetic",
+      "poor_sleep",
+      "high_stress"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "anywhere"
+    ]
+  },
+  {
+    "id": "coherent-breathing",
+    "name": "Coherent Breathing (5-5)",
+    "slug": "coherent-breathing",
+    "series": "breathwork",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "nervous",
+    "secondarySystems": [
+      "cardiovascular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "sleep_circadian"
+    ],
+    "targetAreasPrimary": [
+      "mental_clarity"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "relax_nervous_system"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "emerging",
+    "doseMin": "3 min",
+    "doseSweetSpot": "5-10 min (~6 breaths/min)",
+    "doseUpperLimit": "20 min",
+    "instructions": "Inhale through the nose for 5 seconds. Exhale through the nose for 5 seconds. Maintain nasal-only breathing at approximately 6 breaths per minute.",
+    "avoidCautions": "Adjust timing if breath pattern feels strained.",
+    "idealTiming": "Before bed for HRV optimization, or during cooldown periods.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_sympathetic",
+      "poor_sleep",
+      "high_stress"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "anywhere"
+    ]
+  },
+  {
+    "id": "four-five-six-breathing",
+    "name": "4-5-6 Breathing",
+    "slug": "four-five-six-breathing",
+    "series": "breathwork",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "nervous",
+    "secondarySystems": [
+      "cardiovascular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "sleep_circadian"
+    ],
+    "targetAreasPrimary": [
+      "mental_clarity"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "relax_nervous_system"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "emerging",
+    "doseMin": "3 min",
+    "doseSweetSpot": "5-10 min",
+    "doseUpperLimit": "20 min",
+    "instructions": "Inhale through the nose for 4 seconds. Hold the breath for 5 seconds. Exhale slowly through the nose or mouth for 6 seconds. Repeat.",
+    "avoidCautions": "Avoid if breath holds cause discomfort or anxiety. Adjust timing as needed.",
+    "idealTiming": "Evening wind-down routines and pre-sleep protocols.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_sympathetic",
+      "poor_sleep",
+      "high_stress"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "anywhere"
+    ]
+  },
+  {
+    "id": "mindful-body-scan",
+    "name": "Mindful Body Scan",
+    "slug": "mindful-body-scan",
+    "series": "breathwork",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "nervous",
+    "secondarySystems": [
+      "cardiovascular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "sleep_circadian"
+    ],
+    "targetAreasPrimary": [
+      "mental_clarity",
+      "full_body"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "relax_nervous_system"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "emerging",
+    "doseMin": "5 min",
+    "doseSweetSpot": "10-20 min",
+    "doseUpperLimit": "30 min",
+    "instructions": "Lie down or sit comfortably. Breathe slowly through the nose. Systematically direct attention from feet to head, noticing tension and releasing it in each region.",
+    "avoidCautions": "Not ideal immediately before competition as it promotes deep relaxation.",
+    "idealTiming": "Evening sessions, rest days, or as part of a pre-sleep routine.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_sympathetic",
+      "poor_sleep",
+      "high_stress"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "anywhere"
+    ]
+  },
+  {
+    "id": "legs-on-wall",
+    "name": "Legs on Wall",
+    "slug": "legs-on-wall",
+    "series": "passive",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "nervous",
+    "secondarySystems": [
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "sleep_circadian"
+    ],
+    "targetAreasPrimary": [
+      "quads",
+      "hamstrings",
+      "hips",
+      "ankles",
+      "mental_clarity"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "relax_nervous_system",
+      "reduce_swelling"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "strong",
+    "doseMin": "~2 min",
+    "doseSweetSpot": "5-15 min",
+    "doseUpperLimit": "~20 min",
+    "instructions": "Lie on your back with legs extended up a wall. Keep hips close to the wall. Relax arms by your sides. Breathe slowly through the nose.",
+    "avoidCautions": "Avoid with glaucoma or uncontrolled hypertension.",
+    "idealTiming": "After intense training sessions or competition for venous return and nervous system calming.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_sympathetic",
+      "poor_sleep",
+      "travel_fatigued"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "anywhere"
+    ]
+  },
+  {
+    "id": "quad-foam-roll",
+    "name": "Quad Foam Roll",
+    "slug": "quad-foam-roll",
+    "series": "foam_roll",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "quads"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "foam_roller"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "30-60s per muscle",
+    "doseSweetSpot": "1-2 min per muscle",
+    "doseUpperLimit": "10-20 min total",
+    "instructions": "Lie face down with foam roller under the quads. Roll slowly from hip to just above the knee. Pause on tender spots for 20-30 seconds.",
+    "avoidCautions": "Avoid rolling directly over bony prominences or acute injuries.",
+    "idealTiming": "Post-training or on recovery days to address quad tightness.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "hamstring-foam-roll",
+    "name": "Hamstring Foam Roll",
+    "slug": "hamstring-foam-roll",
+    "series": "foam_roll",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hamstrings"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "foam_roller"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "30-60s per muscle",
+    "doseSweetSpot": "1-2 min per muscle",
+    "doseUpperLimit": "10-20 min total",
+    "instructions": "Sit with foam roller under hamstrings. Roll from just above the knee to the glute fold. Cross one leg over the other for increased pressure.",
+    "avoidCautions": "Avoid rolling over the back of the knee. Skip if acute hamstring strain is present.",
+    "idealTiming": "Post-training or during cooldowns to release hamstring tension.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "calf-foam-roll",
+    "name": "Calf Foam Roll",
+    "slug": "calf-foam-roll",
+    "series": "foam_roll",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "calves"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "foam_roller"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "30-60s per muscle",
+    "doseSweetSpot": "1-2 min per muscle",
+    "doseUpperLimit": "10-20 min total",
+    "instructions": "Sit with foam roller under the calves. Roll from Achilles tendon area to just below the knee. Rotate foot inward and outward to target different calf fibers.",
+    "avoidCautions": "Avoid directly on the Achilles tendon. Skip with active calf strains.",
+    "idealTiming": "Post-running or after prolonged standing to relieve calf tightness.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "lat-foam-roll",
+    "name": "Lat Foam Roll",
+    "slug": "lat-foam-roll",
+    "series": "foam_roll",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "back"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "foam_roller"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "30-60s per muscle",
+    "doseSweetSpot": "1-2 min per muscle",
+    "doseUpperLimit": "10-20 min total",
+    "instructions": "Lie on your side with the foam roller under the lat. Extend the arm overhead. Roll from the armpit to the lower rib area.",
+    "avoidCautions": "Avoid rolling over the ribs aggressively. Skip with rib or shoulder injuries.",
+    "idealTiming": "Post-upper-body training or when thoracic stiffness limits overhead mobility.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "lower-back-foam-roll",
+    "name": "Lower Back Foam Roll",
+    "slug": "lower-back-foam-roll",
+    "series": "foam_roll",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "lumbar"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "foam_roller"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "30-60s per muscle",
+    "doseSweetSpot": "1-2 min per muscle",
+    "doseUpperLimit": "10-20 min total",
+    "instructions": "Lie with foam roller under the lower back, knees bent. Gently roll the erector muscles lateral to the spine. Avoid direct pressure on the spine itself.",
+    "avoidCautions": "Avoid rolling directly on the lumbar spine. Not recommended for acute disc issues.",
+    "idealTiming": "Post-training or on recovery days to address lumbar tightness.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "upper-mid-back-foam-roll",
+    "name": "Upper/Mid Back Foam Roll",
+    "slug": "upper-mid-back-foam-roll",
+    "series": "foam_roll",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "thoracic",
+      "back"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "foam_roller"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "30-60s per muscle",
+    "doseSweetSpot": "1-2 min per muscle",
+    "doseUpperLimit": "10-20 min total",
+    "instructions": "Lie with foam roller under the upper/mid back. Cross arms over the chest. Roll from mid-back to upper traps area, extending over the roller for thoracic extension.",
+    "avoidCautions": "Avoid excessive extension if hypermobile. Skip with acute thoracic injuries.",
+    "idealTiming": "Post-training or during warm-ups to improve thoracic extension and posture.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "adductor-foam-roll",
+    "name": "Adductor Foam Roll",
+    "slug": "adductor-foam-roll",
+    "series": "foam_roll",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hips"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "foam_roller"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "30-60s per muscle",
+    "doseSweetSpot": "1-2 min per muscle",
+    "doseUpperLimit": "10-20 min total",
+    "instructions": "Lie face down with one leg out to the side. Place the foam roller under the inner thigh. Roll from groin to just above the knee.",
+    "avoidCautions": "Avoid rolling directly on the pubic bone or groin crease. Skip with adductor strains.",
+    "idealTiming": "Post-training after lateral movements, cutting drills, or heavy squatting.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "hip-flexor-foam-roll",
+    "name": "Hip Flexor Foam Roll",
+    "slug": "hip-flexor-foam-roll",
+    "series": "foam_roll",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hips"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "foam_roller"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "30-60s per muscle",
+    "doseSweetSpot": "1-2 min per muscle",
+    "doseUpperLimit": "10-20 min total",
+    "instructions": "Lie face down with the foam roller positioned at the front of the hip. Roll slowly from the hip crease to the upper quad. Breathe and relax into tender areas.",
+    "avoidCautions": "Avoid rolling on the hip bone directly. Skip with hip impingement symptoms.",
+    "idealTiming": "After prolonged sitting, post-running, or when hip extension feels restricted.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "it-band-foam-roll",
+    "name": "IT Band Foam Roll",
+    "slug": "it-band-foam-roll",
+    "series": "foam_roll",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "quads",
+      "hips",
+      "knee"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "foam_roller"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "30-60s per muscle",
+    "doseSweetSpot": "1-2 min per muscle",
+    "doseUpperLimit": "10-20 min total",
+    "instructions": "Lie on your side with the foam roller under the outer thigh. Roll from the hip to just above the knee. Use the top leg for support and pressure control.",
+    "avoidCautions": "Avoid rolling directly on the knee joint. Skip with acute IT band syndrome flare-ups.",
+    "idealTiming": "Post-running or cycling to address lateral thigh tightness.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "tfl-foam-roll",
+    "name": "TFL Foam Roll",
+    "slug": "tfl-foam-roll",
+    "series": "foam_roll",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hips"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "foam_roller"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "30-60s per muscle",
+    "doseSweetSpot": "1-2 min per muscle",
+    "doseUpperLimit": "10-20 min total",
+    "instructions": "Lie face down with the foam roller positioned at the front-outer hip (TFL). Apply gentle pressure and roll a small range. Hold on tender spots.",
+    "avoidCautions": "Avoid excessive pressure on the hip bone. Skip with hip bursitis.",
+    "idealTiming": "Post-training or when hip snapping or anterior hip tightness is present.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "glute-piriformis-foam-roll",
+    "name": "Glute/Piriformis Foam Roll",
+    "slug": "glute-piriformis-foam-roll",
+    "series": "foam_roll",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "glutes",
+      "hips"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "foam_roller"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "30-60s per muscle",
+    "doseSweetSpot": "1-2 min per muscle",
+    "doseUpperLimit": "10-20 min total",
+    "instructions": "Sit on the foam roller with one ankle crossed over the opposite knee. Lean toward the crossed side and roll the glute and piriformis area.",
+    "avoidCautions": "Avoid if sciatic nerve symptoms worsen during rolling. Skip with acute piriformis syndrome.",
+    "idealTiming": "Post-training or when deep glute and piriformis tightness limits hip mobility.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "lacrosse-it-band",
+    "name": "Lacrosse Ball IT Band Release",
+    "slug": "lacrosse-it-band",
+    "series": "foam_roll",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "quads",
+      "hips",
+      "knee"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "lacrosse_ball"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "30-60s per muscle",
+    "doseSweetSpot": "1-2 min per muscle",
+    "doseUpperLimit": "10-20 min total",
+    "instructions": "Lie on your side with a lacrosse ball under the outer thigh. Target specific trigger points along the IT band. Hold and breathe into tender spots for 20-30 seconds.",
+    "avoidCautions": "Avoid the knee joint. Skip with acute IT band inflammation.",
+    "idealTiming": "Post-running or when targeted IT band release is needed beyond foam rolling.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "lacrosse-rotator-cuff",
+    "name": "Lacrosse Ball Rotator Cuff Release",
+    "slug": "lacrosse-rotator-cuff",
+    "series": "foam_roll",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "shoulders"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "lacrosse_ball"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "30-60s per muscle",
+    "doseSweetSpot": "1-2 min per muscle",
+    "doseUpperLimit": "10-20 min total",
+    "instructions": "Stand against a wall with a lacrosse ball between the wall and the back of the shoulder. Roll slowly across the infraspinatus and teres minor. Hold on trigger points.",
+    "avoidCautions": "Avoid with acute rotator cuff tears or shoulder instability. Do not roll directly on the spine.",
+    "idealTiming": "Post-overhead training or throwing to address posterior shoulder tightness.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "tennis-ball-feet",
+    "name": "Tennis Ball Feet Release",
+    "slug": "tennis-ball-feet",
+    "series": "foam_roll",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "ankles"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "tennis_ball"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "30-60s per muscle",
+    "doseSweetSpot": "1-2 min per muscle",
+    "doseUpperLimit": "10-20 min total",
+    "instructions": "Stand or sit with a tennis ball under the foot. Roll from heel to toes, applying moderate pressure. Pause on tender spots in the arch.",
+    "avoidCautions": "Avoid with plantar fascia rupture or acute foot fractures.",
+    "idealTiming": "Post-training, after prolonged standing, or to address plantar fascia tightness.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "lacrosse-glute-piriformis",
+    "name": "Lacrosse Ball Glute/Piriformis Release",
+    "slug": "lacrosse-glute-piriformis",
+    "series": "foam_roll",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "glutes",
+      "hips"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "lacrosse_ball"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "30-60s per muscle",
+    "doseSweetSpot": "1-2 min per muscle",
+    "doseUpperLimit": "10-20 min total",
+    "instructions": "Sit on a lacrosse ball with one ankle crossed over the opposite knee. Target the piriformis and deep glute rotators. Hold on tender spots and breathe deeply.",
+    "avoidCautions": "Avoid if sciatic symptoms increase. Skip with acute piriformis syndrome.",
+    "idealTiming": "Post-training or when deep glute trigger points need targeted release.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "lacrosse-upper-traps-neck",
+    "name": "Lacrosse Ball Upper Traps/Neck Release",
+    "slug": "lacrosse-upper-traps-neck",
+    "series": "foam_roll",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "cervical",
+      "shoulders"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "lacrosse_ball"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "30-60s per muscle",
+    "doseSweetSpot": "1-2 min per muscle",
+    "doseUpperLimit": "10-20 min total",
+    "instructions": "Stand against a wall with a lacrosse ball between the wall and the upper trap/neck junction. Roll slowly and hold on trigger points. Keep chin slightly tucked.",
+    "avoidCautions": "Avoid direct pressure on the cervical spine. Skip with cervical disc issues or acute neck injuries.",
+    "idealTiming": "Post-training or after prolonged desk/screen work to relieve upper trap tension.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "lacrosse-tfl-hip",
+    "name": "Lacrosse Ball TFL/Hip Release",
+    "slug": "lacrosse-tfl-hip",
+    "series": "foam_roll",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hips"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "lacrosse_ball"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "30-60s per muscle",
+    "doseSweetSpot": "1-2 min per muscle",
+    "doseUpperLimit": "10-20 min total",
+    "instructions": "Lie face down with a lacrosse ball under the front-outer hip (TFL). Apply gentle pressure and make small movements. Hold on tender spots for 20-30 seconds.",
+    "avoidCautions": "Avoid direct pressure on the hip bone. Skip with hip bursitis.",
+    "idealTiming": "Post-training or when targeted TFL release is needed for hip mobility.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "chest-pec-release",
+    "name": "Chest/Pec Release",
+    "slug": "chest-pec-release",
+    "series": "foam_roll",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "pecs",
+      "shoulders"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "foam_roller"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "30-60s per muscle",
+    "doseSweetSpot": "1-2 min per muscle",
+    "doseUpperLimit": "10-20 min total",
+    "instructions": "Stand facing a wall with a lacrosse ball between the wall and the pec/chest area near the shoulder. Roll slowly and hold on trigger points. Keep breathing steady.",
+    "avoidCautions": "Avoid direct pressure on the sternum or clavicle. Skip with acute shoulder injuries.",
+    "idealTiming": "Post-upper-body training or to address anterior shoulder tightness and rounded posture.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "banded-hip-opener",
+    "name": "Banded Hip Opener",
+    "slug": "banded-hip-opener",
+    "series": "banded",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "joint_mobility",
+    "secondarySystems": [
+      "muscular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hips",
+      "glutes"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "restore_mobility",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [
+      "resistance_band"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "30-60s per side",
+    "doseSweetSpot": "1-2 min per side",
+    "doseUpperLimit": "5 min total",
+    "instructions": "Anchor a resistance band low and loop it around the hip crease. Step away to create tension. Perform a lunge or squat pattern, letting the band distract the femur posteriorly.",
+    "avoidCautions": "Avoid with hip labral tears or acute hip pain. Do not force range of motion.",
+    "idealTiming": "Pre-training warm-up or recovery day hip mobility work.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "high_training_load"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "banded-shoulder-stretch",
+    "name": "Banded Shoulder Stretch",
+    "slug": "banded-shoulder-stretch",
+    "series": "banded",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "joint_mobility",
+    "secondarySystems": [
+      "muscular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "shoulders"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "restore_mobility",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [
+      "resistance_band"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "30-60s per side",
+    "doseSweetSpot": "1-2 min per side",
+    "doseUpperLimit": "5 min total",
+    "instructions": "Anchor a resistance band at shoulder height. Loop around the wrist or hand. Step away and let the band distract the shoulder joint. Move through flexion, abduction, and rotation patterns.",
+    "avoidCautions": "Avoid with shoulder instability or acute rotator cuff injuries. Do not force end-range.",
+    "idealTiming": "Pre-training or on recovery days for shoulder mobility restoration.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "high_training_load"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "banded-hamstring-floss",
+    "name": "Banded Hamstring Floss",
+    "slug": "banded-hamstring-floss",
+    "series": "banded",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "joint_mobility",
+    "secondarySystems": [
+      "muscular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hamstrings",
+      "hips"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "restore_mobility",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [
+      "resistance_band"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "30-60s per side",
+    "doseSweetSpot": "1-2 min per side",
+    "doseUpperLimit": "5 min total",
+    "instructions": "Lie on your back with a resistance band looped around one foot. Pull the leg toward the ceiling while keeping the knee straight. Slowly flex and extend the knee to floss the sciatic nerve.",
+    "avoidCautions": "Avoid with acute hamstring strains or sciatic nerve irritation. Do not force the stretch.",
+    "idealTiming": "Post-training or during recovery sessions for hamstring mobility.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "high_training_load"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "banded-hip-traction",
+    "name": "Banded Hip Traction",
+    "slug": "banded-hip-traction",
+    "series": "banded",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "joint_mobility",
+    "secondarySystems": [
+      "muscular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hips"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "restore_mobility",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [
+      "resistance_band"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "30-60s per side",
+    "doseSweetSpot": "1-2 min per side",
+    "doseUpperLimit": "5 min total",
+    "instructions": "Anchor a band low and loop it high around the hip crease. Lean away to create a traction force on the hip joint. Hold the distracted position and gently rock into flexion and rotation.",
+    "avoidCautions": "Avoid with hip replacement, labral tears, or acute hip pathology.",
+    "idealTiming": "Pre-training for athletes with hip impingement or stiffness.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "high_training_load"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "banded-ankle-mobilization",
+    "name": "Banded Ankle Mobilization",
+    "slug": "banded-ankle-mobilization",
+    "series": "banded",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "joint_mobility",
+    "secondarySystems": [
+      "muscular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "ankles"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "restore_mobility",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [
+      "resistance_band"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "30-60s per side",
+    "doseSweetSpot": "1-2 min per side",
+    "doseUpperLimit": "5 min total",
+    "instructions": "Anchor a band low and loop it around the front of the ankle. Assume a half-kneeling position facing away from the anchor. Drive the knee forward over the toe while the band pulls the talus posteriorly.",
+    "avoidCautions": "Avoid with acute ankle sprains or fractures. Do not force dorsiflexion.",
+    "idealTiming": "Pre-squat or pre-training when ankle dorsiflexion is limited.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "high_training_load"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "banded-lat-stretch",
+    "name": "Banded Lat Stretch",
+    "slug": "banded-lat-stretch",
+    "series": "banded",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "joint_mobility",
+    "secondarySystems": [
+      "muscular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "back",
+      "shoulders"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "restore_mobility",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [
+      "resistance_band"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "30-60s per side",
+    "doseSweetSpot": "1-2 min per side",
+    "doseUpperLimit": "5 min total",
+    "instructions": "Anchor a band overhead. Grip the band and step away, hinging at the hips. Let the band pull the arm overhead to stretch the lat. Breathe deeply and hold.",
+    "avoidCautions": "Avoid with acute shoulder injuries or lat strains. Do not force overhead range.",
+    "idealTiming": "Pre-training or recovery day to improve overhead mobility and lat length.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "high_training_load"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "banded-thoracic-rotation",
+    "name": "Banded Thoracic Rotation",
+    "slug": "banded-thoracic-rotation",
+    "series": "banded",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "joint_mobility",
+    "secondarySystems": [
+      "muscular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "thoracic",
+      "back"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "restore_mobility",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [
+      "resistance_band"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "30-60s per side",
+    "doseSweetSpot": "1-2 min per side",
+    "doseUpperLimit": "5 min total",
+    "instructions": "Anchor a band at chest height. Stand perpendicular to the anchor. Hold the band with both hands and rotate the torso away, driving rotation through the thoracic spine.",
+    "avoidCautions": "Avoid with acute spinal injuries or disc herniations. Keep lumbar spine stable.",
+    "idealTiming": "Pre-training or recovery day for thoracic rotation and anti-rotation readiness.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "high_training_load"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "hip-cars",
+    "name": "Hip CARs (Controlled Articular Rotations)",
+    "slug": "hip-cars",
+    "series": "dynamic_mobility",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": true,
+    "primarySystem": "joint_mobility",
+    "secondarySystems": [
+      "muscular",
+      "nervous"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hips",
+      "glutes"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "restore_mobility",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "3-5 reps per side",
+    "doseSweetSpot": "5-10 reps per side",
+    "doseUpperLimit": "15 reps per side",
+    "instructions": "Stand on one leg, holding a wall for support. Lift the opposite knee to hip height, then rotate the hip out, extend back, and return in a full circle. Reverse direction.",
+    "avoidCautions": "Avoid with hip labral tears or acute hip pain. Do not rush the movement.",
+    "idealTiming": "Morning routines, warm-ups, or off-day mobility sessions.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "morning_stiff",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [
+      "game_day"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "shoulder-circles",
+    "name": "Shoulder Circles",
+    "slug": "shoulder-circles",
+    "series": "dynamic_mobility",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": true,
+    "primarySystem": "joint_mobility",
+    "secondarySystems": [
+      "muscular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "shoulders"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "restore_mobility",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "5-10 reps each direction",
+    "doseSweetSpot": "10-15 reps each direction",
+    "doseUpperLimit": "20 reps each direction",
+    "instructions": "Stand tall with arms relaxed. Make slow, controlled circles with the shoulders, progressively increasing range. Perform forward and backward circles.",
+    "avoidCautions": "Avoid with acute shoulder injuries. Reduce range if impingement symptoms occur.",
+    "idealTiming": "Morning routines, warm-ups, or off-day mobility sessions.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "morning_stiff",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [
+      "game_day"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "spine-cat-cow",
+    "name": "Spine Cat-Cow",
+    "slug": "spine-cat-cow",
+    "series": "dynamic_mobility",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": true,
+    "primarySystem": "joint_mobility",
+    "secondarySystems": [
+      "muscular",
+      "nervous"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "thoracic",
+      "lumbar",
+      "core"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "restore_mobility",
+      "enhance_flexibility",
+      "relax_nervous_system"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "strong",
+    "doseMin": "5-8 reps",
+    "doseSweetSpot": "10-15 reps",
+    "doseUpperLimit": "20 reps",
+    "instructions": "Start on hands and knees. Inhale, arch the back and lift the head (cow). Exhale, round the spine and tuck the chin (cat). Move slowly with breath.",
+    "avoidCautions": "Avoid with acute disc herniations. Reduce range if low back pain increases.",
+    "idealTiming": "Morning routines, warm-ups, or off-day spinal mobility sessions.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "morning_stiff",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [
+      "game_day"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "wrist-ankle-circles",
+    "name": "Wrist & Ankle Circles",
+    "slug": "wrist-ankle-circles",
+    "series": "dynamic_mobility",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": true,
+    "primarySystem": "joint_mobility",
+    "secondarySystems": [
+      "muscular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "wrists",
+      "ankles"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "restore_mobility",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "5-10 reps each direction",
+    "doseSweetSpot": "10-15 reps each direction",
+    "doseUpperLimit": "20 reps each direction",
+    "instructions": "Make slow, controlled circles with the wrists and ankles. Perform clockwise and counterclockwise. Focus on full range of motion.",
+    "avoidCautions": "Avoid with acute wrist or ankle sprains. Reduce range if pain occurs.",
+    "idealTiming": "Morning routines, warm-ups, or off-day joint mobility sessions.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "morning_stiff",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [
+      "game_day"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "lunge-rotation-reach",
+    "name": "Lunge with Rotation & Reach",
+    "slug": "lunge-rotation-reach",
+    "series": "dynamic_mobility",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": true,
+    "primarySystem": "joint_mobility",
+    "secondarySystems": [
+      "muscular",
+      "nervous"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hips",
+      "thoracic",
+      "core"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "restore_mobility",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "3-5 reps per side",
+    "doseSweetSpot": "5-8 reps per side",
+    "doseUpperLimit": "12 reps per side",
+    "instructions": "Step into a deep lunge. Place the inside hand on the ground. Rotate the torso and reach the opposite arm to the ceiling. Hold briefly, then return and switch sides.",
+    "avoidCautions": "Avoid with acute knee or hip injuries. Reduce depth if balance is compromised.",
+    "idealTiming": "Warm-ups or off-day mobility flows for multi-joint integration.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "morning_stiff",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [
+      "game_day"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "inchworms",
+    "name": "Inchworms",
+    "slug": "inchworms",
+    "series": "dynamic_mobility",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": true,
+    "primarySystem": "joint_mobility",
+    "secondarySystems": [
+      "muscular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hamstrings",
+      "shoulders",
+      "core"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "restore_mobility",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "3-5 reps",
+    "doseSweetSpot": "5-8 reps",
+    "doseUpperLimit": "12 reps",
+    "instructions": "Stand tall, hinge at the hips, and walk the hands out to a plank position. Pause briefly, then walk the hands back to the feet and stand up.",
+    "avoidCautions": "Avoid with acute hamstring strains or wrist injuries. Modify if low back pain occurs.",
+    "idealTiming": "Warm-ups or off-day mobility flows for full-body integration.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "morning_stiff",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [
+      "game_day"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "hip-circles",
+    "name": "Hip Circles",
+    "slug": "hip-circles",
+    "series": "dynamic_mobility",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": true,
+    "primarySystem": "joint_mobility",
+    "secondarySystems": [
+      "muscular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hips",
+      "glutes"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "restore_mobility",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "5-10 reps each direction",
+    "doseSweetSpot": "10-15 reps each direction",
+    "doseUpperLimit": "20 reps each direction",
+    "instructions": "Stand on one leg. Make controlled circles with the free hip, moving through flexion, abduction, extension, and adduction. Reverse direction.",
+    "avoidCautions": "Avoid with hip labral tears or acute hip pain. Use wall support if balance is limited.",
+    "idealTiming": "Morning routines, warm-ups, or off-day hip mobility sessions.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "morning_stiff",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [
+      "game_day"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "thoracic-arm-sweeps",
+    "name": "Thoracic Arm Sweeps",
+    "slug": "thoracic-arm-sweeps",
+    "series": "dynamic_mobility",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": true,
+    "primarySystem": "joint_mobility",
+    "secondarySystems": [
+      "muscular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "thoracic",
+      "shoulders"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "restore_mobility",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "5-8 reps per side",
+    "doseSweetSpot": "8-12 reps per side",
+    "doseUpperLimit": "15 reps per side",
+    "instructions": "Lie on your side with knees stacked and bent. Sweep the top arm in a wide arc overhead and behind, following with your eyes. Return slowly.",
+    "avoidCautions": "Avoid with acute shoulder or thoracic injuries. Move within a pain-free range.",
+    "idealTiming": "Morning routines, warm-ups, or off-day thoracic mobility sessions.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "morning_stiff",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [
+      "game_day"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "leg-swings",
+    "name": "Leg Swings",
+    "slug": "leg-swings",
+    "series": "dynamic_mobility",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": true,
+    "primarySystem": "joint_mobility",
+    "secondarySystems": [
+      "muscular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hips",
+      "hamstrings"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "restore_mobility",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "8-10 reps per side",
+    "doseSweetSpot": "12-15 reps per side",
+    "doseUpperLimit": "20 reps per side",
+    "instructions": "Stand next to a wall for support. Swing one leg forward and backward in a controlled manner, gradually increasing range. Also perform lateral swings.",
+    "avoidCautions": "Avoid with acute hamstring or hip flexor strains. Do not swing beyond pain-free range.",
+    "idealTiming": "Warm-ups or off-day mobility sessions for hip freedom and hamstring readiness.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "morning_stiff",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [
+      "game_day"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "dynamic-squat-to-stand",
+    "name": "Dynamic Squat to Stand",
+    "slug": "dynamic-squat-to-stand",
+    "series": "dynamic_mobility",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": true,
+    "primarySystem": "joint_mobility",
+    "secondarySystems": [
+      "muscular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hips",
+      "hamstrings",
+      "ankles",
+      "core"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "restore_mobility",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "strong",
+    "doseMin": "3-5 reps",
+    "doseSweetSpot": "5-10 reps",
+    "doseUpperLimit": "15 reps",
+    "instructions": "Stand with feet shoulder-width apart. Hinge at the hips to grab the toes. Sink the hips into a deep squat while keeping hold of the toes. Lift the chest, then straighten the legs to return to standing.",
+    "avoidCautions": "Avoid with acute knee or low back injuries. Reduce depth if mobility is limited.",
+    "idealTiming": "Warm-ups or off-day full-body mobility flows.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "morning_stiff",
+      "desk_bound"
+    ],
+    "phenotypesAvoid": [
+      "game_day"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "pool-walk-laps",
+    "name": "Pool Walk Laps",
+    "slug": "pool-walk-laps",
+    "series": "aquatic",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "cardiovascular",
+    "secondarySystems": [
+      "muscular",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "full_body",
+      "hips",
+      "calves"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "improve_circulation",
+      "decrease_soreness",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "pool"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "5 min",
+    "doseSweetSpot": "10-15 min",
+    "doseUpperLimit": "20 min",
+    "instructions": "Walk back and forth in chest-deep water at a steady pace. Maintain upright posture and use arm swing. Vary speed and direction for variety.",
+    "avoidCautions": "Avoid with open wounds or active infections. Do not perform in cold water if cold sensitivity is present.",
+    "idealTiming": "Recovery days or post-training active recovery sessions.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "joint_sensitive"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "pool"
+    ]
+  },
+  {
+    "id": "pool-high-knees",
+    "name": "Pool High Knees",
+    "slug": "pool-high-knees",
+    "series": "aquatic",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "cardiovascular",
+    "secondarySystems": [
+      "muscular",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hips",
+      "quads",
+      "core"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "improve_circulation",
+      "decrease_soreness",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "pool"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "3-5 min",
+    "doseSweetSpot": "5-10 min",
+    "doseUpperLimit": "15 min",
+    "instructions": "In chest-deep water, march in place bringing knees to hip height. Use arm drive. Keep the core engaged and maintain an upright torso.",
+    "avoidCautions": "Avoid with acute hip flexor strains. Reduce range if knee pain occurs.",
+    "idealTiming": "Recovery days or low-impact cardio sessions in the pool.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "joint_sensitive"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "pool"
+    ]
+  },
+  {
+    "id": "pool-flutter-kick",
+    "name": "Pool Flutter Kick",
+    "slug": "pool-flutter-kick",
+    "series": "aquatic",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "cardiovascular",
+    "secondarySystems": [
+      "muscular",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "quads",
+      "hamstrings",
+      "core",
+      "hips"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "improve_circulation",
+      "decrease_soreness",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "pool",
+      "kickboard"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "3-5 min",
+    "doseSweetSpot": "5-10 min",
+    "doseUpperLimit": "15 min",
+    "instructions": "Hold the pool edge or a kickboard. Extend the body and perform small, rapid flutter kicks. Keep legs relatively straight and kick from the hips.",
+    "avoidCautions": "Avoid with acute low back or hip pain. Reduce intensity if knee discomfort occurs.",
+    "idealTiming": "Recovery sessions or low-impact aerobic work in the pool.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "joint_sensitive"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "pool"
+    ]
+  },
+  {
+    "id": "pool-gentle-treading",
+    "name": "Pool Gentle Treading",
+    "slug": "pool-gentle-treading",
+    "series": "aquatic",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "cardiovascular",
+    "secondarySystems": [
+      "muscular",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "full_body"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "improve_circulation",
+      "decrease_soreness",
+      "relax_nervous_system"
+    ],
+    "equipmentNeeded": [
+      "pool"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "3-5 min",
+    "doseSweetSpot": "5-10 min",
+    "doseUpperLimit": "15 min",
+    "instructions": "In deep water, tread gently using a sculling motion with the hands and a light eggbeater kick. Keep effort low and breathing relaxed.",
+    "avoidCautions": "Avoid if not a confident swimmer. Do not use as a high-intensity drill.",
+    "idealTiming": "Recovery days for gentle full-body movement in a buoyant environment.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "joint_sensitive"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "pool"
+    ]
+  },
+  {
+    "id": "pool-arm-circles",
+    "name": "Pool Arm Circles",
+    "slug": "pool-arm-circles",
+    "series": "aquatic",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "joint_mobility",
+    "secondarySystems": [
+      "muscular",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "shoulders"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "restore_mobility",
+      "improve_circulation",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [
+      "pool"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "3-5 min",
+    "doseSweetSpot": "5-10 min",
+    "doseUpperLimit": "15 min",
+    "instructions": "Stand in shoulder-deep water. Make slow, controlled arm circles forward and backward. The water provides gentle resistance throughout the range of motion.",
+    "avoidCautions": "Avoid with acute shoulder injuries or impingement. Reduce range if pain occurs.",
+    "idealTiming": "Recovery sessions or warm-ups for shoulder mobility in a supportive environment.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "joint_sensitive"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "pool"
+    ]
+  },
+  {
+    "id": "pool-hip-swings",
+    "name": "Pool Hip Swings",
+    "slug": "pool-hip-swings",
+    "series": "aquatic",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "joint_mobility",
+    "secondarySystems": [
+      "muscular",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hips",
+      "glutes"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "restore_mobility",
+      "improve_circulation",
+      "enhance_flexibility"
+    ],
+    "equipmentNeeded": [
+      "pool"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "3-5 min",
+    "doseSweetSpot": "5-10 min",
+    "doseUpperLimit": "15 min",
+    "instructions": "Stand in waist-to-chest-deep water, holding the pool edge. Swing one leg forward and backward, then laterally. The water provides natural resistance and support.",
+    "avoidCautions": "Avoid with acute hip or groin strains. Reduce range if pain occurs.",
+    "idealTiming": "Recovery sessions or off-day hip mobility work in the pool.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "high_training_load",
+      "joint_sensitive"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "pool"
+    ]
+  },
+  {
+    "id": "ais-hip-flexor-lunge",
+    "name": "AIS Hip Flexor Lunge",
+    "slug": "ais-hip-flexor-lunge",
+    "series": "ais",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "joint_mobility"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hips",
+      "quads"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "enhance_flexibility",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "5-8 reps per side",
+    "doseSweetSpot": "8-12 reps, 2s hold each",
+    "doseUpperLimit": "15 reps per side",
+    "instructions": "Assume a half-kneeling position. Contract the glute of the rear leg to actively stretch the hip flexor. Hold for 2 seconds at end range. Return and repeat.",
+    "avoidCautions": "Avoid with acute hip flexor strains. Do not hold the stretch longer than 2 seconds per rep.",
+    "idealTiming": "Post-training, warm-ups, or recovery days for hip flexor length and mobility.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "high_training_load"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "ais-calf-dorsiflexion",
+    "name": "AIS Calf Dorsiflexion",
+    "slug": "ais-calf-dorsiflexion",
+    "series": "ais",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "joint_mobility"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "calves",
+      "ankles"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "enhance_flexibility",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "stretching_strap"
+    ],
+    "evidenceLevel": "strong",
+    "doseMin": "5-8 reps per side",
+    "doseSweetSpot": "8-12 reps, 2s hold each",
+    "doseUpperLimit": "15 reps per side",
+    "instructions": "Sit with leg extended and a strap around the ball of the foot. Actively pull the toes toward the shin using the anterior tibialis. Gently assist with the strap for 2 seconds at end range.",
+    "avoidCautions": "Avoid with acute Achilles tendon injuries. Do not force dorsiflexion beyond pain-free range.",
+    "idealTiming": "Post-training or recovery days for calf and ankle mobility.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "high_training_load"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "ais-shoulder-external-rotation",
+    "name": "AIS Shoulder External Rotation",
+    "slug": "ais-shoulder-external-rotation",
+    "series": "ais",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "joint_mobility"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "shoulders"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "enhance_flexibility",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "5-8 reps per side",
+    "doseSweetSpot": "8-12 reps, 2s hold each",
+    "doseUpperLimit": "15 reps per side",
+    "instructions": "Lie on your side with the top arm at 90 degrees. Actively rotate the forearm toward the ceiling using the rotator cuff muscles. Hold for 2 seconds at end range.",
+    "avoidCautions": "Avoid with acute rotator cuff injuries or shoulder instability. Do not force external rotation.",
+    "idealTiming": "Post-training or recovery days for shoulder external rotation restoration.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "high_training_load"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "ais-adductor-groin",
+    "name": "AIS Adductor/Groin Stretch",
+    "slug": "ais-adductor-groin",
+    "series": "ais",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "joint_mobility"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hips"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "enhance_flexibility",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "stretching_strap"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "5-8 reps per side",
+    "doseSweetSpot": "8-12 reps, 2s hold each",
+    "doseUpperLimit": "15 reps per side",
+    "instructions": "Lie on your back with one leg out to the side. Actively abduct the leg using the outer hip muscles. Gently assist with a strap for 2 seconds at end range. Return and repeat.",
+    "avoidCautions": "Avoid with acute adductor or groin strains. Do not force abduction beyond pain-free range.",
+    "idealTiming": "Post-training or recovery days for adductor and groin flexibility.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "high_training_load"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "ais-spinal-rotation",
+    "name": "AIS Spinal Rotation",
+    "slug": "ais-spinal-rotation",
+    "series": "ais",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "joint_mobility"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "thoracic",
+      "lumbar",
+      "core"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "enhance_flexibility",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "5-8 reps per side",
+    "doseSweetSpot": "8-12 reps, 2s hold each",
+    "doseUpperLimit": "15 reps per side",
+    "instructions": "Sit tall with legs extended. Actively rotate the torso using the obliques and spinal rotators. Gently assist the rotation with the hand for 2 seconds at end range.",
+    "avoidCautions": "Avoid with acute disc herniations or spinal injuries. Keep the rotation controlled and pain-free.",
+    "idealTiming": "Post-training or recovery days for spinal rotation mobility.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "high_training_load"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "ais-neck-tilt",
+    "name": "AIS Neck Tilt",
+    "slug": "ais-neck-tilt",
+    "series": "ais",
+    "modalityType": "active",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "joint_mobility"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "cervical"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "enhance_flexibility",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "5-8 reps per side",
+    "doseSweetSpot": "8-12 reps, 2s hold each",
+    "doseUpperLimit": "15 reps per side",
+    "instructions": "Sit tall. Actively tilt the ear toward the shoulder using the lateral neck muscles. Gently assist with the hand for 2 seconds at end range. Return to neutral and repeat.",
+    "avoidCautions": "Avoid with acute cervical disc issues or nerve impingement. Do not force the tilt or add excessive hand pressure.",
+    "idealTiming": "Post-training or recovery days for cervical mobility and upper trap relief.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "mobility_limited",
+      "high_training_load"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym"
+    ]
+  },
+  {
+    "id": "sleeper-stretch",
+    "name": "Sleeper Stretch",
+    "slug": "sleeper-stretch",
+    "series": "static_stretch",
+    "modalityType": "passive",
+    "cnsLowAvoid": true,
+    "offDayOnly": true,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "joint_mobility"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "shoulders"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "enhance_flexibility",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "20-30s per side",
+    "doseSweetSpot": "30-60s per side",
+    "doseUpperLimit": "2 min per side",
+    "instructions": "Lie on your side with the bottom arm at 90 degrees. Use the top hand to gently push the bottom forearm toward the floor for internal rotation. Hold at a comfortable stretch.",
+    "avoidCautions": "Avoid with shoulder instability, labral tears, or acute rotator cuff injuries. Do not push into pain.",
+    "idealTiming": "Off-days or evening stretching sessions for posterior shoulder tightness.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "desk_bound",
+      "evening_wind_down"
+    ],
+    "phenotypesAvoid": [
+      "cns_depleted",
+      "pre_competition"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "cross-body-shoulder",
+    "name": "Cross-Body Shoulder Stretch",
+    "slug": "cross-body-shoulder",
+    "series": "static_stretch",
+    "modalityType": "passive",
+    "cnsLowAvoid": true,
+    "offDayOnly": true,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "joint_mobility"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "shoulders"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "enhance_flexibility",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "20-30s per side",
+    "doseSweetSpot": "30-60s per side",
+    "doseUpperLimit": "2 min per side",
+    "instructions": "Bring one arm across the chest. Use the opposite hand to gently pull the arm closer to the body. Hold at a comfortable stretch in the posterior shoulder.",
+    "avoidCautions": "Avoid with acute shoulder injuries or labral tears. Do not compress the shoulder joint aggressively.",
+    "idealTiming": "Off-days or evening stretching for posterior deltoid and rotator cuff flexibility.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "desk_bound",
+      "evening_wind_down"
+    ],
+    "phenotypesAvoid": [
+      "cns_depleted",
+      "pre_competition"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "overhead-triceps-lat",
+    "name": "Overhead Triceps/Lat Stretch",
+    "slug": "overhead-triceps-lat",
+    "series": "static_stretch",
+    "modalityType": "passive",
+    "cnsLowAvoid": true,
+    "offDayOnly": true,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "joint_mobility"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "shoulders",
+      "back"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "enhance_flexibility",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "20-30s per side",
+    "doseSweetSpot": "30-60s per side",
+    "doseUpperLimit": "2 min per side",
+    "instructions": "Raise one arm overhead and bend the elbow, reaching the hand down the back. Use the opposite hand to gently push the elbow. Add a side lean to incorporate the lat.",
+    "avoidCautions": "Avoid with acute shoulder or elbow injuries. Do not force the stretch beyond comfort.",
+    "idealTiming": "Off-days or evening stretching for triceps and lat length.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "desk_bound",
+      "evening_wind_down"
+    ],
+    "phenotypesAvoid": [
+      "cns_depleted",
+      "pre_competition"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "doorway-pec-stretch",
+    "name": "Doorway Pec Stretch",
+    "slug": "doorway-pec-stretch",
+    "series": "static_stretch",
+    "modalityType": "passive",
+    "cnsLowAvoid": true,
+    "offDayOnly": true,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "joint_mobility"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "pecs",
+      "shoulders"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "enhance_flexibility",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "doorway"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "20-30s per side",
+    "doseSweetSpot": "30-60s per side",
+    "doseUpperLimit": "2 min per side",
+    "instructions": "Stand in a doorway with the forearm placed against the frame at shoulder height. Step forward gently to open the chest. Hold the stretch in the pec and anterior shoulder.",
+    "avoidCautions": "Avoid with anterior shoulder instability or acute pec strains. Do not overextend the shoulder.",
+    "idealTiming": "Off-days or evening stretching to counteract rounded posture and anterior tightness.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "desk_bound",
+      "evening_wind_down"
+    ],
+    "phenotypesAvoid": [
+      "cns_depleted",
+      "pre_competition"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "seated-forward-fold",
+    "name": "Seated Forward Fold",
+    "slug": "seated-forward-fold",
+    "series": "static_stretch",
+    "modalityType": "passive",
+    "cnsLowAvoid": true,
+    "offDayOnly": true,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "joint_mobility"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hamstrings",
+      "lumbar"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "enhance_flexibility",
+      "restore_mobility",
+      "relax_nervous_system"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "20-30s",
+    "doseSweetSpot": "30-60s",
+    "doseUpperLimit": "2 min",
+    "instructions": "Sit with legs extended. Hinge at the hips and reach toward the toes. Keep the spine long and avoid excessive rounding. Breathe deeply and relax into the stretch.",
+    "avoidCautions": "Avoid with acute disc herniations or hamstring tears. Do not force the fold aggressively.",
+    "idealTiming": "Off-days or evening stretching for hamstring and posterior chain flexibility.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "desk_bound",
+      "evening_wind_down"
+    ],
+    "phenotypesAvoid": [
+      "cns_depleted",
+      "pre_competition"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "standing-quad-stretch",
+    "name": "Standing Quad Stretch",
+    "slug": "standing-quad-stretch",
+    "series": "static_stretch",
+    "modalityType": "passive",
+    "cnsLowAvoid": true,
+    "offDayOnly": true,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "joint_mobility"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "quads",
+      "hips"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "enhance_flexibility",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "20-30s per side",
+    "doseSweetSpot": "30-60s per side",
+    "doseUpperLimit": "2 min per side",
+    "instructions": "Stand on one leg, holding a wall for support. Grab the opposite ankle behind you and pull the heel toward the glute. Keep the knees together and hips pushed forward.",
+    "avoidCautions": "Avoid with acute knee injuries or quad strains. Do not hyperextend the knee.",
+    "idealTiming": "Off-days or evening stretching for quad and hip flexor flexibility.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "desk_bound",
+      "evening_wind_down"
+    ],
+    "phenotypesAvoid": [
+      "cns_depleted",
+      "pre_competition"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "seated-butterfly",
+    "name": "Seated Butterfly Stretch",
+    "slug": "seated-butterfly",
+    "series": "static_stretch",
+    "modalityType": "passive",
+    "cnsLowAvoid": true,
+    "offDayOnly": true,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "joint_mobility"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "hips",
+      "glutes"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "enhance_flexibility",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "20-30s",
+    "doseSweetSpot": "30-60s",
+    "doseUpperLimit": "2 min",
+    "instructions": "Sit with the soles of the feet together and knees dropped to the sides. Gently press the knees toward the floor with the elbows. Lean forward slightly to deepen the stretch.",
+    "avoidCautions": "Avoid with acute groin or adductor strains. Do not force the knees down aggressively.",
+    "idealTiming": "Off-days or evening stretching for inner thigh and hip opening.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "desk_bound",
+      "evening_wind_down"
+    ],
+    "phenotypesAvoid": [
+      "cns_depleted",
+      "pre_competition"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "childs-pose-hold",
+    "name": "Child's Pose Hold",
+    "slug": "childs-pose-hold",
+    "series": "static_stretch",
+    "modalityType": "passive",
+    "cnsLowAvoid": true,
+    "offDayOnly": true,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "joint_mobility"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "back",
+      "hips",
+      "shoulders"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "enhance_flexibility",
+      "restore_mobility",
+      "relax_nervous_system"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "20-30s",
+    "doseSweetSpot": "30-60s",
+    "doseUpperLimit": "2 min",
+    "instructions": "Kneel with toes together and knees apart. Sit back on the heels and extend the arms forward on the floor. Rest the forehead on the ground and breathe deeply.",
+    "avoidCautions": "Avoid with acute knee injuries or ankle limitations. Modify with a pillow under the hips if needed.",
+    "idealTiming": "Off-days or evening wind-down for spinal decompression and nervous system calming.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "desk_bound",
+      "evening_wind_down"
+    ],
+    "phenotypesAvoid": [
+      "cns_depleted",
+      "pre_competition"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "thread-the-needle",
+    "name": "Thread the Needle",
+    "slug": "thread-the-needle",
+    "series": "static_stretch",
+    "modalityType": "passive",
+    "cnsLowAvoid": true,
+    "offDayOnly": true,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "joint_mobility"
+    ],
+    "iaciSubsystemsTargeted": [
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "thoracic",
+      "shoulders"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "enhance_flexibility",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "20-30s per side",
+    "doseSweetSpot": "30-60s per side",
+    "doseUpperLimit": "2 min per side",
+    "instructions": "Start on hands and knees. Slide one arm under the body, threading it through to the opposite side. Rest the shoulder and temple on the floor. Hold and breathe.",
+    "avoidCautions": "Avoid with acute shoulder or cervical spine injuries. Do not force the rotation.",
+    "idealTiming": "Off-days or evening stretching for thoracic rotation and shoulder opening.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "desk_bound",
+      "evening_wind_down"
+    ],
+    "phenotypesAvoid": [
+      "cns_depleted",
+      "pre_competition"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "supine-spinal-twist",
+    "name": "Supine Spinal Twist",
+    "slug": "supine-spinal-twist",
+    "series": "static_stretch",
+    "modalityType": "passive",
+    "cnsLowAvoid": true,
+    "offDayOnly": true,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "joint_mobility"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "thoracic",
+      "lumbar",
+      "hips"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "enhance_flexibility",
+      "restore_mobility",
+      "relax_nervous_system"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "20-30s per side",
+    "doseSweetSpot": "30-60s per side",
+    "doseUpperLimit": "2 min per side",
+    "instructions": "Lie on your back. Bring one knee across the body to the opposite side. Extend the arm on the same side and look toward it. Hold and breathe deeply into the twist.",
+    "avoidCautions": "Avoid with acute disc herniations or spinal injuries. Do not force the twist beyond comfort.",
+    "idealTiming": "Off-days or evening stretching for spinal rotation and parasympathetic activation.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_soreness",
+      "desk_bound",
+      "evening_wind_down"
+    ],
+    "phenotypesAvoid": [
+      "cns_depleted",
+      "pre_competition"
+    ],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  },
+  {
+    "id": "starfish-lie-down",
+    "name": "Starfish Lie Down",
+    "slug": "starfish-lie-down",
+    "series": "vagus_nerve",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "nervous",
+    "secondarySystems": [
+      "cardiovascular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "sleep_circadian"
+    ],
+    "targetAreasPrimary": [
+      "full_body",
+      "mental_clarity"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "relax_nervous_system"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "2-3 min",
+    "doseSweetSpot": "5-10 min",
+    "doseUpperLimit": "15 min",
+    "instructions": "Lie flat on your back with arms and legs spread wide like a starfish. Close the eyes and breathe slowly through the nose. Allow complete muscular relaxation.",
+    "avoidCautions": "Avoid if lying flat causes low back discomfort. Place a pillow under the knees if needed.",
+    "idealTiming": "Post-training, between sessions, or as a nervous system reset throughout the day.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_sympathetic",
+      "poor_sleep",
+      "high_stress"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "anywhere"
+    ]
+  },
+  {
+    "id": "slow-eye-movement-reset",
+    "name": "Slow Eye Movement Reset",
+    "slug": "slow-eye-movement-reset",
+    "series": "vagus_nerve",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "nervous",
+    "secondarySystems": [],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "sleep_circadian"
+    ],
+    "targetAreasPrimary": [
+      "mental_clarity"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "relax_nervous_system"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "emerging",
+    "doseMin": "1-2 min",
+    "doseSweetSpot": "3-5 min",
+    "doseUpperLimit": "10 min",
+    "instructions": "Lie on your back. Interlace fingers behind the head. Without moving the head, slowly look to the right and hold until a spontaneous yawn or sigh occurs. Return to center and repeat to the left.",
+    "avoidCautions": "Avoid if eye movements cause dizziness or nausea. Discontinue if symptoms worsen.",
+    "idealTiming": "Post-competition, after high-stress events, or as a quick nervous system reset.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_sympathetic",
+      "poor_sleep",
+      "high_stress"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "anywhere"
+    ]
+  },
+  {
+    "id": "cold-water-face-splash",
+    "name": "Cold Water Face Splash",
+    "slug": "cold-water-face-splash",
+    "series": "vagus_nerve",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "nervous",
+    "secondarySystems": [
+      "cardiovascular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "sleep_circadian"
+    ],
+    "targetAreasPrimary": [
+      "mental_clarity"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "relax_nervous_system"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "strong",
+    "doseMin": "15-30s",
+    "doseSweetSpot": "30-60s",
+    "doseUpperLimit": "2 min",
+    "instructions": "Splash cold water on the face, especially the forehead, eyes, and cheeks. Alternatively, submerge the face in a bowl of cold water for 15-30 seconds. Breathe through the mouth between immersions.",
+    "avoidCautions": "Avoid with uncontrolled cardiac arrhythmias. Use caution with Raynaud's disease.",
+    "idealTiming": "Acute stress moments, post-competition, or when rapid vagal tone activation is needed.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_sympathetic",
+      "poor_sleep",
+      "high_stress"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "anywhere"
+    ]
+  },
+  {
+    "id": "gentle-neck-rotations-breathing",
+    "name": "Gentle Neck Rotations with Breathing",
+    "slug": "gentle-neck-rotations-breathing",
+    "series": "vagus_nerve",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "nervous",
+    "secondarySystems": [
+      "muscular"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "musculoskeletal",
+      "sleep_circadian"
+    ],
+    "targetAreasPrimary": [
+      "cervical",
+      "mental_clarity"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "relax_nervous_system",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "moderate",
+    "doseMin": "1-2 min",
+    "doseSweetSpot": "3-5 min",
+    "doseUpperLimit": "10 min",
+    "instructions": "Sit or stand tall. Slowly rotate the head to one side, inhaling through the nose. Hold briefly, then exhale slowly as you return to center. Repeat to the other side.",
+    "avoidCautions": "Avoid with acute cervical injuries or vertebral artery insufficiency. Move slowly and within pain-free range.",
+    "idealTiming": "Post-training, during travel, or as a calming vagus nerve stimulation technique.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_sympathetic",
+      "poor_sleep",
+      "high_stress"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "anywhere"
+    ]
+  },
+  {
+    "id": "bee-breathwork",
+    "name": "Bee Breathwork (Bhramari)",
+    "slug": "bee-breathwork",
+    "series": "vagus_nerve",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "nervous",
+    "secondarySystems": [],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "sleep_circadian"
+    ],
+    "targetAreasPrimary": [
+      "mental_clarity"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "relax_nervous_system"
+    ],
+    "equipmentNeeded": [],
+    "evidenceLevel": "emerging",
+    "doseMin": "1-2 min",
+    "doseSweetSpot": "3-5 min",
+    "doseUpperLimit": "10 min",
+    "instructions": "Sit comfortably with eyes closed. Inhale deeply through the nose. Exhale while making a low humming sound like a bee. Feel the vibration in the face and skull. Repeat.",
+    "avoidCautions": "Avoid if the humming causes ear discomfort or pressure. Discontinue if dizziness occurs.",
+    "idealTiming": "Evening wind-down, post-competition, or as a calming vagus nerve activation technique.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "phenotypesRecommended": [
+      "high_sympathetic",
+      "poor_sleep",
+      "high_stress"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "anywhere"
+    ]
+  },
+  {
+    "id": "percussion-therapy",
+    "name": "Percussion Therapy (Massage Gun)",
+    "slug": "percussion-therapy",
+    "series": "classic",
+    "modalityType": "passive",
+    "cnsLowAvoid": false,
+    "offDayOnly": false,
+    "primarySystem": "muscular",
+    "secondarySystems": [
+      "nervous",
+      "circulatory"
+    ],
+    "iaciSubsystemsTargeted": [
+      "autonomic",
+      "cardiovascular",
+      "musculoskeletal"
+    ],
+    "targetAreasPrimary": [
+      "quads",
+      "hamstrings",
+      "glutes",
+      "calves",
+      "back",
+      "shoulders"
+    ],
+    "targetAreasSecondary": [],
+    "benefits": [
+      "decrease_soreness",
+      "improve_circulation",
+      "restore_mobility"
+    ],
+    "equipmentNeeded": [
+      "massage_gun"
+    ],
+    "evidenceLevel": "moderate",
+    "doseMin": "30-60s per muscle",
+    "doseSweetSpot": "1-2 min per muscle group",
+    "doseUpperLimit": "10-15 min total",
+    "instructions": "Apply the massage gun to the target muscle at a moderate speed. Move slowly along the muscle belly. Avoid bony prominences and joints. Use lighter pressure on smaller muscle groups.",
+    "avoidCautions": "Avoid over bony prominences, acute injuries, bruises, or inflamed areas. Do not use on the neck or near the spine without guidance.",
+    "idealTiming": "Post-training for localized muscle recovery, or pre-training as part of tissue preparation.",
+    "evidenceNotes": null,
+    "athleteTidbit": null,
+    "athleteCaution": null,
+    "protocolClasses": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "phenotypesRecommended": [
+      "high_training_load",
+      "high_soreness"
+    ],
+    "phenotypesAvoid": [],
+    "environment": [
+      "home",
+      "gym",
+      "travel"
+    ]
+  }
+]

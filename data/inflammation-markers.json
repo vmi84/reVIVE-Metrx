@@ -1,0 +1,178 @@
+{
+  "lab_markers": [
+    {
+      "id": "hscrp",
+      "name": "High-Sensitivity C-Reactive Protein",
+      "abbreviation": "hs-CRP",
+      "category": "lab",
+      "unit": "mg/L",
+      "normal_low": 0,
+      "normal_high": 3.0,
+      "optimal_low": 0,
+      "optimal_high": 1.0,
+      "description": "Systemic inflammation marker. Elevated levels indicate acute or chronic inflammation."
+    },
+    {
+      "id": "ferritin",
+      "name": "Ferritin",
+      "abbreviation": "Ferritin",
+      "category": "lab",
+      "unit": "ng/mL",
+      "normal_low": 30,
+      "normal_high": 300,
+      "optimal_low": 50,
+      "optimal_high": 150,
+      "description": "Iron storage protein. Low levels impair oxygen transport and endurance performance."
+    },
+    {
+      "id": "vitamin_d",
+      "name": "Vitamin D (25-OH)",
+      "abbreviation": "Vit D",
+      "category": "lab",
+      "unit": "ng/mL",
+      "normal_low": 30,
+      "normal_high": 100,
+      "optimal_low": 40,
+      "optimal_high": 70,
+      "description": "Critical for immune function, bone health, and muscle recovery. Deficiency increases injury risk."
+    },
+    {
+      "id": "ck",
+      "name": "Creatine Kinase",
+      "abbreviation": "CK",
+      "category": "lab",
+      "unit": "U/L",
+      "normal_low": 30,
+      "normal_high": 200,
+      "optimal_low": 30,
+      "optimal_high": 150,
+      "description": "Muscle damage marker. Elevated post-exercise is normal; persistently high suggests inadequate recovery."
+    },
+    {
+      "id": "cortisol_am",
+      "name": "Cortisol (AM)",
+      "abbreviation": "Cortisol",
+      "category": "lab",
+      "unit": "mcg/dL",
+      "normal_low": 6,
+      "normal_high": 23,
+      "optimal_low": 10,
+      "optimal_high": 18,
+      "description": "Stress hormone. Chronically elevated levels indicate overtraining or high life stress."
+    },
+    {
+      "id": "iron",
+      "name": "Iron",
+      "abbreviation": "Iron",
+      "category": "lab",
+      "unit": "mcg/dL",
+      "normal_low": 60,
+      "normal_high": 170,
+      "optimal_low": 80,
+      "optimal_high": 150,
+      "description": "Essential for hemoglobin synthesis and oxygen transport."
+    },
+    {
+      "id": "tibc",
+      "name": "Total Iron Binding Capacity",
+      "abbreviation": "TIBC",
+      "category": "lab",
+      "unit": "mcg/dL",
+      "normal_low": 250,
+      "normal_high": 370,
+      "optimal_low": 250,
+      "optimal_high": 370,
+      "description": "Measures blood's capacity to bind iron. High TIBC suggests iron deficiency."
+    },
+    {
+      "id": "il6",
+      "name": "Interleukin-6",
+      "abbreviation": "IL-6",
+      "category": "lab",
+      "unit": "pg/mL",
+      "normal_low": 0,
+      "normal_high": 7,
+      "optimal_low": 0,
+      "optimal_high": 3,
+      "description": "Pro-inflammatory cytokine. Acute elevation from exercise is normal; chronic elevation indicates systemic inflammation."
+    },
+    {
+      "id": "tnf_alpha",
+      "name": "Tumor Necrosis Factor Alpha",
+      "abbreviation": "TNF-a",
+      "category": "lab",
+      "unit": "pg/mL",
+      "normal_low": 0,
+      "normal_high": 8.1,
+      "optimal_low": 0,
+      "optimal_high": 4,
+      "description": "Pro-inflammatory cytokine involved in systemic inflammation."
+    },
+    {
+      "id": "esr",
+      "name": "Erythrocyte Sedimentation Rate",
+      "abbreviation": "ESR",
+      "category": "lab",
+      "unit": "mm/hr",
+      "normal_low": 0,
+      "normal_high": 22,
+      "optimal_low": 0,
+      "optimal_high": 10,
+      "description": "Non-specific inflammation marker. Elevated in infection, tissue damage, or chronic inflammation."
+    },
+    {
+      "id": "homocysteine",
+      "name": "Homocysteine",
+      "abbreviation": "Hcy",
+      "category": "lab",
+      "unit": "umol/L",
+      "normal_low": 5,
+      "normal_high": 15,
+      "optimal_low": 5,
+      "optimal_high": 10,
+      "description": "Cardiovascular risk and B-vitamin status marker."
+    }
+  ],
+  "wearable_proxies": [
+    {
+      "id": "hrv_depression",
+      "name": "HRV Depression",
+      "category": "wearable_proxy",
+      "unit": "z-score",
+      "threshold": -1.5,
+      "description": "HRV significantly below personal baseline indicates autonomic stress/inflammation."
+    },
+    {
+      "id": "rhr_elevation",
+      "name": "RHR Elevation",
+      "category": "wearable_proxy",
+      "unit": "z-score",
+      "threshold": 1.5,
+      "description": "Resting heart rate above baseline suggests systemic stress or illness."
+    },
+    {
+      "id": "resp_rate_elevation",
+      "name": "Respiratory Rate Elevation",
+      "category": "wearable_proxy",
+      "unit": "z-score",
+      "threshold": 1.5,
+      "description": "Elevated respiratory rate during sleep indicates respiratory or systemic stress."
+    },
+    {
+      "id": "skin_temp_deviation",
+      "name": "Skin Temperature Deviation",
+      "category": "wearable_proxy",
+      "unit": "degrees C",
+      "threshold": 0.5,
+      "description": "Significant skin temperature deviation from baseline may indicate illness onset."
+    },
+    {
+      "id": "sleep_disruption",
+      "name": "Sleep Disruption",
+      "category": "wearable_proxy",
+      "unit": "score",
+      "threshold": 40,
+      "description": "Poor sleep quality and frequent awakenings impair immune function and recovery."
+    }
+  ]
+}

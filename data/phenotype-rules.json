@@ -1,0 +1,83 @@
+{
+  "phenotypes": [
+    {
+      "key": "fully_recovered",
+      "label": "Fully Recovered / High Readiness",
+      "rules": {
+        "autonomic": { "min": 70 },
+        "musculoskeletal": { "min": 70 },
+        "cardiometabolic": { "min": 65 },
+        "sleep": { "min": 60 },
+        "metabolic": { "min": 55 },
+        "psychological": { "min": 55 }
+      },
+      "priority": 7,
+      "description": "All major systems recovered. Supports high-intensity or high-force work."
+    },
+    {
+      "key": "locally_fatigued",
+      "label": "Systemically Ready, Locally Fatigued",
+      "rules": {
+        "autonomic": { "min": 65 },
+        "musculoskeletal": { "max": 55 }
+      },
+      "priority": 5,
+      "description": "Autonomic recovery good but musculoskeletal system reduced. Aerobic or split-adjusted work recommended."
+    },
+    {
+      "key": "centrally_suppressed",
+      "label": "Muscularly Ready, Centrally Suppressed",
+      "rules": {
+        "autonomic": { "max": 50 },
+        "musculoskeletal": { "min": 65 },
+        "sleep": { "max": 55 }
+      },
+      "priority": 4,
+      "description": "Soreness minimal but HRV depressed, RHR elevated, or poor sleep. Easy movement only."
+    },
+    {
+      "key": "sleep_driven_suppression",
+      "label": "Sleep-Driven Suppression",
+      "rules": {
+        "sleep": { "max": 40 },
+        "autonomic": { "max": 60 },
+        "musculoskeletal": { "min": 50 }
+      },
+      "priority": 3,
+      "description": "Sleep/circadian restoration critically low. Lower complexity and moderate load limits."
+    },
+    {
+      "key": "accumulated_fatigue",
+      "label": "Accumulated Training Fatigue",
+      "rules": {
+        "autonomic": { "max": 60 },
+        "musculoskeletal": { "max": 60 },
+        "cardiometabolic": { "max": 65 }
+      },
+      "priority": 6,
+      "description": "High strain over recent days with HRV lagging and moderate soreness. Reduced tolerance for intensity."
+    },
+    {
+      "key": "under_fueled",
+      "label": "Under-Fueled / Under-Hydrated",
+      "rules": {
+        "metabolic": { "max": 45 },
+        "autonomic": { "min": 50 },
+        "musculoskeletal": { "min": 50 }
+      },
+      "priority": 3,
+      "description": "Metabolic support insufficient. Nutritional recovery priority."
+    },
+    {
+      "key": "illness_risk",
+      "label": "Illness Risk / Abnormal Physiology",
+      "rules": {
+        "autonomic": { "max": 35 },
+        "cardiometabolic": { "max": 40 },
+        "psychological": { "max": 45 }
+      },
+      "priority": 1,
+      "description": "Elevated RHR, depressed HRV, elevated respiratory rate. Recovery-only guidance with symptom screening."
+    }
+  ]
+}
