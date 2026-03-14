@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2.1.1] - 2026-03-14
+
+### Fixed
+- **Demo mode IACI** — Check-in now triggers `computeDemo()` to generate realistic IACI scores without Supabase; previously IACI never computed because Whoop sync gate was never satisfied in offline mode
+- **Recovery protocols empty** — Protocols now load from bundled `data/recovery-protocols.json` in demo mode instead of querying empty Supabase table; all 80 protocols with series filter counts now populate
+
+### Changed
+- **Dashboard** — IACI computation in demo mode bypasses Whoop sync requirement; skips Whoop auto-sync when Supabase is not configured
+- **tsconfig** — Added `resolveJsonModule` and `esModuleInterop` for local JSON seed data imports
+
 ## [2.1.0] - 2026-03-14
 
 ### Changed

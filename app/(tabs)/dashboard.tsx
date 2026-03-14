@@ -19,10 +19,11 @@ import { ThemedText } from '../../components/ui/ThemedText';
 import { FeedDay } from '../../lib/types/feed';
 import { COLORS } from '../../lib/utils/constants';
 import { today } from '../../lib/utils/date';
+import { isSupabaseConfigured } from '../../lib/supabase';
 
 export default function Dashboard() {
   const { days, loading, loadingMore, hasMore, loadMore, refresh, carryForwardCheckin } = useFeed();
-  const { computeToday } = useIACI();
+  const { computeToday, computeDemo } = useIACI();
   const { syncMorningData, syncing } = useWhoopSync();
   const { checkinCompleted, whoopSynced } = useDailyStore();
   const { expandedCardDate, setExpandedCard } = useFeedStore();
@@ -30,19 +31,24 @@ export default function Dashboard() {
   // Trigger load capacity computation when IACI is available
   useLoadCapacity();
 
-  // Auto-sync Whoop on mount
+  // Auto-sync Whoop on mount (skip in demo mode)
   useEffect(() => {
-    if (!whoopSynced) {
+    if (!whoopSynced && isSupabaseConfigured) {
       syncMorningData();
     }
   }, []);
 
-  // Auto-compute IACI when both Whoop + check-in are done
+  // Auto-compute IACI after check-in
   useEffect(() => {
-    if (whoopSynced && checkinCompleted) {
+    if (!checkinCompleted) return;
+
+    if (!isSupabaseConfigured) {
+      // Demo mode: generate mock IACI immediately after check-in
+      computeDemo();
+    } else if (whoopSynced) {
       computeToday();
     }
-  }, [whoopSynced, checkinCompleted]);
+  }, [checkinCompleted, whoopSynced]);
 
   // Auto-expand today's card on first load
   useEffect(() => {

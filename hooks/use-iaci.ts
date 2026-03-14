@@ -234,5 +234,46 @@ export function useIACI() {
     }
   }, [user?.id, profile]);
 
-  return { iaci, error, computeToday };
+  /**
+   * Demo mode: generate a realistic IACI result from randomized subsystem scores
+   * so the app has data to display without Supabase.
+   */
+  const computeDemo = useCallback(() => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const dateStr = today();
+
+      // Generate semi-random subsystem scores
+      const randScore = (min: number, max: number) =>
+        Math.round(min + Math.random() * (max - min));
+
+      const makeSub = (key: string, score: number) => {
+        const band = score >= 85 ? 'highly_recovered' as const :
+                     score >= 70 ? 'trainable' as const :
+                     score >= 55 ? 'limited' as const :
+                     score >= 40 ? 'compromised' as const : 'impaired' as const;
+        return { key, score, band, inputs: {}, limitingFactors: [] as string[] };
+      };
+
+      const subsystemScores: SubsystemScores = {
+        autonomic: makeSub('autonomic', randScore(55, 90)),
+        musculoskeletal: makeSub('musculoskeletal', randScore(45, 85)),
+        cardiometabolic: makeSub('cardiometabolic', randScore(55, 90)),
+        sleep: makeSub('sleep', randScore(50, 90)),
+        metabolic: makeSub('metabolic', randScore(60, 95)),
+        psychological: makeSub('psychological', randScore(55, 90)),
+      };
+
+      const result = computeIACI(dateStr, subsystemScores);
+      setIACI(result);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to compute demo IACI');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return { iaci, error, computeToday, computeDemo };
 }

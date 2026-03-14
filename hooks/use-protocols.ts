@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useAuthStore } from '../store/auth-store';
 import { useDailyStore } from '../store/daily-store';
 import { RecoveryProtocol } from '../lib/types/protocols';
+import localProtocols from '../data/recovery-protocols.json';
 
 export function useProtocols() {
   const { user } = useAuthStore();
@@ -11,10 +12,18 @@ export function useProtocols() {
   const [recommended, setRecommended] = useState<RecoveryProtocol[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch all protocols
+  // Fetch all protocols — from Supabase or local seed data
   useEffect(() => {
     async function fetch() {
       setLoading(true);
+
+      if (!isSupabaseConfigured) {
+        // Demo mode: load from bundled JSON seed data
+        setProtocols((localProtocols as any[]).map(mapLocal));
+        setLoading(false);
+        return;
+      }
+
       const { data } = await supabase
         .from('recovery_protocols')
         .select('*')
@@ -86,6 +95,7 @@ export function useProtocols() {
   return { protocols, recommended, loading, logProtocol };
 }
 
+/** Map a Supabase row (snake_case) to RecoveryProtocol */
 function mapRow(row: any): RecoveryProtocol {
   return {
     id: row.id,
@@ -116,5 +126,39 @@ function mapRow(row: any): RecoveryProtocol {
     phenotypesRecommended: row.phenotypes_recommended ?? [],
     phenotypesAvoid: row.phenotypes_avoid ?? [],
     environment: row.environment ?? [],
+  };
+}
+
+/** Map a local JSON entry (camelCase) to RecoveryProtocol */
+function mapLocal(entry: any): RecoveryProtocol {
+  return {
+    id: entry.id,
+    name: entry.name,
+    slug: entry.slug,
+    series: entry.series,
+    modalityType: entry.modalityType ?? entry.modality_type ?? 'active',
+    cnsLowAvoid: entry.cnsLowAvoid ?? entry.cns_low_avoid ?? false,
+    offDayOnly: entry.offDayOnly ?? entry.off_day_only ?? false,
+    primarySystem: entry.primarySystem ?? entry.primary_system ?? '',
+    secondarySystems: entry.secondarySystems ?? entry.secondary_systems ?? [],
+    iaciSubsystemsTargeted: entry.iaciSubsystemsTargeted ?? entry.iaci_subsystems_targeted ?? [],
+    targetAreasPrimary: entry.targetAreasPrimary ?? entry.target_areas_primary ?? [],
+    targetAreasSecondary: entry.targetAreasSecondary ?? entry.target_areas_secondary ?? [],
+    benefits: entry.benefits ?? [],
+    equipmentNeeded: entry.equipmentNeeded ?? entry.equipment_needed ?? [],
+    evidenceLevel: entry.evidenceLevel ?? entry.evidence_level ?? 'moderate',
+    doseMin: entry.doseMin ?? entry.dose_min ?? '',
+    doseSweetSpot: entry.doseSweetSpot ?? entry.dose_sweet_spot ?? '',
+    doseUpperLimit: entry.doseUpperLimit ?? entry.dose_upper_limit ?? '',
+    instructions: entry.instructions ?? '',
+    avoidCautions: entry.avoidCautions ?? entry.avoid_cautions ?? '',
+    idealTiming: entry.idealTiming ?? entry.ideal_timing ?? '',
+    evidenceNotes: entry.evidenceNotes ?? entry.evidence_notes ?? null,
+    athleteTidbit: entry.athleteTidbit ?? entry.athlete_tidbit ?? null,
+    athleteCaution: entry.athleteCaution ?? entry.athlete_caution ?? null,
+    protocolClasses: entry.protocolClasses ?? entry.protocol_classes ?? [],
+    phenotypesRecommended: entry.phenotypesRecommended ?? entry.phenotypes_recommended ?? [],
+    phenotypesAvoid: entry.phenotypesAvoid ?? entry.phenotypes_avoid ?? [],
+    environment: entry.environment ?? [],
   };
 }
