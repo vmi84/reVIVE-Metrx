@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-03-14
+
+### Changed
+- **Morning Check-In** — Converted from 5-step wizard to single scrollable form; all sections (Quick State, Body, Mind & Fuel, Recovery Actions, Flags) visible and scrollable in one view with a single Submit button at the bottom
+- **Morning Check-In Submit** — Fixed submit navigation: uses `router.back()` for modal dismiss with `router.replace()` fallback for safety
+- **Hydration Input** — Replaced glass counter with graduated sliding scale (0–2.0L in 0.25L increments) using custom `HydrationSlider` component
+
+### Added
+- `components/ui/HydrationSlider.tsx` — Custom pan-responder slider with graduated tick marks and 0.25L snap increments
+
 ## [2.0.0] - 2026-03-14
 
 ### Added

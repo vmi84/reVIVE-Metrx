@@ -7,42 +7,40 @@ import { useDailyStore } from '../store/daily-store';
 import { ThemedText } from '../components/ui/ThemedText';
 import { Button } from '../components/ui/Button';
 import { Slider } from '../components/ui/Slider';
+import { HydrationSlider } from '../components/ui/HydrationSlider';
 import { BodyMap } from '../components/checkin/BodyMap';
 import { Card } from '../components/ui/Card';
 import { COLORS } from '../lib/utils/constants';
 import { today, daysAgo } from '../lib/utils/date';
 
-type Step = 1 | 2 | 3 | 4 | 5;
-
 export default function MorningCheckin() {
   const { user } = useAuthStore();
   const { setCheckinCompleted } = useDailyStore();
-  const [step, setStep] = useState<Step>(1);
   const [submitting, setSubmitting] = useState(false);
   const [preFilled, setPreFilled] = useState(false);
 
-  // Step 1: Quick State
+  // Quick State
   const [overallEnergy, setOverallEnergy] = useState(3);
   const [sleepQuality, setSleepQuality] = useState(3);
 
-  // Step 2: Body
+  // Body
   const [soreness, setSoreness] = useState<Record<string, number>>({});
   const [stiffness, setStiffness] = useState(2);
   const [heavyLegs, setHeavyLegs] = useState(false);
 
-  // Step 3: Mind & Fuel
+  // Mind & Fuel
   const [motivation, setMotivation] = useState(3);
   const [stress, setStress] = useState(2);
   const [mentalFatigue, setMentalFatigue] = useState(2);
 
-  // Step 4: Recovery Actions
-  const [hydration, setHydration] = useState(6);
+  // Recovery Actions
+  const [hydrationLiters, setHydrationLiters] = useState(1.0);
   const [electrolytes, setElectrolytes] = useState(false);
   const [proteinAdequate, setProteinAdequate] = useState(true);
   const [lateCaffeine, setLateCaffeine] = useState(false);
   const [lateAlcohol, setLateAlcohol] = useState(false);
 
-  // Step 5: Flags
+  // Flags
   const [isTraveling, setIsTraveling] = useState(false);
   const [giIssues, setGiIssues] = useState(1);
 
@@ -70,7 +68,7 @@ export default function MorningCheckin() {
         setMotivation(data.motivation ?? 3);
         setStress(data.subjective_stress ?? 2);
         setMentalFatigue(data.mental_fatigue ?? 2);
-        setHydration(data.hydration_glasses ?? 6);
+        setHydrationLiters(data.hydration_liters ?? data.hydration_glasses ? (data.hydration_glasses ?? 6) * 0.25 : 1.0);
         setElectrolytes(data.electrolytes_taken ?? false);
         setProteinAdequate(data.protein_adequate ?? true);
         setLateCaffeine(data.late_caffeine ?? false);
@@ -95,36 +93,43 @@ export default function MorningCheckin() {
   }
 
   async function handleSubmit() {
-    if (!user?.id) return;
     setSubmitting(true);
 
     try {
-      await supabase.from('subjective_entries').upsert({
-        user_id: user.id,
-        date: today(),
-        entry_type: 'morning',
-        overall_energy: overallEnergy,
-        subjective_sleep_quality: sleepQuality,
-        soreness,
-        stiffness,
-        heavy_legs: heavyLegs,
-        motivation,
-        subjective_stress: stress,
-        mental_fatigue: mentalFatigue,
-        hydration_glasses: hydration,
-        electrolytes_taken: electrolytes,
-        protein_adequate: proteinAdequate,
-        late_caffeine: lateCaffeine,
-        late_alcohol: lateAlcohol,
-        is_traveling: isTraveling,
-        gi_disruption: giIssues,
-        willingness_to_train: motivation,
-        mood: overallEnergy,
-        concentration: 5 - mentalFatigue + 1,
-      });
+      if (isSupabaseConfigured && user?.id) {
+        await supabase.from('subjective_entries').upsert({
+          user_id: user.id,
+          date: today(),
+          entry_type: 'morning',
+          overall_energy: overallEnergy,
+          subjective_sleep_quality: sleepQuality,
+          soreness,
+          stiffness,
+          heavy_legs: heavyLegs,
+          motivation,
+          subjective_stress: stress,
+          mental_fatigue: mentalFatigue,
+          hydration_liters: hydrationLiters,
+          hydration_glasses: Math.round(hydrationLiters / 0.25),
+          electrolytes_taken: electrolytes,
+          protein_adequate: proteinAdequate,
+          late_caffeine: lateCaffeine,
+          late_alcohol: lateAlcohol,
+          is_traveling: isTraveling,
+          gi_disruption: giIssues,
+          willingness_to_train: motivation,
+          mood: overallEnergy,
+          concentration: 5 - mentalFatigue + 1,
+        });
+      }
 
       setCheckinCompleted(true);
-      router.back();
+      // Use dismiss for modals, fallback to replace for safety
+      if (router.canGoBack()) {
+        router.back();
+      } else {
+        router.replace('/(tabs)/dashboard');
+      }
     } catch (err) {
       console.error('Check-in submit error:', err);
     } finally {
@@ -132,10 +137,14 @@ export default function MorningCheckin() {
     }
   }
 
-  const isLastStep = step === 5;
-
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={true}
+      bounces={true}
+    >
       {/* Pre-fill banner */}
       {preFilled && (
         <View style={styles.banner}>
@@ -145,141 +154,115 @@ export default function MorningCheckin() {
         </View>
       )}
 
-      {/* Progress indicator */}
-      <View style={styles.progress}>
-        {[1, 2, 3, 4, 5].map((s) => (
-          <View
-            key={s}
-            style={[styles.progressDot, s <= step && styles.progressDotActive]}
-          />
-        ))}
-      </View>
-
-      {step === 1 && (
-        <Card>
-          <ThemedText variant="subtitle" style={styles.stepTitle}>Quick State</ThemedText>
-          <Slider
-            label="Overall Energy"
-            value={overallEnergy}
-            onChange={setOverallEnergy}
-            labels={['Very Low', 'Excellent']}
-          />
-          <Slider
-            label="Sleep Quality"
-            value={sleepQuality}
-            onChange={setSleepQuality}
-            labels={['Terrible', 'Great']}
-          />
-        </Card>
-      )}
-
-      {step === 2 && (
-        <Card>
-          <ThemedText variant="subtitle" style={styles.stepTitle}>Body</ThemedText>
-          <BodyMap soreness={soreness} onRegionPress={handleRegionPress} />
-          <Slider
-            label="General Stiffness"
-            value={stiffness}
-            onChange={setStiffness}
-            labels={['None', 'Very Stiff']}
-          />
-          <View style={styles.toggleRow}>
-            <ThemedText variant="body">Heavy Legs</ThemedText>
-            <Switch
-              value={heavyLegs}
-              onValueChange={setHeavyLegs}
-              trackColor={{ true: COLORS.primary }}
-            />
-          </View>
-        </Card>
-      )}
-
-      {step === 3 && (
-        <Card>
-          <ThemedText variant="subtitle" style={styles.stepTitle}>Mind & Fuel</ThemedText>
-          <Slider
-            label="Motivation"
-            value={motivation}
-            onChange={setMotivation}
-            labels={['None', 'Very High']}
-          />
-          <Slider
-            label="Life Stress"
-            value={stress}
-            onChange={setStress}
-            labels={['Low', 'Extreme']}
-          />
-          <Slider
-            label="Mental Fatigue"
-            value={mentalFatigue}
-            onChange={setMentalFatigue}
-            labels={['Clear', 'Foggy']}
-          />
-        </Card>
-      )}
-
-      {step === 4 && (
-        <Card>
-          <ThemedText variant="subtitle" style={styles.stepTitle}>Recovery Actions</ThemedText>
-          <Slider
-            label={`Hydration Yesterday (${hydration} glasses)`}
-            value={hydration}
-            min={0}
-            max={12}
-            onChange={setHydration}
-            labels={['0', '12+']}
-          />
-          <View style={styles.toggleRow}>
-            <ThemedText variant="body">Electrolytes taken</ThemedText>
-            <Switch value={electrolytes} onValueChange={setElectrolytes} trackColor={{ true: COLORS.primary }} />
-          </View>
-          <View style={styles.toggleRow}>
-            <ThemedText variant="body">Adequate protein</ThemedText>
-            <Switch value={proteinAdequate} onValueChange={setProteinAdequate} trackColor={{ true: COLORS.primary }} />
-          </View>
-          <View style={styles.toggleRow}>
-            <ThemedText variant="body">Late caffeine</ThemedText>
-            <Switch value={lateCaffeine} onValueChange={setLateCaffeine} trackColor={{ true: COLORS.primary }} />
-          </View>
-          <View style={styles.toggleRow}>
-            <ThemedText variant="body">Late alcohol</ThemedText>
-            <Switch value={lateAlcohol} onValueChange={setLateAlcohol} trackColor={{ true: COLORS.primary }} />
-          </View>
-        </Card>
-      )}
-
-      {step === 5 && (
-        <Card>
-          <ThemedText variant="subtitle" style={styles.stepTitle}>Flags (Optional)</ThemedText>
-          <View style={styles.toggleRow}>
-            <ThemedText variant="body">Currently traveling</ThemedText>
-            <Switch value={isTraveling} onValueChange={setIsTraveling} trackColor={{ true: COLORS.primary }} />
-          </View>
-          <Slider
-            label="GI Issues"
-            value={giIssues}
-            onChange={setGiIssues}
-            labels={['None', 'Severe']}
-          />
-        </Card>
-      )}
-
-      <View style={styles.buttons}>
-        {step > 1 && (
-          <Button
-            title="Back"
-            variant="secondary"
-            onPress={() => setStep((step - 1) as Step)}
-            style={styles.backButton}
-          />
-        )}
-        <Button
-          title={isLastStep ? 'Submit' : 'Next'}
-          onPress={isLastStep ? handleSubmit : () => setStep((step + 1) as Step)}
-          loading={submitting}
-          style={styles.nextButton}
+      {/* Section 1: Quick State */}
+      <Card style={styles.section}>
+        <ThemedText variant="subtitle" style={styles.sectionTitle}>Quick State</ThemedText>
+        <Slider
+          label="Overall Energy"
+          value={overallEnergy}
+          onChange={setOverallEnergy}
+          labels={['Very Low', 'Excellent']}
         />
-      </View>
+        <Slider
+          label="Sleep Quality"
+          value={sleepQuality}
+          onChange={setSleepQuality}
+          labels={['Terrible', 'Great']}
+        />
+      </Card>
+
+      {/* Section 2: Body */}
+      <Card style={styles.section}>
+        <ThemedText variant="subtitle" style={styles.sectionTitle}>Body</ThemedText>
+        <BodyMap soreness={soreness} onRegionPress={handleRegionPress} />
+        <Slider
+          label="General Stiffness"
+          value={stiffness}
+          onChange={setStiffness}
+          labels={['None', 'Very Stiff']}
+        />
+        <View style={styles.toggleRow}>
+          <ThemedText variant="body">Heavy Legs</ThemedText>
+          <Switch
+            value={heavyLegs}
+            onValueChange={setHeavyLegs}
+            trackColor={{ true: COLORS.primary }}
+          />
+        </View>
+      </Card>
+
+      {/* Section 3: Mind & Fuel */}
+      <Card style={styles.section}>
+        <ThemedText variant="subtitle" style={styles.sectionTitle}>Mind & Fuel</ThemedText>
+        <Slider
+          label="Motivation"
+          value={motivation}
+          onChange={setMotivation}
+          labels={['None', 'Very High']}
+        />
+        <Slider
+          label="Life Stress"
+          value={stress}
+          onChange={setStress}
+          labels={['Low', 'Extreme']}
+        />
+        <Slider
+          label="Mental Fatigue"
+          value={mentalFatigue}
+          onChange={setMentalFatigue}
+          labels={['Clear', 'Foggy']}
+        />
+      </Card>
+
+      {/* Section 4: Recovery Actions */}
+      <Card style={styles.section}>
+        <ThemedText variant="subtitle" style={styles.sectionTitle}>Recovery Actions</ThemedText>
+        <HydrationSlider
+          value={hydrationLiters}
+          onChange={setHydrationLiters}
+        />
+        <View style={styles.toggleRow}>
+          <ThemedText variant="body">Electrolytes taken</ThemedText>
+          <Switch value={electrolytes} onValueChange={setElectrolytes} trackColor={{ true: COLORS.primary }} />
+        </View>
+        <View style={styles.toggleRow}>
+          <ThemedText variant="body">Adequate protein</ThemedText>
+          <Switch value={proteinAdequate} onValueChange={setProteinAdequate} trackColor={{ true: COLORS.primary }} />
+        </View>
+        <View style={styles.toggleRow}>
+          <ThemedText variant="body">Late caffeine</ThemedText>
+          <Switch value={lateCaffeine} onValueChange={setLateCaffeine} trackColor={{ true: COLORS.primary }} />
+        </View>
+        <View style={styles.toggleRow}>
+          <ThemedText variant="body">Late alcohol</ThemedText>
+          <Switch value={lateAlcohol} onValueChange={setLateAlcohol} trackColor={{ true: COLORS.primary }} />
+        </View>
+      </Card>
+
+      {/* Section 5: Flags */}
+      <Card style={styles.section}>
+        <ThemedText variant="subtitle" style={styles.sectionTitle}>Flags (Optional)</ThemedText>
+        <View style={styles.toggleRow}>
+          <ThemedText variant="body">Currently traveling</ThemedText>
+          <Switch value={isTraveling} onValueChange={setIsTraveling} trackColor={{ true: COLORS.primary }} />
+        </View>
+        <Slider
+          label="GI Issues"
+          value={giIssues}
+          onChange={setGiIssues}
+          labels={['None', 'Severe']}
+        />
+      </Card>
+
+      {/* Submit */}
+      <Button
+        title="Submit Check-In"
+        onPress={handleSubmit}
+        loading={submitting}
+        style={styles.submitButton}
+      />
+
+      <View style={styles.bottomSpacer} />
     </ScrollView>
   );
 }
@@ -291,7 +274,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 16,
-    paddingBottom: 40,
+    paddingBottom: 100,
   },
   banner: {
     backgroundColor: COLORS.surfaceLight,
@@ -305,22 +288,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 16,
   },
-  progress: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 8,
-    marginBottom: 20,
+  section: {
+    marginBottom: 16,
   },
-  progressDot: {
-    width: 40,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: COLORS.surfaceLight,
-  },
-  progressDotActive: {
-    backgroundColor: COLORS.primary,
-  },
-  stepTitle: {
+  sectionTitle: {
     marginBottom: 16,
   },
   toggleRow: {
@@ -331,15 +302,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
   },
-  buttons: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 20,
+  submitButton: {
+    marginTop: 8,
+    marginBottom: 16,
   },
-  backButton: {
-    flex: 1,
-  },
-  nextButton: {
-    flex: 2,
+  bottomSpacer: {
+    height: 40,
   },
 });
