@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- Comprehensive SME test plan (`TEST_PLAN.md`) covering 13 test categories, 200+ test cases across unit, integration, component, E2E, performance, and security testing
+
 ## [0.1.0] - 2026-03-13
 
 ### Added
