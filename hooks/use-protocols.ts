@@ -126,6 +126,7 @@ function mapRow(row: any): RecoveryProtocol {
     phenotypesRecommended: row.phenotypes_recommended ?? [],
     phenotypesAvoid: row.phenotypes_avoid ?? [],
     environment: row.environment ?? [],
+    videoUrl: row.video_url ?? null,
   };
 }
 
@@ -160,5 +161,6 @@ function mapLocal(entry: any): RecoveryProtocol {
     phenotypesRecommended: entry.phenotypesRecommended ?? entry.phenotypes_recommended ?? [],
     phenotypesAvoid: entry.phenotypesAvoid ?? entry.phenotypes_avoid ?? [],
     environment: entry.environment ?? [],
+    videoUrl: entry.videoUrl ?? entry.video_url ?? null,
   };
 }

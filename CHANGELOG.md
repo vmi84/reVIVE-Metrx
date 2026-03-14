@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2.1.2] - 2026-03-14
+
+### Added
+- **Protocol detail screen** — New `app/protocol/[slug].tsx` with full protocol info: header badges, instructions, dosage (min/sweet spot/upper limit), ideal timing, cautions, equipment, target areas, IACI systems targeted, evidence notes, athlete tips, and environment
+- **Demo video player** — `ProtocolVideoPlayer` component with play button poster, confirmation alert, and WebView-based video playback (YouTube iframe embed + MP4 fallback); works in Expo Go without native modules
+- **Protocol navigation** — Tapping a protocol card on the Recovery tab now opens the detail screen
+- **Video library** — All 80 recovery protocols mapped to technique-specific YouTube demo video URLs
+
+### Fixed
+- **TypeScript** — Fixed `SubsystemKey` type error in `use-iaci.ts` demo mode score generation
+
 ## [2.1.1] - 2026-03-14
 
 ### Fixed

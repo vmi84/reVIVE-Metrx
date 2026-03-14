@@ -54,7 +54,7 @@ export default function Recovery() {
       )}
 
       {/* Filter tabs */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll} contentContainerStyle={styles.filterScrollContent}>
         <View style={styles.filters}>
           <FilterTab
             label="Recommended"
@@ -86,9 +86,7 @@ export default function Recovery() {
           key={protocol.id}
           protocol={protocol}
           isRecommended={recommendedSlugs.has(protocol.slug)}
-          onPress={() => {
-            // Navigate to protocol detail
-          }}
+          onPress={() => router.push(`/protocol/${protocol.slug}`)}
         />
       ))}
 
@@ -154,6 +152,9 @@ const styles = StyleSheet.create({
   filterScroll: {
     marginBottom: 16,
     marginHorizontal: -16,
+    flexGrow: 0,
+  },
+  filterScrollContent: {
     paddingHorizontal: 16,
   },
   filters: {

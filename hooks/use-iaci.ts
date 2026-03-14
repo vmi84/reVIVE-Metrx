@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/auth-store';
 import { useDailyStore } from '../store/daily-store';
-import { IACIResult, SubsystemScores } from '../lib/types/iaci';
+import { IACIResult, SubsystemKey, SubsystemScores } from '../lib/types/iaci';
 import { computeIACI } from '../lib/engine/iaci-composite';
 import { computeAllBaselines } from '../lib/engine/baseline-tracker';
 import { scoreAutonomic, AutonomicInputs } from '../lib/engine/subsystems/autonomic';
@@ -249,7 +249,7 @@ export function useIACI() {
       const randScore = (min: number, max: number) =>
         Math.round(min + Math.random() * (max - min));
 
-      const makeSub = (key: string, score: number) => {
+      const makeSub = (key: SubsystemKey, score: number) => {
         const band = score >= 85 ? 'highly_recovered' as const :
                      score >= 70 ? 'trainable' as const :
                      score >= 55 ? 'limited' as const :

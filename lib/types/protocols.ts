@@ -91,6 +91,9 @@ export interface RecoveryProtocol {
   phenotypesRecommended: string[];
   phenotypesAvoid: string[];
   environment: Environment[];
+
+  /** URL to a pre-made demonstration video (MP4). null if no video available. */
+  videoUrl: string | null;
 }
 
 export interface RecoveryLog {

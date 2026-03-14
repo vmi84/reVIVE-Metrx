@@ -32,7 +32,7 @@
     ],
     "evidenceLevel": "strong",
     "doseMin": "3-5 min",
-    "doseSweetSpot": "10-15 min at 10-15\u00b0C",
+    "doseSweetSpot": "10-15 min at 10-15°C",
     "doseUpperLimit": ">15-20 min",
     "instructions": "Submerge body up to chest in cold water. Practice slow nasal breathing throughout. Exit immediately if shivering becomes uncontrollable.",
     "avoidCautions": "Avoid during hypertrophy training blocks. Contraindicated for Raynaud's disease, open wounds, and uncontrolled hypertension.",
@@ -55,7 +55,8 @@
     ],
     "environment": [
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=TGz1bMBsjS0"
   },
   {
     "id": "hot-water-immersion",
@@ -91,9 +92,9 @@
     ],
     "evidenceLevel": "moderate",
     "doseMin": "5-10 min",
-    "doseSweetSpot": "10-15 min at 40-42\u00b0C",
+    "doseSweetSpot": "10-15 min at 40-42°C",
     "doseUpperLimit": ">15-20 min",
-    "instructions": "Submerge in warm water at 40-42\u00b0C. Breathe slowly and relax fully. Hydrate before and after.",
+    "instructions": "Submerge in warm water at 40-42°C. Breathe slowly and relax fully. Hydrate before and after.",
     "avoidCautions": "Avoid immediately before competition. Contraindicated with dehydration and cardiovascular disease.",
     "idealTiming": "Ideal for back-to-back events and cold-environment recovery.",
     "evidenceNotes": null,
@@ -112,7 +113,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=BpHSm0KcW7o"
   },
   {
     "id": "contrast-water-therapy",
@@ -146,7 +148,7 @@
     "doseMin": "8-10 min",
     "doseSweetSpot": "10-15 min alternating cycles",
     "doseUpperLimit": "20 min",
-    "instructions": "Alternate between hot (40-42\u00b0C) and cold (10-15\u00b0C) water in 1-2 min cycles. End on cold. Maintain slow breathing throughout.",
+    "instructions": "Alternate between hot (40-42°C) and cold (10-15°C) water in 1-2 min cycles. End on cold. Maintain slow breathing throughout.",
     "avoidCautions": "Same contraindications as hot and cold immersion. Avoid with Raynaud's, open wounds, CVD, and uncontrolled hypertension.",
     "idealTiming": "Effective for DOMS reduction and rapid vascular flushing between sessions.",
     "evidenceNotes": null,
@@ -167,7 +169,8 @@
     ],
     "environment": [
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=4_RUjBNIIQE"
   },
   {
     "id": "sauna",
@@ -200,9 +203,9 @@
     ],
     "evidenceLevel": "moderate",
     "doseMin": "8-10 min",
-    "doseSweetSpot": "15-20 min at 80-90\u00b0C",
+    "doseSweetSpot": "15-20 min at 80-90°C",
     "doseUpperLimit": ">20 min",
-    "instructions": "Sit or lie in dry sauna at 80-90\u00b0C. Breathe steadily through the nose. Hydrate well before and after. Cool down gradually on exit.",
+    "instructions": "Sit or lie in dry sauna at 80-90°C. Breathe steadily through the nose. Hydrate well before and after. Cool down gradually on exit.",
     "avoidCautions": "Avoid before events or competition. Do not use when dehydrated or with uncontrolled hypertension.",
     "idealTiming": "Best in the evening for sleep quality enhancement, or for heat acclimation protocols.",
     "evidenceNotes": null,
@@ -221,7 +224,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=W7UhRCXnYSE"
   },
   {
     "id": "vibration-plate",
@@ -281,7 +285,8 @@
     ],
     "environment": [
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=fY1Pl1zGFhk"
   },
   {
     "id": "compex-nmes",
@@ -343,7 +348,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=5wI2Lz6MQKE"
   },
   {
     "id": "normatec",
@@ -401,7 +407,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=QT87V__6bJk"
   },
   {
     "id": "red-light-full-body",
@@ -456,7 +463,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=u3T4cmXRLHg"
   },
   {
     "id": "red-light-handheld",
@@ -514,7 +522,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=u3T4cmXRLHg"
   },
   {
     "id": "sleep-nap-strategy",
@@ -548,7 +557,7 @@
     "evidenceLevel": "strong",
     "doseMin": "Night 7h / Nap 20 min",
     "doseSweetSpot": "Night 8-10h / Nap 20-90 min",
-    "doseUpperLimit": "Night 11h / Nap \u226490 min",
+    "doseUpperLimit": "Night 11h / Nap ≤90 min",
     "instructions": "Prioritize consistent sleep and wake times. Use 20-min power naps or 90-min full-cycle naps. Keep room cool, dark, and quiet.",
     "avoidCautions": "Avoid unmanaged insomnia without professional support. Avoid late naps (after 3 PM) as they may disrupt nighttime sleep.",
     "idealTiming": "Critical during heavy training blocks, travel across time zones, and when HRV is low.",
@@ -570,7 +579,8 @@
     "environment": [
       "home",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=nm1TxQj9IsQ"
   },
   {
     "id": "box-breathing",
@@ -622,7 +632,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "anywhere"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=tEmt1Znux58"
   },
   {
     "id": "extended-exhale-breathing",
@@ -674,7 +685,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "anywhere"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=YFSc7Ck0Ao0"
   },
   {
     "id": "physiological-sigh",
@@ -723,7 +735,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "anywhere"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=rBdhqBGqiMc"
   },
   {
     "id": "coherent-breathing",
@@ -775,7 +788,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "anywhere"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=9tOJZQhO_Uw"
   },
   {
     "id": "four-five-six-breathing",
@@ -827,7 +841,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "anywhere"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=YFSc7Ck0Ao0"
   },
   {
     "id": "mindful-body-scan",
@@ -880,7 +895,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "anywhere"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=QS2yDmWk0vs"
   },
   {
     "id": "legs-on-wall",
@@ -938,7 +954,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "anywhere"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=ZqDiPfHMaMc"
   },
   {
     "id": "quad-foam-roll",
@@ -994,7 +1011,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=X2F4O6UZ1Ec"
   },
   {
     "id": "hamstring-foam-roll",
@@ -1050,7 +1068,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=UEcl_hqFnLc"
   },
   {
     "id": "calf-foam-roll",
@@ -1106,7 +1125,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=cgKn_LSdPFM"
   },
   {
     "id": "lat-foam-roll",
@@ -1162,7 +1182,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=VuSMxEXCUh4"
   },
   {
     "id": "lower-back-foam-roll",
@@ -1218,7 +1239,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=SxQkv0fmWb0"
   },
   {
     "id": "upper-mid-back-foam-roll",
@@ -1275,7 +1297,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=SxQkv0fmWb0"
   },
   {
     "id": "adductor-foam-roll",
@@ -1331,7 +1354,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=Ym4ZUWJxJJE"
   },
   {
     "id": "hip-flexor-foam-roll",
@@ -1387,7 +1411,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=aKxfWpMLJlY"
   },
   {
     "id": "it-band-foam-roll",
@@ -1445,7 +1470,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=JlI1YhzUBMI"
   },
   {
     "id": "tfl-foam-roll",
@@ -1501,7 +1527,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=aKxfWpMLJlY"
   },
   {
     "id": "glute-piriformis-foam-roll",
@@ -1558,7 +1585,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=xCFMvJJMVs0"
   },
   {
     "id": "lacrosse-it-band",
@@ -1617,7 +1645,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=JlI1YhzUBMI"
   },
   {
     "id": "lacrosse-rotator-cuff",
@@ -1674,7 +1703,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=xbJ8tMjQQ2k"
   },
   {
     "id": "tennis-ball-feet",
@@ -1731,7 +1761,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=LByMWh7ZOLY"
   },
   {
     "id": "lacrosse-glute-piriformis",
@@ -1789,7 +1820,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=xCFMvJJMVs0"
   },
   {
     "id": "lacrosse-upper-traps-neck",
@@ -1847,7 +1879,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=IDHC7dUOqdI"
   },
   {
     "id": "lacrosse-tfl-hip",
@@ -1904,7 +1937,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=aKxfWpMLJlY"
   },
   {
     "id": "chest-pec-release",
@@ -1961,7 +1995,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=Oc72Kz5GxV8"
   },
   {
     "id": "banded-hip-opener",
@@ -2013,7 +2048,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=La3i1Y0BPFE"
   },
   {
     "id": "banded-shoulder-stretch",
@@ -2064,7 +2100,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=K0_R6SWPV3g"
   },
   {
     "id": "banded-hamstring-floss",
@@ -2116,7 +2153,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=XpGqYrn7M0o"
   },
   {
     "id": "banded-hip-traction",
@@ -2167,7 +2205,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=La3i1Y0BPFE"
   },
   {
     "id": "banded-ankle-mobilization",
@@ -2218,7 +2257,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=Kv0LDBMgMF4"
   },
   {
     "id": "banded-lat-stretch",
@@ -2270,7 +2310,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=K0_R6SWPV3g"
   },
   {
     "id": "banded-thoracic-rotation",
@@ -2322,7 +2363,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=SZaOGiykJfk"
   },
   {
     "id": "hip-cars",
@@ -2378,7 +2420,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=MN8eDWCMgcc"
   },
   {
     "id": "shoulder-circles",
@@ -2431,7 +2474,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=lOCse3urEFo"
   },
   {
     "id": "spine-cat-cow",
@@ -2489,7 +2533,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=kqnua4rHVVA"
   },
   {
     "id": "wrist-ankle-circles",
@@ -2543,7 +2588,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=GyuJKiM2mRo"
   },
   {
     "id": "lunge-rotation-reach",
@@ -2600,7 +2646,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=rGcz-5eVdgo"
   },
   {
     "id": "inchworms",
@@ -2655,7 +2702,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=9JMhXDmn02M"
   },
   {
     "id": "hip-circles",
@@ -2709,7 +2757,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=MN8eDWCMgcc"
   },
   {
     "id": "thoracic-arm-sweeps",
@@ -2763,7 +2812,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=SZaOGiykJfk"
   },
   {
     "id": "leg-swings",
@@ -2817,7 +2867,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=QaExjmoLbBE"
   },
   {
     "id": "dynamic-squat-to-stand",
@@ -2873,7 +2924,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=BipOjjMaXaA"
   },
   {
     "id": "pool-walk-laps",
@@ -2929,7 +2981,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "pool"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=RbMWi4mlOk8"
   },
   {
     "id": "pool-high-knees",
@@ -2985,7 +3038,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "pool"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=RbMWi4mlOk8"
   },
   {
     "id": "pool-flutter-kick",
@@ -3043,7 +3097,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "pool"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=RbMWi4mlOk8"
   },
   {
     "id": "pool-gentle-treading",
@@ -3097,7 +3152,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "pool"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=RbMWi4mlOk8"
   },
   {
     "id": "pool-arm-circles",
@@ -3151,7 +3207,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "pool"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=RbMWi4mlOk8"
   },
   {
     "id": "pool-hip-swings",
@@ -3206,7 +3263,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "pool"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=RbMWi4mlOk8"
   },
   {
     "id": "ais-hip-flexor-lunge",
@@ -3256,7 +3314,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=YQmpO9VT2X4"
   },
   {
     "id": "ais-calf-dorsiflexion",
@@ -3308,7 +3367,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=mCxmIxKtTEE"
   },
   {
     "id": "ais-shoulder-external-rotation",
@@ -3357,7 +3417,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=Fz42R-3BLQo"
   },
   {
     "id": "ais-adductor-groin",
@@ -3408,7 +3469,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=Ym4ZUWJxJJE"
   },
   {
     "id": "ais-spinal-rotation",
@@ -3459,7 +3521,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=SZaOGiykJfk"
   },
   {
     "id": "ais-neck-tilt",
@@ -3508,7 +3571,8 @@
     "environment": [
       "home",
       "gym"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=IDHC7dUOqdI"
   },
   {
     "id": "sleeper-stretch",
@@ -3562,7 +3626,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=Fz42R-3BLQo"
   },
   {
     "id": "cross-body-shoulder",
@@ -3616,7 +3681,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=4FH0VPkexsg"
   },
   {
     "id": "overhead-triceps-lat",
@@ -3671,7 +3737,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=nVySewauEBA"
   },
   {
     "id": "doorway-pec-stretch",
@@ -3728,7 +3795,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=Oc72Kz5GxV8"
   },
   {
     "id": "seated-forward-fold",
@@ -3784,7 +3852,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=1KJYG-EZ8xY"
   },
   {
     "id": "standing-quad-stretch",
@@ -3839,7 +3908,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=oGt7L-BPEBc"
   },
   {
     "id": "seated-butterfly",
@@ -3894,7 +3964,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=UaGGMwNe5sA"
   },
   {
     "id": "childs-pose-hold",
@@ -3953,7 +4024,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=qzk2BRcrE1c"
   },
   {
     "id": "thread-the-needle",
@@ -4008,7 +4080,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=SZaOGiykJfk"
   },
   {
     "id": "supine-spinal-twist",
@@ -4067,7 +4140,8 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=TlBw21lQ_1c"
   },
   {
     "id": "starfish-lie-down",
@@ -4120,7 +4194,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "anywhere"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=qzk2BRcrE1c"
   },
   {
     "id": "slow-eye-movement-reset",
@@ -4169,7 +4244,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "anywhere"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=QS2yDmWk0vs"
   },
   {
     "id": "cold-water-face-splash",
@@ -4221,7 +4297,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "anywhere"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=TGz1bMBsjS0"
   },
   {
     "id": "gentle-neck-rotations-breathing",
@@ -4275,7 +4352,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "anywhere"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=IDHC7dUOqdI"
   },
   {
     "id": "bee-breathwork",
@@ -4324,7 +4402,8 @@
     "phenotypesAvoid": [],
     "environment": [
       "anywhere"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=YFSc7Ck0Ao0"
   },
   {
     "id": "percussion-therapy",
@@ -4386,6 +4465,7 @@
       "home",
       "gym",
       "travel"
-    ]
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=wQPvDFhB9RA"
   }
 ]
