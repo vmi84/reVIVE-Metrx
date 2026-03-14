@@ -6,8 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-03-13
+
 ### Added
 - Comprehensive SME test plan (`TEST_PLAN.md`) covering 13 test categories, 200+ test cases across unit, integration, component, E2E, performance, and security testing
+
+### Fixed
+- **App crash on launch** — `supabaseUrl is required` error when Supabase env vars not configured; added placeholder client with `isSupabaseConfigured` guard
+- **TypeScript compilation** — excluded Supabase Edge Functions (Deno runtime) from tsconfig
+
+### Changed
+- **Offline/demo mode** — app now runs without Supabase credentials using placeholder client; sign-in screen shows "Enter App" button that bypasses auth while keeping email/password hooks in place for future credential storage
+- **Auth store** — added `offlineMode` state; `signIn`/`signUp`/`signOut`/`fetchProfile` gracefully no-op when Supabase is not configured
+- **Auth gate** (`app/index.tsx`) — routes to sign-in when in offline mode instead of auto-redirecting to dashboard
+- **Sign-in screen** — redesigned with AR logo, "Integrated Athlete Condition Index" subtitle, yellow offline mode banner, and conditional button text ("Sign In" vs "Enter App")
 
 ## [0.1.0] - 2026-03-13
 

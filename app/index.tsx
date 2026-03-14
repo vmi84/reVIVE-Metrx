@@ -3,8 +3,9 @@ import { useAuthStore } from '../store/auth-store';
 
 export default function Index() {
   const session = useAuthStore((s) => s.session);
+  const offlineMode = useAuthStore((s) => s.offlineMode);
 
-  if (session) {
+  if (session && !offlineMode) {
     return <Redirect href="/(tabs)/dashboard" />;
   }
 
