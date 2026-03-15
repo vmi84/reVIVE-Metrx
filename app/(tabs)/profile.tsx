@@ -92,7 +92,7 @@ export default function Profile() {
         </ThemedText>
         <TouchableOpacity onPress={() => router.push('/import-data')}>
           <ThemedText variant="body" color={COLORS.primary}>
-            Import CSV from Whoop or Other Device
+            Import Whoop Data (ZIP or CSV)
           </ThemedText>
         </TouchableOpacity>
       </Card>

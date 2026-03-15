@@ -70,6 +70,8 @@ export default function RootLayout() {
         <Stack.Screen name="onboarding" options={{ title: 'Select Your Sports', headerShown: false }} />
         <Stack.Screen name="device-setup" options={{ title: 'Connect Device' }} />
         <Stack.Screen name="protocol/[slug]" options={{ title: 'Protocol' }} />
+        <Stack.Screen name="import-data" options={{ title: 'Import Data' }} />
+        <Stack.Screen name="lab-results" options={{ title: 'Lab Results' }} />
       </Stack>
     </QueryClientProvider>
   );

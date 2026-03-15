@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2.2.4] - 2026-03-14
+
+### Added
+- **Whoop ZIP import** — Import screen now accepts Whoop data export ZIP files (containing physiological_cycles.csv, sleeps.csv, workouts.csv, journal_entries.csv) in addition to single CSV files
+- **ZIP parser** (`lib/adapters/whoop/zip-parser.ts`) — Extracts and merges all 4 CSVs from a Whoop export ZIP, maps to canonical physiology records with full workout detail including HR zone distribution
+- **Physiology store** (`store/physiology-store.ts`) — Zustand store for imported physiology data in demo mode, enabling IACI computation from imported Whoop data without Supabase
+- **Import results detail** — Import screen now shows days imported, workout count, and date range after import
+
+### Changed
+- **IACI demo mode** — `computeDemo()` now uses imported Whoop physiology data (HRV, RHR, sleep metrics, strain) alongside morning check-in inputs, computes baselines from 28-day history, and calculates data completeness from both sources
+- **Import screen** — Updated to handle ZIP and CSV files, with demo mode local storage and Whoop export instructions
+- **Profile tab** — Import link updated to "Import Whoop Data (ZIP or CSV)"
+
 ## [2.2.3] - 2026-03-14
 
 ### Fixed

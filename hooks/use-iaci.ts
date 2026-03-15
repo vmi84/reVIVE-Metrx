@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/auth-store';
 import { useDailyStore } from '../store/daily-store';
+import { usePhysiologyStore } from '../store/physiology-store';
 import { IACIResult, SubsystemKey, SubsystemScores } from '../lib/types/iaci';
 import { computeIACI } from '../lib/engine/iaci-composite';
 import { computeAllBaselines } from '../lib/engine/baseline-tracker';
@@ -238,8 +239,9 @@ export function useIACI() {
   }, [user?.id, profile]);
 
   /**
-   * Demo mode: compute IACI from actual check-in inputs through real subsystem scorers.
-   * No Supabase required — uses check-in data stored in daily store.
+   * Demo mode: compute IACI from check-in inputs + imported Whoop physiology data.
+   * No Supabase required — uses check-in data from daily store and imported
+   * physiology records from physiology store.
    */
   const computeDemo = useCallback(() => {
     setLoading(true);
@@ -249,20 +251,64 @@ export function useIACI() {
       const dateStr = today();
       const checkinData = useDailyStore.getState().checkinData;
 
-      // Score all 6 subsystems using real check-in data (no Whoop/baseline data in demo)
+      // Pull imported Whoop data if available
+      const physStore = usePhysiologyStore.getState();
+      const phys = physStore.getRecord(dateStr) ?? physStore.getLatest();
+
+      // Build baselines from imported history (last 28 days)
+      let baselines = { hrv: null as any, rhr: null as any, strain: null as any, sleepDuration: null as any, respiratoryRate: null as any };
+      if (physStore.hasData) {
+        const allDates = Object.keys(physStore.records).sort();
+        const historyRecords = allDates
+          .slice(-28)
+          .map((d) => physStore.records[d])
+          .filter(Boolean);
+
+        if (historyRecords.length >= 3) {
+          baselines = computeAllBaselines(
+            historyRecords.map((r) => ({
+              date: r.date,
+              hrvRmssd: r.cardiovascular.hrvRmssd,
+              restingHeartRate: r.cardiovascular.restingHeartRate,
+              respiratoryRate: r.cardiovascular.respiratoryRate,
+              sleepDurationMs: r.sleep.totalSleepMs,
+              dayStrain: r.workouts.reduce((sum, w) => sum + (w.strainScore ?? 0), 0) || null,
+            })),
+          );
+        }
+      }
+
+      // Recent workout strain from imported data
+      let priorDayStrain: number | null = null;
+      let threeDayAvgStrain: number | null = null;
+      if (physStore.hasData) {
+        const allDates = Object.keys(physStore.records).sort().reverse();
+        const recentStrains: number[] = [];
+        for (const d of allDates.slice(0, 3)) {
+          const rec = physStore.records[d];
+          const dayStrain = rec.workouts.reduce((s, w) => s + (w.strainScore ?? 0), 0);
+          if (dayStrain > 0) recentStrains.push(dayStrain);
+        }
+        if (recentStrains.length > 0) priorDayStrain = recentStrains[0];
+        if (recentStrains.length > 0) {
+          threeDayAvgStrain = recentStrains.reduce((a, b) => a + b, 0) / recentStrains.length;
+        }
+      }
+
+      // Score all 6 subsystems using check-in data + imported Whoop data
       const autonomic = scoreAutonomic(
         {
-          hrvRmssd: null,
-          restingHeartRate: null,
-          priorDayStrain: null,
-          threeDayAvgStrain: null,
-          sleepDurationMs: null,
-          sleepPerformancePct: null,
-          sleepConsistencyPct: null,
+          hrvRmssd: phys?.cardiovascular.hrvRmssd ?? null,
+          restingHeartRate: phys?.cardiovascular.restingHeartRate ?? null,
+          priorDayStrain,
+          threeDayAvgStrain,
+          sleepDurationMs: phys?.sleep.totalSleepMs ?? null,
+          sleepPerformancePct: phys?.sleep.sleepPerformancePct ?? null,
+          sleepConsistencyPct: phys?.sleep.sleepConsistencyPct ?? null,
           subjectiveStress: checkinData?.stress ?? null,
           perceivedFatigue: checkinData?.mentalFatigue ?? null,
         },
-        { hrv: null, rhr: null, strain: null, sleepDuration: null },
+        baselines,
       );
 
       const musculoskeletal = scoreMusculoskeletal({
@@ -270,16 +316,16 @@ export function useIACI() {
         stiffness: checkinData?.stiffness ?? null,
         heavyLegs: checkinData?.heavyLegs ?? null,
         painLocations: null,
-        priorWorkoutType: null,
-        priorDayStrain: null,
-        threeDayAvgStrain: null,
+        priorWorkoutType: phys?.workouts[0]?.workoutType ?? null,
+        priorDayStrain,
+        threeDayAvgStrain,
         daysFromLastStrengthSession: null,
         daysFromLastHighIntensity: null,
       });
 
       const cardiometabolic = scoreCardiometabolic(
         {
-          respiratoryRate: null,
+          respiratoryRate: phys?.cardiovascular.respiratoryRate ?? null,
           recentCardioStrainTotal: null,
           timeInZone4_5_72h_ms: null,
           subjectiveBreathlessness: null,
@@ -288,20 +334,23 @@ export function useIACI() {
           daysFromLastThresholdSession: null,
           aerobicDensity72h: null,
           anaerobicDensity72h: null,
-          restingHeartRate: null,
-          hrvRmssd: null,
+          restingHeartRate: phys?.cardiovascular.restingHeartRate ?? null,
+          hrvRmssd: phys?.cardiovascular.hrvRmssd ?? null,
         },
-        { respiratoryRate: null, rhr: null },
+        {
+          respiratoryRate: baselines.respiratoryRate,
+          rhr: baselines.rhr,
+        },
       );
 
       const sleep = scoreSleepCircadian({
-        sleepDurationMs: null,
-        sleepPerformancePct: null,
-        sleepConsistencyPct: null,
-        remSleepMs: null,
-        deepSleepMs: null,
-        awakenings: null,
-        sleepLatencyMs: null,
+        sleepDurationMs: phys?.sleep.totalSleepMs ?? null,
+        sleepPerformancePct: phys?.sleep.sleepPerformancePct ?? null,
+        sleepConsistencyPct: phys?.sleep.sleepConsistencyPct ?? null,
+        remSleepMs: phys?.sleep.remSleepMs ?? null,
+        deepSleepMs: phys?.sleep.deepSleepMs ?? null,
+        awakenings: phys?.sleep.awakenings ?? null,
+        sleepLatencyMs: phys?.sleep.sleepLatencyMs ?? null,
         subjectiveSleepQuality: checkinData?.sleepQuality ?? null,
         lateCaffeine: checkinData?.lateCaffeine ?? null,
         lateAlcohol: checkinData?.lateAlcohol ?? null,
@@ -345,7 +394,22 @@ export function useIACI() {
       const weights = getWeightsForSportProfile(sportKeys, profile?.weight_preferences as any);
       const adjustedScores = applySportAdjustments(subsystemScores, sportKeys);
 
-      const result = computeIACI(dateStr, adjustedScores, weights, 0.3, sportKeys);
+      // Data completeness reflects both check-in and Whoop data
+      const totalFields = 20;
+      let presentFields = 0;
+      if (phys?.cardiovascular.hrvRmssd) presentFields += 2;
+      if (phys?.cardiovascular.restingHeartRate) presentFields++;
+      if (phys?.sleep.totalSleepMs) presentFields += 2;
+      if (phys?.sleep.sleepPerformancePct) presentFields++;
+      if (phys?.cardiovascular.respiratoryRate) presentFields++;
+      if (checkinData?.stress) presentFields++;
+      if (checkinData?.mentalFatigue) presentFields++;
+      if (checkinData?.soreness) presentFields++;
+      if (checkinData?.motivation) presentFields++;
+      if (checkinData?.hydrationLiters != null) presentFields++;
+      const dataCompleteness = Math.min(presentFields / totalFields, 1);
+
+      const result = computeIACI(dateStr, adjustedScores, weights, dataCompleteness, sportKeys);
       setIACI(result);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to compute demo IACI');
