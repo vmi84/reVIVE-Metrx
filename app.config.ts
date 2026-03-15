@@ -2,8 +2,8 @@ import { ExpoConfig, ConfigContext } from 'expo/config';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: 'Athlete Recovery',
-  slug: 'athlete-recovery',
+  name: 'reVIVE MetRx',
+  slug: 'revive-metrx',
   version: '1.0.0',
   orientation: 'portrait',
   icon: './assets/icon.png',
@@ -15,19 +15,19 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   ios: {
     supportsTablet: true,
-    bundleIdentifier: 'com.athleterecovery.app',
+    bundleIdentifier: 'com.revivemetrx.app',
   },
   android: {
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#0A1628',
     },
-    package: 'com.athleterecovery.app',
+    package: 'com.revivemetrx.app',
   },
   web: {
     favicon: './assets/favicon.png',
   },
-  scheme: 'athlete-recovery',
+  scheme: 'revive-metrx',
   plugins: ['expo-router', 'expo-secure-store'],
   extra: {
     supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL,

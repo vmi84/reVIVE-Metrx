@@ -18,7 +18,7 @@ export default function DeviceSetup() {
   const [connecting, setConnecting] = useState(false);
 
   const clientId = Constants.expoConfig?.extra?.whoopClientId ?? '';
-  const redirectUri = AuthSession.makeRedirectUri({ scheme: 'athlete-recovery' });
+  const redirectUri = AuthSession.makeRedirectUri({ scheme: 'revive-metrx' });
 
   const discovery = {
     authorizationEndpoint: WHOOP_AUTH_URL,

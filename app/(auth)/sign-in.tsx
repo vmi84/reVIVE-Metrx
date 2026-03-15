@@ -50,15 +50,15 @@ export default function SignIn() {
           {/* Logo */}
           <View style={styles.logoContainer}>
             <View style={styles.logoCircle}>
-              <ThemedText style={styles.logoText}>AR</ThemedText>
+              <ThemedText style={styles.logoText}>rV</ThemedText>
             </View>
           </View>
 
           <ThemedText variant="title" style={styles.title}>
-            Athlete Recovery
+            reVIVE MetRx
           </ThemedText>
           <ThemedText variant="body" style={styles.subtitle}>
-            Integrated Athlete Condition Index
+            Integrated Athlete Condition Index (IACI)
           </ThemedText>
 
           {offlineMode && (

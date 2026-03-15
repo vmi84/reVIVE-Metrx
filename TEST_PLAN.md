@@ -1,4 +1,4 @@
-# Athlete Recovery App — SME Test Plan
+# reVIVE MetRx — SME Test Plan
 
 ## 1. Test Strategy Overview
 
