@@ -238,8 +238,8 @@ export function useIACI() {
   }, [user?.id, profile]);
 
   /**
-   * Demo mode: generate a realistic IACI result from randomized subsystem scores
-   * so the app has data to display without Supabase.
+   * Demo mode: compute IACI from actual check-in inputs through real subsystem scorers.
+   * No Supabase required — uses check-in data stored in daily store.
    */
   const computeDemo = useCallback(() => {
     setLoading(true);
@@ -247,36 +247,112 @@ export function useIACI() {
 
     try {
       const dateStr = today();
+      const checkinData = useDailyStore.getState().checkinData;
 
-      // Generate semi-random subsystem scores
-      const randScore = (min: number, max: number) =>
-        Math.round(min + Math.random() * (max - min));
+      // Score all 6 subsystems using real check-in data (no Whoop/baseline data in demo)
+      const autonomic = scoreAutonomic(
+        {
+          hrvRmssd: null,
+          restingHeartRate: null,
+          priorDayStrain: null,
+          threeDayAvgStrain: null,
+          sleepDurationMs: null,
+          sleepPerformancePct: null,
+          sleepConsistencyPct: null,
+          subjectiveStress: checkinData?.stress ?? null,
+          perceivedFatigue: checkinData?.mentalFatigue ?? null,
+        },
+        { hrv: null, rhr: null, strain: null, sleepDuration: null },
+      );
 
-      const makeSub = (key: SubsystemKey, score: number) => {
-        const band = score >= 85 ? 'highly_recovered' as const :
-                     score >= 70 ? 'trainable' as const :
-                     score >= 55 ? 'limited' as const :
-                     score >= 40 ? 'compromised' as const : 'impaired' as const;
-        return { key, score, band, inputs: {}, limitingFactors: [] as string[] };
-      };
+      const musculoskeletal = scoreMusculoskeletal({
+        soreness: checkinData?.soreness ?? null,
+        stiffness: checkinData?.stiffness ?? null,
+        heavyLegs: checkinData?.heavyLegs ?? null,
+        painLocations: null,
+        priorWorkoutType: null,
+        priorDayStrain: null,
+        threeDayAvgStrain: null,
+        daysFromLastStrengthSession: null,
+        daysFromLastHighIntensity: null,
+      });
+
+      const cardiometabolic = scoreCardiometabolic(
+        {
+          respiratoryRate: null,
+          recentCardioStrainTotal: null,
+          timeInZone4_5_72h_ms: null,
+          subjectiveBreathlessness: null,
+          perceivedExertionMismatch: null,
+          daysFromLastIntervalSession: null,
+          daysFromLastThresholdSession: null,
+          aerobicDensity72h: null,
+          anaerobicDensity72h: null,
+          restingHeartRate: null,
+          hrvRmssd: null,
+        },
+        { respiratoryRate: null, rhr: null },
+      );
+
+      const sleep = scoreSleepCircadian({
+        sleepDurationMs: null,
+        sleepPerformancePct: null,
+        sleepConsistencyPct: null,
+        remSleepMs: null,
+        deepSleepMs: null,
+        awakenings: null,
+        sleepLatencyMs: null,
+        subjectiveSleepQuality: checkinData?.sleepQuality ?? null,
+        lateCaffeine: checkinData?.lateCaffeine ?? null,
+        lateAlcohol: checkinData?.lateAlcohol ?? null,
+        lateHeavyMeal: null,
+        isTraveling: checkinData?.isTraveling ?? null,
+        timezoneChange: null,
+      });
+
+      const metabolic = scoreMetabolic({
+        hydrationGlasses: checkinData ? Math.round(checkinData.hydrationLiters / 0.25) : null,
+        electrolytesTaken: checkinData?.electrolytes ?? null,
+        proteinAdequate: checkinData?.proteinAdequate ?? null,
+        fasting: null,
+        giDisruption: checkinData?.giIssues ?? null,
+        lateHeavyMeal: null,
+        bodyMassChangeKg: null,
+        postWorkoutFuelingAdequate: null,
+      });
+
+      const psychological = scorePsychoEmotional({
+        motivation: checkinData?.motivation ?? null,
+        mood: checkinData?.overallEnergy ?? null,
+        mentalFatigue: checkinData?.mentalFatigue ?? null,
+        willingnessToTrain: checkinData?.motivation ?? null,
+        concentration: checkinData ? 6 - checkinData.mentalFatigue : null,
+        subjectiveStress: checkinData?.stress ?? null,
+        overallEnergy: checkinData?.overallEnergy ?? null,
+      });
 
       const subsystemScores: SubsystemScores = {
-        autonomic: makeSub('autonomic', randScore(55, 90)),
-        musculoskeletal: makeSub('musculoskeletal', randScore(45, 85)),
-        cardiometabolic: makeSub('cardiometabolic', randScore(55, 90)),
-        sleep: makeSub('sleep', randScore(50, 90)),
-        metabolic: makeSub('metabolic', randScore(60, 95)),
-        psychological: makeSub('psychological', randScore(55, 90)),
+        autonomic,
+        musculoskeletal,
+        cardiometabolic,
+        sleep,
+        metabolic,
+        psychological,
       };
 
-      const result = computeIACI(dateStr, subsystemScores);
+      // Get sport-aware weights
+      const sportKeys = profile?.sport;
+      const weights = getWeightsForSportProfile(sportKeys, profile?.weight_preferences as any);
+      const adjustedScores = applySportAdjustments(subsystemScores, sportKeys);
+
+      const result = computeIACI(dateStr, adjustedScores, weights, 0.3, sportKeys);
       setIACI(result);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to compute demo IACI');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [profile]);
 
   return { iaci, error, computeToday, computeDemo };
 }

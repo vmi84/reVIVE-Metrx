@@ -1,23 +1,64 @@
-import { useEffect, useState } from 'react';
-import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { useEffect, useState, useMemo } from 'react';
+import { View, ScrollView, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { router } from 'expo-router';
 import { useDailyStore } from '../../store/daily-store';
 import { useWorkoutLogger } from '../../hooks/use-workout-logger';
+import { useTrainingRecommendations } from '../../hooks/use-training-recommendations';
 import { TrainingCompatCard } from '../../components/dashboard/TrainingCompatCard';
 import { Card } from '../../components/ui/Card';
 import { ThemedText } from '../../components/ui/ThemedText';
 import { Button } from '../../components/ui/Button';
 import { COLORS } from '../../lib/utils/constants';
 import { Workout } from '../../lib/types/exercises';
+import { TRAINING_RECOVERY_MAP } from '../../data/training-recovery-map';
+
+// Quick-access categories for the train tab
+const QUICK_CATEGORIES = [
+  {
+    label: 'Performance',
+    icon: '🏋️',
+    keys: ['zone1', 'zone2', 'intervals', 'tempo', 'strengthHeavy', 'strengthLight', 'techniqueDrill', 'plyometrics'],
+  },
+  {
+    label: 'Recovery Training',
+    icon: '💪',
+    keys: ['eccentricRecovery', 'correctiveExercise', 'kettlebellRecovery', 'bodyweightRecovery', 'calisthenicsFlow'],
+  },
+  {
+    label: 'Mind & Body',
+    icon: '🧘',
+    keys: ['yoga', 'taiChi', 'breathworkActive', 'meditation', 'mobilityFlow'],
+  },
+  {
+    label: 'Active Recovery',
+    icon: '🌿',
+    keys: ['walkingRecovery', 'easyCycling', 'swimEasy', 'aquaticRecovery', 'hiking', 'gardening', 'massage', 'dancing', 'playRecreation'],
+  },
+];
 
 export default function Train() {
   const { iaci } = useDailyStore();
   const { fetchRecentWorkouts, logWorkout, activeWorkout } = useWorkoutLogger();
+  const trainingRecs = useTrainingRecommendations();
   const [recentWorkouts, setRecentWorkouts] = useState<Workout[]>([]);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     fetchRecentWorkouts();
   }, []);
+
+  // Filtered quick actions by search
+  const filteredCategories = useMemo(() => {
+    if (!search.trim()) return QUICK_CATEGORIES;
+    const q = search.toLowerCase();
+    return QUICK_CATEGORIES.map((cat) => ({
+      ...cat,
+      keys: cat.keys.filter((key) => {
+        const profile = TRAINING_RECOVERY_MAP[key as keyof typeof TRAINING_RECOVERY_MAP];
+        return profile?.label.toLowerCase().includes(q);
+      }),
+    })).filter((cat) => cat.keys.length > 0);
+  }, [search]);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -36,25 +77,79 @@ export default function Train() {
         </Card>
       )}
 
-      {/* Quick Log */}
+      {/* IACI-recommended training */}
+      {trainingRecs.hasData && trainingRecs.topPick && (
+        <Card style={styles.section}>
+          <ThemedText variant="caption" style={styles.sectionHeader}>
+            RECOMMENDED FOR YOU
+          </ThemedText>
+          <TouchableOpacity
+            style={styles.topPickCard}
+            onPress={() => router.push('/post-workout')}
+            activeOpacity={0.7}
+          >
+            <ThemedText variant="body" style={styles.topPickLabel}>
+              {trainingRecs.topPick.label}
+            </ThemedText>
+            <ThemedText variant="caption" color={COLORS.textSecondary} numberOfLines={2}>
+              {trainingRecs.topPick.recoveryFraming}
+            </ThemedText>
+          </TouchableOpacity>
+        </Card>
+      )}
+
+      {/* Search */}
       <Card style={styles.section}>
-        <ThemedText variant="caption" style={styles.sectionHeader}>
-          LOG WORKOUT
-        </ThemedText>
-        <View style={styles.quickActions}>
-          {['Easy Run', 'Tempo Run', 'Interval', 'Long Run', 'Cycling', 'Swimming', 'Strength', 'Mobility'].map((type) => (
-            <TouchableOpacity
-              key={type}
-              style={styles.quickAction}
-              onPress={() => router.push('/post-workout')}
-            >
-              <ThemedText variant="caption" style={styles.quickActionText}>
-                {type}
-              </ThemedText>
-            </TouchableOpacity>
-          ))}
-        </View>
+        <TextInput
+          placeholder="Search activities..."
+          placeholderTextColor={COLORS.textMuted}
+          value={search}
+          onChangeText={setSearch}
+          style={styles.searchInput}
+          autoCorrect={false}
+        />
       </Card>
+
+      {/* Quick Log by Category */}
+      {filteredCategories.map((cat) => (
+        <Card key={cat.label} style={styles.section}>
+          <ThemedText variant="caption" style={styles.sectionHeader}>
+            {cat.icon} {cat.label.toUpperCase()}
+          </ThemedText>
+          <View style={styles.quickActions}>
+            {cat.keys.map((key) => {
+              const profile = TRAINING_RECOVERY_MAP[key as keyof typeof TRAINING_RECOVERY_MAP];
+              if (!profile) return null;
+              return (
+                <TouchableOpacity
+                  key={key}
+                  style={styles.quickAction}
+                  onPress={() => router.push('/post-workout')}
+                >
+                  <ThemedText variant="caption" style={styles.quickActionText}>
+                    {profile.label}
+                  </ThemedText>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </Card>
+      ))}
+
+      {filteredCategories.length === 0 && search.trim() && (
+        <Card style={styles.section}>
+          <ThemedText variant="body" color={COLORS.textSecondary} style={styles.emptyText}>
+            No activities match "{search}"
+          </ThemedText>
+        </Card>
+      )}
+
+      {/* Full log button */}
+      <Button
+        title="Log Full Workout"
+        onPress={() => router.push('/post-workout')}
+        style={styles.fullLogButton}
+      />
 
       {/* Recent Workouts */}
       <Card style={styles.section}>
@@ -90,7 +185,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   section: {
-    marginBottom: 16,
+    marginBottom: 12,
   },
   sectionHeader: {
     textTransform: 'uppercase',
@@ -98,7 +193,17 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '700',
     color: COLORS.textMuted,
-    marginBottom: 12,
+    marginBottom: 10,
+  },
+  searchInput: {
+    backgroundColor: COLORS.surfaceLight,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 12,
+    height: 44,
+    paddingHorizontal: 16,
+    color: COLORS.text,
+    fontSize: 15,
   },
   quickActions: {
     flexDirection: 'row',
@@ -107,16 +212,30 @@ const styles = StyleSheet.create({
   },
   quickAction: {
     backgroundColor: COLORS.surfaceLight,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 9,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: COLORS.border,
   },
   quickActionText: {
-    fontSize: 13,
+    fontSize: 12,
     color: COLORS.text,
     fontWeight: '500',
+  },
+  topPickCard: {
+    backgroundColor: COLORS.primary + '10',
+    borderWidth: 1,
+    borderColor: COLORS.primary + '40',
+    borderRadius: 10,
+    padding: 14,
+  },
+  topPickLabel: {
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  fullLogButton: {
+    marginBottom: 12,
   },
   workoutRow: {
     flexDirection: 'row',
@@ -125,5 +244,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
+  },
+  emptyText: {
+    textAlign: 'center',
+    paddingVertical: 16,
   },
 });

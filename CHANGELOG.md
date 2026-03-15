@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2.2.2] - 2026-03-14
+
+### Fixed
+- **IACI demo mode scoring** — `computeDemo()` was generating random subsystem scores (55-95 range), completely ignoring actual check-in inputs; now feeds real check-in data through all 6 subsystem scorers so minimum inputs produce appropriately low IACI scores and maximum inputs produce high scores
+
+### Changed
+- **Train tab** — Expanded from 8 hardcoded quick-log buttons to categorized activity grid (Performance, Recovery Training, Mind & Body, Active Recovery) with search bar and IACI-recommended top pick
+- **Log Workout screen** — Replaced 13-item flat list with full 32-modality categorized selector (11 categories), search bar, and recently used activities section; submit button shows selected activity name
+
+### Added
+- **Check-in data persistence** — Morning check-in values now stored in daily store (`CheckinData`) for consumption by demo mode IACI computation pipeline
+
 ## [2.2.1] - 2026-03-14
 
 ### Changed

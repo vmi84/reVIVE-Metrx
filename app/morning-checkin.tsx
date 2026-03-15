@@ -15,7 +15,7 @@ import { today, daysAgo } from '../lib/utils/date';
 
 export default function MorningCheckin() {
   const { user } = useAuthStore();
-  const { setCheckinCompleted } = useDailyStore();
+  const { setCheckinCompleted, setCheckinData } = useDailyStore();
   const [submitting, setSubmitting] = useState(false);
   const [preFilled, setPreFilled] = useState(false);
 
@@ -122,6 +122,25 @@ export default function MorningCheckin() {
           concentration: 5 - mentalFatigue + 1,
         });
       }
+
+      // Store check-in data for demo mode IACI computation
+      setCheckinData({
+        overallEnergy,
+        sleepQuality,
+        soreness,
+        stiffness,
+        heavyLegs,
+        motivation,
+        stress,
+        mentalFatigue,
+        hydrationLiters,
+        electrolytes,
+        proteinAdequate,
+        lateCaffeine,
+        lateAlcohol,
+        isTraveling,
+        giIssues,
+      });
 
       setCheckinCompleted(true);
       // Use dismiss for modals, fallback to replace for safety
