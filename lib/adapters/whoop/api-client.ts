@@ -11,6 +11,7 @@
  * handled via refreshAccessToken().
  */
 
+import Constants from 'expo-constants';
 import {
   WHOOP_API_BASE,
   WHOOP_AUTH_URL,
@@ -164,11 +165,10 @@ export class WhoopApiClient {
     clientSecret?: string;
     redirectUri?: string;
   }) {
-    this.clientId = opts?.clientId ?? process.env.WHOOP_CLIENT_ID ?? '';
-    this.clientSecret =
-      opts?.clientSecret ?? process.env.WHOOP_CLIENT_SECRET ?? '';
-    this.redirectUri =
-      opts?.redirectUri ?? process.env.WHOOP_REDIRECT_URI ?? '';
+    const extra = Constants.expoConfig?.extra ?? {};
+    this.clientId = opts?.clientId ?? extra.whoopClientId ?? '';
+    this.clientSecret = opts?.clientSecret ?? extra.whoopClientSecret ?? '';
+    this.redirectUri = opts?.redirectUri ?? extra.whoopRedirectUri ?? 'revive-metrx://auth/whoop/callback';
   }
 
   // ── OAuth ──────────────────────────────────────────────────────────────────

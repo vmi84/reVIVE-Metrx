@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, ScrollView, StyleSheet, Alert } from 'react-native';
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
@@ -6,6 +6,8 @@ import * as AuthSession from 'expo-auth-session';
 import * as SecureStore from 'expo-secure-store';
 import Constants from 'expo-constants';
 import { useAuth } from '../hooks/use-auth';
+import { useSyncStore } from '../store/sync-store';
+import { useDailyStore } from '../store/daily-store';
 import { Card } from '../components/ui/Card';
 import { ThemedText } from '../components/ui/ThemedText';
 import { Button } from '../components/ui/Button';
@@ -16,8 +18,12 @@ WebBrowser.maybeCompleteAuthSession();
 export default function DeviceSetup() {
   const { updateProfile, profile } = useAuth();
   const [connecting, setConnecting] = useState(false);
+  const [disconnecting, setDisconnecting] = useState(false);
+  const [whoopConnected, setWhoopConnected] = useState(false);
 
-  const clientId = Constants.expoConfig?.extra?.whoopClientId ?? '';
+  const extra = Constants.expoConfig?.extra ?? {};
+  const clientId = extra.whoopClientId ?? '';
+  const clientSecret = extra.whoopClientSecret ?? '';
   const redirectUri = AuthSession.makeRedirectUri({ scheme: 'revive-metrx' });
 
   const discovery = {
@@ -25,9 +31,17 @@ export default function DeviceSetup() {
     tokenEndpoint: WHOOP_TOKEN_URL,
   };
 
+  // Check connection status on mount
+  useEffect(() => {
+    (async () => {
+      const token = await SecureStore.getItemAsync('whoop_access_token');
+      setWhoopConnected(!!token);
+    })();
+  }, []);
+
   async function connectWhoop() {
     if (!clientId) {
-      Alert.alert('Configuration Error', 'Whoop Client ID not configured.');
+      Alert.alert('Configuration Error', 'Whoop Client ID not configured. Add EXPO_PUBLIC_WHOOP_CLIENT_ID to .env');
       return;
     }
 
@@ -43,42 +57,107 @@ export default function DeviceSetup() {
       const result = await request.promptAsync(discovery);
 
       if (result.type === 'success' && result.params.code) {
-        // Exchange code for token
-        const tokenResponse = await AuthSession.exchangeCodeAsync(
-          {
-            clientId,
+        // Exchange code for token — manual fetch because Whoop requires client_secret
+        const tokenRes = await fetch(WHOOP_TOKEN_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            grant_type: 'authorization_code',
             code: result.params.code,
-            redirectUri,
-          },
-          discovery,
-        );
-
-        // Store tokens securely
-        await SecureStore.setItemAsync('whoop_access_token', tokenResponse.accessToken);
-        if (tokenResponse.refreshToken) {
-          await SecureStore.setItemAsync('whoop_refresh_token', tokenResponse.refreshToken);
-        }
-
-        // Update profile
-        const devices = [...(profile?.connected_devices ?? [])];
-        if (!devices.includes('whoop')) devices.push('whoop');
-        await updateProfile({
-          connected_devices: devices,
-          primary_device: 'whoop',
+            client_id: clientId,
+            client_secret: clientSecret,
+            redirect_uri: redirectUri,
+          }).toString(),
         });
 
-        Alert.alert('Success', 'Whoop connected successfully!', [
+        if (!tokenRes.ok) {
+          const errText = await tokenRes.text();
+          throw new Error(`Token exchange failed (${tokenRes.status}): ${errText}`);
+        }
+
+        const tokenData = await tokenRes.json() as {
+          access_token: string;
+          refresh_token: string;
+          expires_in: number;
+        };
+
+        // Store tokens securely
+        await SecureStore.setItemAsync('whoop_access_token', tokenData.access_token);
+        if (tokenData.refresh_token) {
+          await SecureStore.setItemAsync('whoop_refresh_token', tokenData.refresh_token);
+        }
+        // Store expiry for auto-refresh
+        const expiresAt = Date.now() + tokenData.expires_in * 1000;
+        await SecureStore.setItemAsync('whoop_token_expires_at', String(expiresAt));
+
+        // Update profile — works in online mode
+        try {
+          const devices = [...(profile?.connected_devices ?? [])];
+          if (!devices.includes('whoop')) devices.push('whoop');
+          await updateProfile({
+            connected_devices: devices,
+            primary_device: 'whoop',
+          });
+        } catch {
+          // Offline mode — profile update is optional
+        }
+
+        // Mark device as connected in local stores
+        useDailyStore.getState().setDeviceSynced(true, 'whoop');
+        useSyncStore.getState().setLastDeviceSync(new Date().toISOString(), 'whoop');
+        setWhoopConnected(true);
+
+        Alert.alert('Success', 'Whoop connected! Your data will sync automatically.', [
           { text: 'OK', onPress: () => router.back() },
         ]);
       }
     } catch (err) {
-      Alert.alert('Error', 'Failed to connect Whoop. Please try again.');
+      const msg = err instanceof Error ? err.message : 'Failed to connect Whoop';
+      Alert.alert('Connection Error', msg);
     } finally {
       setConnecting(false);
     }
   }
 
-  const isWhoopConnected = (profile?.connected_devices ?? []).includes('whoop');
+  async function disconnectWhoop() {
+    Alert.alert(
+      'Disconnect Whoop',
+      'This will remove your Whoop connection. Imported data will be preserved.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Disconnect',
+          style: 'destructive',
+          onPress: async () => {
+            setDisconnecting(true);
+            try {
+              await SecureStore.deleteItemAsync('whoop_access_token');
+              await SecureStore.deleteItemAsync('whoop_refresh_token');
+              await SecureStore.deleteItemAsync('whoop_token_expires_at');
+
+              try {
+                const devices = (profile?.connected_devices ?? []).filter(d => d !== 'whoop');
+                await updateProfile({
+                  connected_devices: devices,
+                  primary_device: devices[0] ?? null,
+                });
+              } catch {
+                // Offline — profile update optional
+              }
+
+              setWhoopConnected(false);
+            } catch {
+              Alert.alert('Error', 'Failed to disconnect Whoop.');
+            } finally {
+              setDisconnecting(false);
+            }
+          },
+        },
+      ],
+    );
+  }
+
+  const lastSync = useSyncStore.getState().lastDeviceSync;
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -87,10 +166,24 @@ export default function DeviceSetup() {
         <ThemedText variant="body" color={COLORS.textSecondary} style={styles.description}>
           Connect your Whoop to automatically sync HRV, RHR, sleep, respiratory rate, SpO2, skin temperature, and workout data.
         </ThemedText>
-        {isWhoopConnected ? (
-          <View style={styles.connectedRow}>
-            <View style={styles.connectedDot} />
-            <ThemedText variant="body" color={COLORS.success}>Connected</ThemedText>
+        {whoopConnected ? (
+          <View>
+            <View style={styles.connectedRow}>
+              <View style={styles.connectedDot} />
+              <ThemedText variant="body" color={COLORS.success}>Connected</ThemedText>
+            </View>
+            {lastSync && (
+              <ThemedText variant="caption" color={COLORS.textMuted} style={{ marginTop: 4 }}>
+                Last synced: {new Date(lastSync).toLocaleString()}
+              </ThemedText>
+            )}
+            <Button
+              title="Disconnect"
+              variant="secondary"
+              onPress={disconnectWhoop}
+              loading={disconnecting}
+              style={{ ...styles.connectButton, opacity: 0.7 }}
+            />
           </View>
         ) : (
           <Button

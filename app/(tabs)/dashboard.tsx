@@ -25,7 +25,7 @@ import { isSupabaseConfigured } from '../../lib/supabase';
 export default function Dashboard() {
   const { days, loading, loadingMore, hasMore, loadMore, refresh, carryForwardCheckin } = useFeed();
   const { computeToday, computeDemo } = useIACI();
-  const { syncMorningData, syncing } = useWhoopSync();
+  const { syncMorningData, isConnected, syncing } = useWhoopSync();
   const { checkinCompleted, deviceSynced, iaci } = useDailyStore();
   const hasImportedData = usePhysiologyStore((s) => s.hasData);
   const { expandedCardDate, setExpandedCard } = useFeedStore();
@@ -33,21 +33,24 @@ export default function Dashboard() {
   // Trigger load capacity computation when IACI is available
   useLoadCapacity();
 
-  // Auto-sync device data on mount (skip in demo mode)
+  // Auto-sync device data on mount — works in both online and offline mode
   useEffect(() => {
-    if (!deviceSynced && isSupabaseConfigured) {
-      syncMorningData();
-    }
+    (async () => {
+      const connected = await isConnected();
+      if (connected) {
+        syncMorningData();
+      }
+    })();
   }, []);
 
-  // Auto-compute IACI after check-in
+  // Auto-compute IACI after check-in or device sync
   useEffect(() => {
     if (!checkinCompleted) return;
 
-    if (!isSupabaseConfigured) {
-      computeDemo();
-    } else if (deviceSynced) {
+    if (isSupabaseConfigured && deviceSynced) {
       computeToday();
+    } else {
+      computeDemo();
     }
   }, [checkinCompleted, deviceSynced]);
 

@@ -1,6 +1,11 @@
+import { useState, useEffect } from 'react';
 import { View, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { router } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
 import { useAuth } from '../../hooks/use-auth';
+import { useWhoopSync } from '../../hooks/use-whoop-sync';
+import { useSyncStore } from '../../store/sync-store';
+import { usePhysiologyStore } from '../../store/physiology-store';
 import { Card } from '../../components/ui/Card';
 import { ThemedText } from '../../components/ui/ThemedText';
 import { Button } from '../../components/ui/Button';
@@ -8,6 +13,19 @@ import { COLORS } from '../../lib/utils/constants';
 
 export default function Profile() {
   const { profile, signOut, user } = useAuth();
+  const { syncHistorical, syncing } = useWhoopSync();
+  const lastSync = useSyncStore(s => s.lastDeviceSync);
+  const lastSyncSource = useSyncStore(s => s.lastSyncSource);
+  const hasData = usePhysiologyStore(s => s.hasData);
+  const lastImport = usePhysiologyStore(s => s.lastImport);
+  const [whoopConnected, setWhoopConnected] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const token = await SecureStore.getItemAsync('whoop_access_token');
+      setWhoopConnected(!!token);
+    })();
+  }, []);
 
   function handleSignOut() {
     Alert.alert('Sign Out', 'Are you sure?', [
@@ -38,7 +56,31 @@ export default function Profile() {
         <ThemedText variant="caption" style={styles.sectionHeader}>
           CONNECTED DEVICES
         </ThemedText>
-        {(profile?.connected_devices ?? []).length > 0 ? (
+        {whoopConnected ? (
+          <View>
+            <View style={styles.deviceRow}>
+              <ThemedText variant="body">WHOOP</ThemedText>
+              <ThemedText variant="caption" color={COLORS.success}>Connected</ThemedText>
+            </View>
+            {lastSync && (
+              <ThemedText variant="caption" color={COLORS.textMuted} style={{ marginTop: 4 }}>
+                Last synced: {new Date(lastSync).toLocaleString()}
+              </ThemedText>
+            )}
+            {hasData && lastImport && (
+              <ThemedText variant="caption" color={COLORS.textMuted} style={{ marginTop: 2 }}>
+                {lastImport.recordCount} days of data ({lastImport.dateRange?.start} to {lastImport.dateRange?.end})
+              </ThemedText>
+            )}
+            <Button
+              title={syncing ? 'Syncing...' : 'Sync Last 30 Days'}
+              variant="secondary"
+              onPress={() => syncHistorical(30)}
+              loading={syncing}
+              style={styles.connectButton}
+            />
+          </View>
+        ) : (profile?.connected_devices ?? []).length > 0 ? (
           profile!.connected_devices.map((device, i) => (
             <View key={i} style={styles.deviceRow}>
               <ThemedText variant="body">{device}</ThemedText>
@@ -51,7 +93,7 @@ export default function Profile() {
           </ThemedText>
         )}
         <Button
-          title="Connect Device"
+          title={whoopConnected ? 'Manage Devices' : 'Connect Device'}
           variant="secondary"
           onPress={() => router.push('/device-setup')}
           style={styles.connectButton}

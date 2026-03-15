@@ -33,7 +33,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL,
     supabaseAnonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
     whoopClientId: process.env.EXPO_PUBLIC_WHOOP_CLIENT_ID,
-    whoopRedirectUri: process.env.EXPO_PUBLIC_WHOOP_REDIRECT_URI,
+    whoopClientSecret: process.env.WHOOP_CLIENT_SECRET,
+    whoopRedirectUri: process.env.EXPO_PUBLIC_WHOOP_REDIRECT_URI ?? 'revive-metrx://auth/whoop/callback',
     eas: {
       projectId: process.env.EAS_PROJECT_ID,
     },
