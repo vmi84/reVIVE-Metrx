@@ -33,6 +33,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="morning-checkin" options={{ title: 'Morning Check-In', presentation: 'modal' }} />
         <Stack.Screen name="post-workout" options={{ title: 'Post-Workout', presentation: 'modal' }} />
+        <Stack.Screen name="onboarding" options={{ title: 'Select Your Sports', headerShown: false }} />
         <Stack.Screen name="device-setup" options={{ title: 'Connect Device' }} />
         <Stack.Screen name="protocol/[slug]" options={{ title: 'Protocol' }} />
       </Stack>
