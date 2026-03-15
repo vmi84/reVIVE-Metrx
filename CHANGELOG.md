@@ -6,6 +6,44 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-03-14
+
+### Added
+
+#### Sport-Aware Training-for-Recovery System
+- **30 sport profiles** (`data/sport-profiles.ts`) — Endurance, strength, combat, field/court, other, and wellness/longevity categories; each profile defines subsystem stress maps, sport-specific stress markers, IACI weight presets, and recommended recovery modalities
+- **32 training modalities** (`data/training-recovery-map.ts`) — Expanded from 8 performance-only to 32 modalities across 11 categories: aerobic, strength, bodyweight, AGT (anti-glycolytic), mitochondrial, mind-body, mobility, aquatic, low-impact, lifestyle, and skill work
+- **Sport stress engine** (`lib/engine/sport-stress.ts`) — Weight preset derivation from sport profiles, subsystem score adjustments (high=1pt, very_high=2pt penalties), multi-sport union of recovery needs
+- **Sport onboarding screen** (`app/onboarding.tsx`) — Multi-select sport chip grid grouped by category with Wellness & Longevity prominently featured; saves to profile as JSON array
+- **Training recommendations hook** (`hooks/use-training-recommendations.ts`) — Consumes IACI result and sport profile to expose ranked training-for-recovery recommendations with top pick and category grouping
+- **TrainingSection** (`components/recovery/TrainingSection.tsx`) — Collapsible "Training for Recovery" section on recovery screen showing top 3 recommendations with show-more toggle
+- **TrainingRecommendationCard** (`components/recovery/TrainingRecommendationCard.tsx`) — Expandable card with permission badge, recovery framing, subsystem pills, evidence level, intensity guidance, duration range, and examples
+
+#### New Training Modality Categories
+- **Recovery strength** — Light eccentric work, corrective exercise, light kettlebell flow
+- **Bodyweight** — Light bodyweight circuit (push-ups, air squats, planks), calisthenics flow
+- **Anti-glycolytic (AGT)** — Alactic power (5-10s bursts + full rest), aerobic repeats (submaximal + generous rest)
+- **Mitochondrial** — Zone 2 Mito Builder for longevity/wellness focus
+- **Mind-body** — Restorative yoga, tai chi/qigong, active breathwork, guided meditation
+- **Mobility** — Dynamic mobility flow
+- **Aquatic & low-impact** — Easy swimming, pool recovery, recovery walking, easy cycling
+- **Lifestyle** — Gardening, massage, dancing, hiking, sauna, cold exposure, play & recreation
+
+### Changed
+- **Training compatibility** — Expanded from 8-field interface to `Record<TrainingModalityKey, TrainingPermission>` with 32 modality keys across 5 IACI tiers; recovery-focused modalities remain safe at lower tiers
+- **Phenotype overrides** — All 7 phenotypes now apply modality-specific overrides across the full 32-modality set
+- **IACI weight selection** — Replaced hardcoded `profile?.sport === 'endurance'` check with sport profile lookup supporting 4 weight presets (default, endurance, power, older_athlete)
+- **IACI composite** — Sport stress markers now feed subsystem score adjustments before penalty computation
+- **Protocol engine** — Wires sport-aware `recommendedTraining` into `ProtocolPrescription`
+- **Recovery screen** — Added TrainingSection above passive recovery protocols
+- **Dashboard training card** — Shows curated 8 performance modalities instead of iterating all 32
+
+## [2.1.4] - 2026-03-14
+
+### Added
+- Comprehensive IACI algorithm test suite with 80+ assertions verifying poor inputs produce poor recovery and optimal inputs produce excellent recovery across 6-tier recovery bands (Optimum ≥81 / Strong 61-80 / Moderate 41-60 / Sufficient 21-40 / Insufficient 1-20 / Poor 0)
+- Whoop input integration tests covering HRV, RHR, sleep score, and respiratory rate across optimal, suboptimal, and critical states
+
 ## [2.1.3] - 2026-03-14
 
 ### Changed
