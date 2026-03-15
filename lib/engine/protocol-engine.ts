@@ -16,7 +16,8 @@ import {
   getProtocolClass,
   getReadinessTier,
 } from '../types/iaci';
-import { getTrainingCompatibility } from './training-compatibility';
+import { getTrainingCompatibility, getRecoveryTrainingRecommendations } from './training-compatibility';
+import { getSportRecoveryNeeds } from './sport-stress';
 
 interface PhenotypeProtocolMap {
   focusAreas: string[];
@@ -91,17 +92,25 @@ export function prescribeProtocol(
   iaciScore: number,
   phenotype: Phenotype,
   subsystemScores: SubsystemScores,
+  sportKeys?: string | string[] | null,
 ): ProtocolPrescription {
   const protocolClass = getProtocolClass(iaciScore);
   const readinessTier = getReadinessTier(iaciScore);
   const phenotypeMap = PHENOTYPE_PROTOCOLS[phenotype.key];
   const trainingCompat = getTrainingCompatibility(iaciScore, phenotype.key, subsystemScores);
+  const sportNeeds = getSportRecoveryNeeds(sportKeys);
+  const recommendedTraining = getRecoveryTrainingRecommendations(
+    trainingCompat,
+    subsystemScores,
+    sportNeeds,
+  );
 
   return {
     protocolClass,
     readinessTier,
     recommendedModalities: phenotypeMap.modalitySlugs,
     trainingCompatibility: trainingCompat,
+    recommendedTraining,
     explanation: phenotypeMap.explanation,
   };
 }

@@ -3,8 +3,10 @@ import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { useProtocols } from '../../hooks/use-protocols';
 import { useDailyStore } from '../../store/daily-store';
+import { useTrainingRecommendations } from '../../hooks/use-training-recommendations';
 import { EvidenceSection } from '../../components/recovery/EvidenceSection';
 import { ProtocolSeriesCard } from '../../components/recovery/ProtocolSeriesCard';
+import { TrainingSection } from '../../components/recovery/TrainingSection';
 import { ThemedText } from '../../components/ui/ThemedText';
 import { Card } from '../../components/ui/Card';
 import { COLORS } from '../../lib/utils/constants';
@@ -12,6 +14,7 @@ import { COLORS } from '../../lib/utils/constants';
 export default function Recovery() {
   const { protocols, grouped, loading } = useProtocols();
   const { iaci } = useDailyStore();
+  const trainingRecs = useTrainingRecommendations();
   const [showAll, setShowAll] = useState(false);
 
   const hasRecommendations =
@@ -64,7 +67,15 @@ export default function Recovery() {
         </Card>
       )}
 
-      {/* Evidence-grouped recommendations */}
+      {/* Training for Recovery */}
+      {trainingRecs.hasData && trainingRecs.recommendations.length > 0 && (
+        <TrainingSection
+          recommendations={trainingRecs.recommendations}
+          topPick={trainingRecs.topPick}
+        />
+      )}
+
+      {/* Evidence-grouped passive recovery protocols */}
       {hasRecommendations && (
         <>
           <EvidenceSection

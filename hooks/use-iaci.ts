@@ -11,7 +11,7 @@ import { scoreCardiometabolic, CardiometabolicInputs } from '../lib/engine/subsy
 import { scoreSleepCircadian, SleepCircadianInputs } from '../lib/engine/subsystems/sleep-circadian';
 import { scoreMetabolic, MetabolicInputs } from '../lib/engine/subsystems/metabolic';
 import { scorePsychoEmotional, PsychoEmotionalInputs } from '../lib/engine/subsystems/psycho-emotional';
-import { getWeightsForAthlete, AthleteType } from '../lib/engine/personalization';
+import { getWeightsForSportProfile, applySportAdjustments } from '../lib/engine/sport-stress';
 import { today, daysAgo } from '../lib/utils/date';
 import { DailyPhysiologyRow, SubjectiveEntryRow } from '../lib/types/database';
 
@@ -180,12 +180,15 @@ export function useIACI() {
         psychological,
       };
 
-      // Get weights
-      const athleteType = (profile?.sport === 'endurance' ? 'endurance' : null) as AthleteType | null;
-      const weights = getWeightsForAthlete(
-        athleteType,
+      // Get weights from sport profile
+      const sportKeys = profile?.sport;
+      const weights = getWeightsForSportProfile(
+        sportKeys,
         profile?.weight_preferences as any,
       );
+
+      // Apply sport-specific subsystem adjustments
+      const adjustedScores = applySportAdjustments(subsystemScores, sportKeys);
 
       // Compute data completeness
       const totalFields = 20;
@@ -202,8 +205,8 @@ export function useIACI() {
       if (subj?.hydration_glasses) presentFields++;
       const dataCompleteness = presentFields / totalFields;
 
-      // Compute IACI
-      const result = computeIACI(dateStr, subsystemScores, weights, dataCompleteness);
+      // Compute IACI with sport-adjusted scores
+      const result = computeIACI(dateStr, adjustedScores, weights, dataCompleteness, sportKeys);
       setIACI(result);
 
       // Store result in database

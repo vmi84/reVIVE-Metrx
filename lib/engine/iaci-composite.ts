@@ -23,6 +23,7 @@ export function computeIACI(
   subsystemScores: SubsystemScores,
   weights: SubsystemWeights = DEFAULT_WEIGHTS,
   dataCompleteness: number = 1.0,
+  sportKeys?: string | string[] | null,
 ): IACIResult {
   // Level 3: Weighted composite
   const baseScore = Math.round(
@@ -45,7 +46,7 @@ export function computeIACI(
   // Level 5: Protocol prescription
   const readinessTier = getReadinessTier(finalScore);
   const protocolClass = getProtocolClass(finalScore);
-  const protocol = prescribeProtocol(finalScore, phenotype, subsystemScores);
+  const protocol = prescribeProtocol(finalScore, phenotype, subsystemScores, sportKeys);
 
   return {
     date,

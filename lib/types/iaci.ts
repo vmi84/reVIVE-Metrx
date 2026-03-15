@@ -116,21 +116,56 @@ export interface ProtocolPrescription {
   readinessTier: ReadinessTier;
   recommendedModalities: string[];
   trainingCompatibility: TrainingCompatibility;
+  recommendedTraining: RankedTrainingModality[];
   explanation: string;
 }
 
-export interface TrainingCompatibility {
-  zone1: TrainingPermission;
-  zone2: TrainingPermission;
-  intervals: TrainingPermission;
-  tempo: TrainingPermission;
-  strengthHeavy: TrainingPermission;
-  strengthLight: TrainingPermission;
-  techniqueDrill: TrainingPermission;
-  plyometrics: TrainingPermission;
-}
+// --- Training Modalities (32 total) ---
+
+export type TrainingModalityKey =
+  // Existing performance modalities (8)
+  | 'zone1' | 'zone2' | 'intervals' | 'tempo'
+  | 'strengthHeavy' | 'strengthLight' | 'techniqueDrill' | 'plyometrics'
+  // Recovery-focused strength (3)
+  | 'eccentricRecovery' | 'correctiveExercise' | 'kettlebellRecovery'
+  // Bodyweight (2)
+  | 'bodyweightRecovery' | 'calisthenicsFlow'
+  // AGT (2)
+  | 'agtAlactic' | 'agtAerobic'
+  // Mitochondrial (1)
+  | 'mitoZone2'
+  // Mind-body (4)
+  | 'yoga' | 'taiChi' | 'breathworkActive' | 'meditation'
+  // Mobility (1)
+  | 'mobilityFlow'
+  // Aquatic & low-impact (4)
+  | 'swimEasy' | 'aquaticRecovery' | 'walkingRecovery' | 'easyCycling'
+  // Lifestyle & active recovery (7)
+  | 'gardening' | 'massage' | 'dancing' | 'hiking'
+  | 'sauna' | 'coldExposure' | 'playRecreation';
+
+export type TrainingCompatibility = Record<TrainingModalityKey, TrainingPermission>;
 
 export type TrainingPermission = 'recommended' | 'allowed' | 'caution' | 'avoid';
+
+export type TrainingCategory =
+  | 'aerobic' | 'strength' | 'bodyweight' | 'agt' | 'mitochondrial'
+  | 'mind_body' | 'mobility' | 'aquatic' | 'low_impact' | 'lifestyle' | 'skill';
+
+export interface RankedTrainingModality {
+  key: TrainingModalityKey;
+  label: string;
+  permission: TrainingPermission;
+  relevanceScore: number;
+  primarySubsystems: SubsystemKey[];
+  secondarySubsystems: SubsystemKey[];
+  recoveryFraming: string;
+  intensityGuidance: { recoveryZone: string; loadingThreshold: string };
+  category: TrainingCategory;
+  evidenceLevel: 'strong' | 'moderate' | 'emerging';
+  durationRange: { min: number; sweet: number; max: number };
+  examples: string[];
+}
 
 // --- Full IACI Result ---
 
