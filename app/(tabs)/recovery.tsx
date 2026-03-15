@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { useState, useMemo } from 'react';
+import { View, ScrollView, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { router } from 'expo-router';
 import { useProtocols } from '../../hooks/use-protocols';
 import { useDailyStore } from '../../store/daily-store';
@@ -11,16 +11,44 @@ import { ThemedText } from '../../components/ui/ThemedText';
 import { Card } from '../../components/ui/Card';
 import { COLORS } from '../../lib/utils/constants';
 
+type SortOrder = 'asc' | 'desc';
+
 export default function Recovery() {
   const { protocols, grouped, loading } = useProtocols();
   const { iaci } = useDailyStore();
   const trainingRecs = useTrainingRecommendations();
   const [showAll, setShowAll] = useState(false);
+  const [search, setSearch] = useState('');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 
   const hasRecommendations =
     grouped.strong.length > 0 ||
     grouped.moderate.length > 0 ||
     grouped.emerging.length > 0;
+
+  // Filter and sort protocols for "Browse All"
+  const filteredProtocols = useMemo(() => {
+    let result = [...protocols];
+
+    // Filter by search
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      result = result.filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          p.series.toLowerCase().includes(q) ||
+          (p.primarySystem && p.primarySystem.toLowerCase().includes(q)),
+      );
+    }
+
+    // Sort alphabetically
+    result.sort((a, b) => {
+      const cmp = a.name.localeCompare(b.name);
+      return sortOrder === 'asc' ? cmp : -cmp;
+    });
+
+    return result;
+  }, [protocols, search, sortOrder]);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -108,13 +136,49 @@ export default function Recovery() {
 
           {showAll && (
             <View style={styles.allList}>
-              {protocols.map((protocol) => (
+              {/* Search bar */}
+              <TextInput
+                placeholder="Search protocols..."
+                placeholderTextColor={COLORS.textMuted}
+                value={search}
+                onChangeText={setSearch}
+                style={styles.searchInput}
+                autoCorrect={false}
+              />
+
+              {/* Sort toggle */}
+              <View style={styles.sortRow}>
+                <ThemedText variant="caption" color={COLORS.textSecondary}>
+                  {filteredProtocols.length} protocols
+                </ThemedText>
+                <TouchableOpacity
+                  onPress={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                  style={styles.sortButton}
+                >
+                  <ThemedText variant="caption" color={COLORS.primary} style={styles.sortText}>
+                    A-Z {sortOrder === 'asc' ? '▼' : '▲'}
+                  </ThemedText>
+                </TouchableOpacity>
+              </View>
+
+              {/* Filtered protocol list */}
+              {filteredProtocols.map((protocol) => (
                 <ProtocolSeriesCard
                   key={protocol.id}
                   protocol={protocol}
                   onPress={() => router.push(`/protocol/${protocol.slug}`)}
                 />
               ))}
+
+              {filteredProtocols.length === 0 && search.trim() && (
+                <ThemedText
+                  variant="body"
+                  color={COLORS.textSecondary}
+                  style={styles.noResults}
+                >
+                  No protocols match "{search}"
+                </ThemedText>
+              )}
             </View>
           )}
         </View>
@@ -200,6 +264,38 @@ const styles = StyleSheet.create({
   },
   allList: {
     marginTop: 16,
+  },
+  searchInput: {
+    backgroundColor: COLORS.surface,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 12,
+    height: 44,
+    paddingHorizontal: 16,
+    color: COLORS.text,
+    fontSize: 15,
+    marginBottom: 10,
+  },
+  sortRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+    paddingHorizontal: 4,
+  },
+  sortButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: COLORS.primary + '15',
+  },
+  sortText: {
+    fontWeight: '600',
+    fontSize: 12,
+  },
+  noResults: {
+    textAlign: 'center',
+    paddingVertical: 20,
   },
   bottomSpacer: {
     height: 20,

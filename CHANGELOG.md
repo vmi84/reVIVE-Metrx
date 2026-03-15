@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2.2.3] - 2026-03-14
+
+### Fixed
+- **Navigation** — Added back button to modal screens (Morning Check-In, Log Activity) and global `headerBackTitle` so users can always navigate back from protocol detail and other stack screens
+- **"Use Yesterday's Data"** — Was silently failing in demo mode due to early return when Supabase not configured; now uses previous check-in data or sensible defaults and triggers IACI computation
+
+### Added
+- **Recovery protocol search** — Search bar in "Browse All Protocols" section filters by name, series, or primary system
+- **Protocol sort** — Alphabetical A-Z / Z-A toggle button when browsing all 80 protocols
+
 ## [2.2.2] - 2026-03-14
 
 ### Fixed

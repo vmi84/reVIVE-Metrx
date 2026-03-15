@@ -332,10 +332,42 @@ export function useFeed() {
 
   // --- Carry Forward Yesterday's Check-In ---
   const carryForwardCheckin = useCallback(async () => {
-    if (!isSupabaseConfigured || !user?.id) return;
+    const todayStr = today();
+
+    // Demo mode: use default mid-range values as "yesterday's data"
+    if (!isSupabaseConfigured) {
+      const store = useDailyStore.getState();
+      const previousCheckin = store.checkinData;
+
+      // Use previous check-in if available, otherwise use sensible defaults
+      const defaultData = previousCheckin ?? {
+        overallEnergy: 3,
+        sleepQuality: 3,
+        soreness: {},
+        stiffness: 2,
+        heavyLegs: false,
+        motivation: 3,
+        stress: 2,
+        mentalFatigue: 2,
+        hydrationLiters: 1.0,
+        electrolytes: false,
+        proteinAdequate: true,
+        lateCaffeine: false,
+        lateAlcohol: false,
+        isTraveling: false,
+        giIssues: 1,
+      };
+
+      store.setCheckinData(defaultData);
+      store.setCheckinCompleted(true);
+
+      updateDay(todayStr, { checkinCompleted: true });
+      return;
+    }
+
+    if (!user?.id) return;
 
     const yesterdayStr = daysAgo(1);
-    const todayStr = today();
 
     // Fetch yesterday's morning subjective entry
     const { data: yesterdayEntry } = await supabase
