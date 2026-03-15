@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { View, ScrollView, StyleSheet, Alert } from 'react-native';
+import { router } from 'expo-router';
 import * as DocumentPicker from 'expo-document-picker';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useAuthStore } from '../store/auth-store';
@@ -26,13 +27,8 @@ export default function ImportData() {
   async function handleImport() {
     try {
       const doc = await DocumentPicker.getDocumentAsync({
-        type: [
-          'text/csv',
-          'application/vnd.ms-excel',
-          'application/zip',
-          'application/x-zip-compressed',
-          'application/octet-stream',
-        ],
+        type: '*/*',
+        copyToCacheDirectory: true,
       });
 
       if (doc.canceled) return;
@@ -40,12 +36,26 @@ export default function ImportData() {
       const file = doc.assets[0];
       if (!file?.uri) return;
 
-      setImporting(true);
-      setResult(null);
-
+      const fileName = (file.name ?? '').toLowerCase();
       const isZip =
         file.mimeType?.includes('zip') ||
-        file.name?.toLowerCase().endsWith('.zip');
+        fileName.endsWith('.zip');
+      const isCsv =
+        file.mimeType?.includes('csv') ||
+        file.mimeType?.includes('excel') ||
+        file.mimeType?.includes('text') ||
+        fileName.endsWith('.csv');
+
+      if (!isZip && !isCsv) {
+        Alert.alert(
+          'Unsupported File',
+          'Please select a wearable data export ZIP or CSV file.',
+        );
+        return;
+      }
+
+      setImporting(true);
+      setResult(null);
 
       let records: CanonicalPhysiologyRecord[] = [];
       let workoutCount = 0;
@@ -164,16 +174,17 @@ export default function ImportData() {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Card>
         <ThemedText variant="subtitle" style={styles.title}>
-          Import Whoop Data
+          Import Wearable Data
         </ThemedText>
         <ThemedText
           variant="body"
           color={COLORS.textSecondary}
           style={styles.description}
         >
-          Export your data from the Whoop app and import the ZIP or CSV file
-          here. This populates your historical physiology data for baseline
-          calculations and IACI scoring.
+          Import your wearable data export (ZIP or CSV) to populate
+          historical physiology data for baseline calculations and IACI scoring.
+          Currently supports Whoop exports. Garmin, Oura, and Apple Health
+          coming soon.
         </ThemedText>
         <Button
           title="Select ZIP or CSV File"
@@ -202,6 +213,11 @@ export default function ImportData() {
               />
             )}
           </View>
+          <Button
+            title="View IACI Score"
+            onPress={() => router.replace('/(tabs)/dashboard')}
+            style={{ marginTop: 16 }}
+          />
         </Card>
       )}
 

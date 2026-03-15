@@ -1,5 +1,5 @@
 /**
- * Dashboard — Infinite-scrolling daily feed (Whoop model).
+ * Dashboard — Infinite-scrolling daily feed.
  *
  * Today's card sits at top. Past days load as you scroll. Accordion: one card expanded at a time.
  * CheckinPromptCard appears when morning check-in is incomplete.
@@ -12,6 +12,7 @@ import { useIACI } from '../../hooks/use-iaci';
 import { useWhoopSync } from '../../hooks/use-whoop-sync';
 import { useLoadCapacity } from '../../hooks/use-load-capacity';
 import { useDailyStore } from '../../store/daily-store';
+import { usePhysiologyStore } from '../../store/physiology-store';
 import { useFeedStore } from '../../store/feed-store';
 import { DailyCard } from '../../components/feed/DailyCard';
 import { CheckinPromptCard } from '../../components/feed/CheckinPromptCard';
@@ -25,15 +26,16 @@ export default function Dashboard() {
   const { days, loading, loadingMore, hasMore, loadMore, refresh, carryForwardCheckin } = useFeed();
   const { computeToday, computeDemo } = useIACI();
   const { syncMorningData, syncing } = useWhoopSync();
-  const { checkinCompleted, whoopSynced } = useDailyStore();
+  const { checkinCompleted, deviceSynced, iaci } = useDailyStore();
+  const hasImportedData = usePhysiologyStore((s) => s.hasData);
   const { expandedCardDate, setExpandedCard } = useFeedStore();
 
   // Trigger load capacity computation when IACI is available
   useLoadCapacity();
 
-  // Auto-sync Whoop on mount (skip in demo mode)
+  // Auto-sync device data on mount (skip in demo mode)
   useEffect(() => {
-    if (!whoopSynced && isSupabaseConfigured) {
+    if (!deviceSynced && isSupabaseConfigured) {
       syncMorningData();
     }
   }, []);
@@ -43,12 +45,18 @@ export default function Dashboard() {
     if (!checkinCompleted) return;
 
     if (!isSupabaseConfigured) {
-      // Demo mode: generate mock IACI immediately after check-in
       computeDemo();
-    } else if (whoopSynced) {
+    } else if (deviceSynced) {
       computeToday();
     }
-  }, [checkinCompleted, whoopSynced]);
+  }, [checkinCompleted, deviceSynced]);
+
+  // Auto-compute IACI from imported device data (no check-in needed)
+  useEffect(() => {
+    if (!isSupabaseConfigured && hasImportedData && !iaci && !checkinCompleted) {
+      computeDemo();
+    }
+  }, [hasImportedData]);
 
   // Auto-expand today's card on first load
   useEffect(() => {
@@ -62,7 +70,7 @@ export default function Dashboard() {
   }, [expandedCardDate]);
 
   const handleMetricAccept = useCallback((metric: string) => {
-    // Metric accept is handled inside WhoopMetricRow → feed store
+    // Metric accept is handled inside MetricRow → feed store
   }, []);
 
   const handleMetricEdit = useCallback((metric: string, value: number) => {
@@ -87,11 +95,11 @@ export default function Dashboard() {
     return (
       <CheckinPromptCard
         syncing={syncing}
-        whoopSynced={whoopSynced}
+        deviceSynced={deviceSynced}
         onUseYesterday={carryForwardCheckin}
       />
     );
-  }, [checkinCompleted, syncing, whoopSynced, carryForwardCheckin]);
+  }, [checkinCompleted, syncing, deviceSynced, carryForwardCheckin]);
 
   const ListFooter = useCallback(() => {
     if (!loadingMore) return null;

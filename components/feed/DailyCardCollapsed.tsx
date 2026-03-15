@@ -1,14 +1,17 @@
 /**
- * DailyCardCollapsed — Compact view (~90px) for non-expanded feed cards.
+ * DailyCardCollapsed — Compact view for non-expanded feed cards.
  *
- * Left: small IACIRing | Center: date + phenotype | Right: 4 key metrics
+ * Left: small IACIRing | Center: date + phenotype + device badge
+ * Right: key metrics (HRV, Strain)
+ *
+ * Device badge label and color are resolved dynamically from deviceSource.
  */
 
 import { View, StyleSheet } from 'react-native';
 import { IACIRing } from '../dashboard/IACIRing';
 import { ThemedText } from '../ui/ThemedText';
 import { COLORS } from '../../lib/utils/constants';
-import { FeedDay } from '../../lib/types/feed';
+import { FeedDay, getSourceMeta } from '../../lib/types/feed';
 import { today, formatDate } from '../../lib/utils/date';
 import { differenceInDays, parseISO } from 'date-fns';
 
@@ -23,16 +26,27 @@ function relativeDate(dateStr: string): string {
   return formatDate(dateStr, 'EEE MMM d');
 }
 
+/** Color-code recovery score (green/yellow/red). */
+function recoveryColor(score: number | null | undefined): string {
+  if (score == null) return COLORS.textMuted;
+  if (score >= 67) return '#00C48C';
+  if (score >= 34) return '#FFB800';
+  return '#FF4444';
+}
+
 export function DailyCardCollapsed({ day }: Props) {
   const hasIACI = day.iaci != null;
   const score = day.iaci?.score ?? 0;
   const tier = day.iaci?.readinessTier ?? 'maintain';
   const phenotype = day.iaci?.phenotype?.label ?? (day.checkinCompleted ? '' : 'Check-in pending');
 
+  const recovery = day.physiology?.recovery_score;
   const hrv = day.physiology?.hrv_rmssd;
-  const rhr = day.physiology?.resting_heart_rate;
   const sleepMs = day.physiology?.sleep_duration_ms;
+  const sleepPct = day.physiology?.sleep_performance_pct;
   const strain = day.physiology?.day_strain;
+  const hasDevice = day.deviceSynced && day.physiology != null;
+  const sourceMeta = day.deviceSource ? getSourceMeta(day.deviceSource) : null;
 
   return (
     <View style={styles.row}>
@@ -47,34 +61,49 @@ export function DailyCardCollapsed({ day }: Props) {
         )}
       </View>
 
-      {/* Center: Date + Phenotype */}
+      {/* Center: Date + Phenotype + Device badge */}
       <View style={styles.center}>
-        <ThemedText variant="body" style={styles.dateLabel}>
-          {relativeDate(day.date)}
-        </ThemedText>
-        <ThemedText variant="caption" color={COLORS.textSecondary} numberOfLines={1}>
-          {phenotype}
-        </ThemedText>
+        <View style={styles.dateLine}>
+          <ThemedText variant="body" style={styles.dateLabel}>
+            {relativeDate(day.date)}
+          </ThemedText>
+          {hasDevice && sourceMeta && (
+            <View style={[styles.deviceBadge, { borderColor: sourceMeta.color }]}>
+              <ThemedText variant="caption" style={[styles.deviceBadgeText, { color: sourceMeta.color }]}>
+                {sourceMeta.label}
+              </ThemedText>
+            </View>
+          )}
+        </View>
+        {hasDevice ? (
+          <ThemedText variant="caption" color={COLORS.textSecondary} numberOfLines={1}>
+            Recovery{' '}
+            <ThemedText variant="caption" style={{ color: recoveryColor(recovery), fontWeight: '700' }}>
+              {recovery != null ? `${Math.round(recovery)}%` : '--'}
+            </ThemedText>
+            {'  '}Sleep{' '}
+            <ThemedText variant="caption" style={{ color: COLORS.text, fontWeight: '600' }}>
+              {sleepMs != null ? `${(Math.round(sleepMs / 3600000 * 10) / 10).toFixed(1)}h` : '--'}
+            </ThemedText>
+            {sleepPct != null && (
+              <ThemedText variant="caption" color={COLORS.textMuted}>
+                {` (${Math.round(sleepPct)}%)`}
+              </ThemedText>
+            )}
+          </ThemedText>
+        ) : (
+          <ThemedText variant="caption" color={COLORS.textSecondary} numberOfLines={1}>
+            {phenotype}
+          </ThemedText>
+        )}
       </View>
 
-      {/* Right: 4 Key Metrics */}
+      {/* Right: Key Metrics */}
       <View style={styles.metricsGrid}>
         <View style={styles.metricCell}>
           <ThemedText variant="caption" color={COLORS.textMuted}>HRV</ThemedText>
           <ThemedText variant="caption" style={styles.metricValue}>
             {hrv != null ? Math.round(hrv) : '--'}
-          </ThemedText>
-        </View>
-        <View style={styles.metricCell}>
-          <ThemedText variant="caption" color={COLORS.textMuted}>RHR</ThemedText>
-          <ThemedText variant="caption" style={styles.metricValue}>
-            {rhr != null ? Math.round(rhr) : '--'}
-          </ThemedText>
-        </View>
-        <View style={styles.metricCell}>
-          <ThemedText variant="caption" color={COLORS.textMuted}>Sleep</ThemedText>
-          <ThemedText variant="caption" style={styles.metricValue}>
-            {sleepMs != null ? (Math.round(sleepMs / 3600000 * 10) / 10).toFixed(1) : '--'}
           </ThemedText>
         </View>
         <View style={styles.metricCell}>
@@ -111,18 +140,33 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 12,
   },
+  dateLine: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
   dateLabel: {
     fontWeight: '600',
     fontSize: 15,
   },
+  deviceBadge: {
+    backgroundColor: '#1A1A2E',
+    borderRadius: 4,
+    paddingHorizontal: 5,
+    paddingVertical: 1,
+    borderWidth: 1,
+  },
+  deviceBadgeText: {
+    fontSize: 8,
+    fontWeight: '700',
+    letterSpacing: 0.8,
+  },
   metricsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    width: 100,
-    gap: 2,
+    flexDirection: 'column',
+    width: 50,
+    gap: 4,
   },
   metricCell: {
-    width: 46,
     alignItems: 'center',
   },
   metricValue: {

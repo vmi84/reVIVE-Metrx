@@ -9,6 +9,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useAuthStore } from '../store/auth-store';
 import { useDailyStore } from '../store/daily-store';
+import { usePhysiologyStore } from '../store/physiology-store';
 import { useFeedStore } from '../store/feed-store';
 import { FeedDay } from '../lib/types/feed';
 import { DailyPhysiologyRow, SubjectiveEntryRow, WorkoutRow } from '../lib/types/database';
@@ -77,15 +78,19 @@ function buildFeedDay(
     }
   }
 
-  // Determine metric sources
-  const metricSources: Record<string, 'whoop' | 'manual' | 'inherited' | 'computed'> = {};
+  // Determine metric sources and device identity
+  const sources = phys?.sources ?? [];
+  // Detect which device source provided data (first non-manual source)
+  const deviceSource = sources.find(s => s !== 'manual' && s !== 'inherited' && s !== 'computed')
+    ?.replace(/_zip$|_csv$/, '') // normalize 'whoop_zip' → 'whoop'
+    ?? null;
+
+  const metricSources: Record<string, string> = {};
   if (phys) {
-    const sources = phys.sources ?? [];
-    const isWhoop = sources.includes('whoop');
-    const whoopMetrics = ['hrv_rmssd', 'resting_heart_rate', 'sleep_duration_ms',
+    const deviceMetrics = ['hrv_rmssd', 'resting_heart_rate', 'sleep_duration_ms',
       'sleep_performance_pct', 'recovery_score', 'respiratory_rate', 'day_strain'];
-    for (const m of whoopMetrics) {
-      metricSources[m] = isWhoop ? 'whoop' : 'manual';
+    for (const m of deviceMetrics) {
+      metricSources[m] = deviceSource ?? 'manual';
     }
   }
 
@@ -97,7 +102,8 @@ function buildFeedDay(
     loadCapacity: null,
     recoveryPlan: null,
     recoveryDayPlan: null,
-    whoopSynced: phys?.sources?.includes('whoop') ?? false,
+    deviceSynced: deviceSource != null,
+    deviceSource,
     checkinCompleted: subj != null,
     workouts,
     metricSources,
@@ -109,10 +115,55 @@ function buildFeedDay(
 // Demo/Offline Mock Data
 // ---------------------------------------------------------------------------
 
+function canonicalToPhysRow(rec: import('../lib/types/canonical').CanonicalPhysiologyRecord): DailyPhysiologyRow {
+  const dayStrain = rec.workouts.reduce((s, w) => s + (w.strainScore ?? 0), 0) || null;
+  return {
+    id: `imported-${rec.date}`,
+    user_id: 'demo',
+    date: rec.date,
+    hrv_rmssd: rec.cardiovascular.hrvRmssd,
+    resting_heart_rate: rec.cardiovascular.restingHeartRate,
+    respiratory_rate: rec.cardiovascular.respiratoryRate,
+    spo2_pct: rec.cardiovascular.spo2Pct,
+    skin_temp_deviation: rec.cardiovascular.skinTempDeviation,
+    sleep_duration_ms: rec.sleep.totalSleepMs,
+    sleep_performance_pct: rec.sleep.sleepPerformancePct,
+    sleep_consistency_pct: rec.sleep.sleepConsistencyPct,
+    rem_sleep_ms: rec.sleep.remSleepMs,
+    deep_sleep_ms: rec.sleep.deepSleepMs,
+    light_sleep_ms: rec.sleep.lightSleepMs,
+    awake_during_ms: rec.sleep.awakeDuringMs,
+    sleep_latency_ms: rec.sleep.sleepLatencyMs,
+    sleep_onset_time: rec.sleep.sleepOnsetTime,
+    wake_time: rec.sleep.wakeTime,
+    awakenings: rec.sleep.awakenings,
+    recovery_score: rec.recovery.recoveryScore,
+    day_strain: dayStrain,
+    iaci_score: null,
+    readiness_tier: null,
+    subsystem_scores: null,
+    phenotype: null,
+    phenotype_detail: null,
+    penalties_applied: null,
+    inflammation_score: null,
+    inflammation_flags: null,
+    sources: ['whoop_zip'],
+    data_completeness: 0,
+  } as DailyPhysiologyRow;
+}
+
 function generateMockFeed(): FeedDay[] {
   const days: FeedDay[] = [];
+  const physStore = usePhysiologyStore.getState();
+
   for (let i = 0; i < PAGE_SIZE; i++) {
     const dateStr = daysAgo(i);
+
+    // Use imported device data if available for this date
+    const importedRec = physStore.getRecord(dateStr);
+    const phys = importedRec ? canonicalToPhysRow(importedRec) : null;
+    const importSource = importedRec?.source ?? null; // e.g. 'whoop', 'garmin'
+
     const score = Math.round(40 + Math.random() * 50);
     const tier = score >= 85 ? 'perform' :
                  score >= 70 ? 'train' :
@@ -121,7 +172,7 @@ function generateMockFeed(): FeedDay[] {
 
     days.push({
       date: dateStr,
-      physiology: null,
+      physiology: phys,
       subjective: null,
       iaci: i === 0 ? null : { // Today has no IACI yet (needs check-in)
         date: dateStr,
@@ -151,10 +202,18 @@ function generateMockFeed(): FeedDay[] {
       loadCapacity: null,
       recoveryPlan: null,
       recoveryDayPlan: null,
-      whoopSynced: i > 0,
+      deviceSynced: phys != null,
+      deviceSource: importSource,
       checkinCompleted: i > 0,
       workouts: [],
-      metricSources: {},
+      metricSources: phys && importSource ? {
+        hrv_rmssd: importSource,
+        resting_heart_rate: importSource,
+        sleep_duration_ms: importSource,
+        day_strain: importSource,
+        recovery_score: importSource,
+        respiratory_rate: importSource,
+      } : {},
       metricValidations: {},
     });
   }

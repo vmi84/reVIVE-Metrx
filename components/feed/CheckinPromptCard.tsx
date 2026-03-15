@@ -13,11 +13,11 @@ import { COLORS } from '../../lib/utils/constants';
 
 interface Props {
   syncing: boolean;
-  whoopSynced: boolean;
+  deviceSynced: boolean;
   onUseYesterday: () => void;
 }
 
-export function CheckinPromptCard({ syncing, whoopSynced, onUseYesterday }: Props) {
+export function CheckinPromptCard({ syncing, deviceSynced, onUseYesterday }: Props) {
   return (
     <Card style={styles.card}>
       <ThemedText variant="title" style={styles.greeting}>
@@ -25,9 +25,9 @@ export function CheckinPromptCard({ syncing, whoopSynced, onUseYesterday }: Prop
       </ThemedText>
       <ThemedText variant="body" color={COLORS.textSecondary} style={styles.prompt}>
         {syncing
-          ? 'Syncing Whoop data...'
-          : whoopSynced
-          ? 'Whoop data synced. How are you feeling today?'
+          ? 'Syncing device data...'
+          : deviceSynced
+          ? 'Device data synced. How are you feeling today?'
           : 'Complete your check-in to see today\'s recovery score.'}
       </ThemedText>
 

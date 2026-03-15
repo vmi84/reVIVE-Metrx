@@ -51,7 +51,7 @@ export default function Profile() {
           </ThemedText>
         )}
         <Button
-          title="Connect Whoop"
+          title="Connect Device"
           variant="secondary"
           onPress={() => router.push('/device-setup')}
           style={styles.connectButton}
@@ -92,7 +92,7 @@ export default function Profile() {
         </ThemedText>
         <TouchableOpacity onPress={() => router.push('/import-data')}>
           <ThemedText variant="body" color={COLORS.primary}>
-            Import Whoop Data (ZIP or CSV)
+            Import Wearable Data (ZIP or CSV)
           </ThemedText>
         </TouchableOpacity>
       </Card>

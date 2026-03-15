@@ -12,7 +12,6 @@
  */
 
 import JSZip from 'jszip';
-import Papa from 'papaparse';
 import {
   CanonicalPhysiologyRecord,
   SleepMetrics,
@@ -47,13 +46,57 @@ function extractDate(raw: string | undefined): string | null {
   return Number.isNaN(d.getTime()) ? null : d.toISOString().slice(0, 10);
 }
 
-/** Parse a CSV string into typed rows */
+/** Simple iterative CSV parser — avoids PapaParse stack overflow in React Native */
 function parseCSV<T = Record<string, string>>(content: string): T[] {
-  const result = Papa.parse<T>(content, {
-    header: true,
-    skipEmptyLines: true,
-  });
-  return result.data;
+  const lines = content.split('\n');
+  if (lines.length < 2) return [];
+
+  const headers = splitCSVLine(lines[0]);
+  const rows: T[] = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    const values = splitCSVLine(line);
+    const row: Record<string, string> = {};
+    for (let j = 0; j < headers.length; j++) {
+      row[headers[j]] = values[j] ?? '';
+    }
+    rows.push(row as T);
+  }
+  return rows;
+}
+
+/** Split a CSV line respecting quoted fields */
+function splitCSVLine(line: string): string[] {
+  const fields: string[] = [];
+  let current = '';
+  let inQuotes = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (inQuotes) {
+      if (ch === '"') {
+        if (i + 1 < line.length && line[i + 1] === '"') {
+          current += '"';
+          i++; // skip escaped quote
+        } else {
+          inQuotes = false;
+        }
+      } else {
+        current += ch;
+      }
+    } else if (ch === '"') {
+      inQuotes = true;
+    } else if (ch === ',') {
+      fields.push(current.trim());
+      current = '';
+    } else {
+      current += ch;
+    }
+  }
+  fields.push(current.trim());
+  return fields;
 }
 
 /** Find a file inside the ZIP by suffix (case-insensitive) */
@@ -134,13 +177,6 @@ interface WorkoutRow {
   'HR Zone 5 %': string;
 }
 
-interface JournalRow {
-  'Cycle start time': string;
-  'Question text': string;
-  'Answered yes': string;
-  Notes: string;
-}
-
 // ── Public API ───────────────────────────────────────────────────────
 
 export interface WhoopZipResult {
@@ -160,12 +196,11 @@ export async function parseWhoopZip(
 ): Promise<WhoopZipResult> {
   const zip = await JSZip.loadAsync(zipData);
 
-  // Read available CSVs
-  const [physioCSV, sleepCSV, workoutCSV, journalCSV] = await Promise.all([
+  // Read available CSVs (skip journal_entries — too large and not mapped to canonical records)
+  const [physioCSV, sleepCSV, workoutCSV] = await Promise.all([
     findAndRead(zip, 'physiological_cycles.csv'),
     findAndRead(zip, 'sleeps.csv'),
     findAndRead(zip, 'workouts.csv'),
-    findAndRead(zip, 'journal_entries.csv'),
   ]);
 
   if (!physioCSV) {
@@ -176,7 +211,6 @@ export async function parseWhoopZip(
   const physioRows = parseCSV<PhysioCycleRow>(physioCSV);
   const sleepRows = sleepCSV ? parseCSV<SleepRow>(sleepCSV) : [];
   const workoutRows = workoutCSV ? parseCSV<WorkoutRow>(workoutCSV) : [];
-  const journalRows = journalCSV ? parseCSV<JournalRow>(journalCSV) : [];
 
   // Index nap data by cycle date (exclude naps from primary sleep)
   const napsByDate = new Map<string, SleepRow[]>();
@@ -309,7 +343,7 @@ export async function parseWhoopZip(
   return {
     records,
     workoutCount: workoutRows.length,
-    journalCount: journalRows.length,
+    journalCount: 0,
     sleepCount: sleepRows.length,
     dateRange,
   };

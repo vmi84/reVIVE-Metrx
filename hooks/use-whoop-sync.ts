@@ -10,8 +10,8 @@ const WHOOP_TOKEN_KEY = 'whoop_access_token';
 
 export function useWhoopSync() {
   const { user } = useAuthStore();
-  const { setSyncInProgress, setLastWhoopSync, setSyncError } = useSyncStore();
-  const { setWhoopSynced } = useDailyStore();
+  const { setSyncInProgress, setLastDeviceSync, setSyncError } = useSyncStore();
+  const { setDeviceSynced } = useDailyStore();
   const [syncing, setSyncing] = useState(false);
 
   const syncMorningData = useCallback(async () => {
@@ -85,8 +85,8 @@ export function useWhoopSync() {
 
       if (error) throw error;
 
-      setLastWhoopSync(new Date().toISOString());
-      setWhoopSynced(true);
+      setLastDeviceSync(new Date().toISOString(), 'whoop');
+      setDeviceSynced(true, 'whoop');
     } catch (err) {
       setSyncError(err instanceof Error ? err.message : 'Whoop sync failed');
     } finally {
