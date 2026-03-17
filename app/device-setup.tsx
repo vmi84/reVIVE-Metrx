@@ -24,7 +24,12 @@ export default function DeviceSetup() {
   const extra = Constants.expoConfig?.extra ?? {};
   const clientId = extra.whoopClientId ?? '';
   const clientSecret = extra.whoopClientSecret ?? '';
-  const redirectUri = AuthSession.makeRedirectUri({ scheme: 'revive-metrx' });
+  // makeRedirectUri generates the correct URI for the current environment.
+  // The path must match what's registered in the Whoop Developer Portal.
+  const redirectUri = AuthSession.makeRedirectUri({
+    scheme: 'revive-metrx',
+    path: 'auth/whoop/callback',
+  });
 
   const discovery = {
     authorizationEndpoint: WHOOP_AUTH_URL,
@@ -44,6 +49,13 @@ export default function DeviceSetup() {
       Alert.alert('Configuration Error', 'Whoop Client ID not configured. Add EXPO_PUBLIC_WHOOP_CLIENT_ID to .env');
       return;
     }
+    if (!clientSecret) {
+      Alert.alert('Configuration Error', 'Whoop Client Secret not configured. Add WHOOP_CLIENT_SECRET to .env');
+      return;
+    }
+
+    // Log the redirect URI so the developer can register it in the Whoop portal
+    console.log('[Whoop OAuth] Redirect URI:', redirectUri);
 
     setConnecting(true);
     try {
@@ -72,6 +84,15 @@ export default function DeviceSetup() {
 
         if (!tokenRes.ok) {
           const errText = await tokenRes.text();
+          // Provide actionable error messages for common OAuth failures
+          if (tokenRes.status === 400 && errText.includes('redirect_uri')) {
+            throw new Error(
+              `Redirect URI mismatch. The URI registered with Whoop must exactly match: ${redirectUri}`,
+            );
+          }
+          if (tokenRes.status === 401) {
+            throw new Error('Invalid client credentials. Check your WHOOP_CLIENT_SECRET in .env');
+          }
           throw new Error(`Token exchange failed (${tokenRes.status}): ${errText}`);
         }
 

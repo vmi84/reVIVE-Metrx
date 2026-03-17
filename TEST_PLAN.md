@@ -1,4 +1,4 @@
-# reVIVE MetRx — SME Test Plan
+# reVIVE Metrx — SME Test Plan
 
 ## 1. Test Strategy Overview
 

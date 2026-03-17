@@ -1,8 +1,8 @@
-# reVIVE MetRx
+# reVIVE Metrx
 
 **Integrated Athlete Condition Index (IACI) — A 6-subsystem recovery intelligence platform.**
 
-reVIVE MetRx computes a composite readiness score from wearable data, subjective check-ins, and lab results, then prescribes personalized recovery protocols and training recommendations.
+reVIVE Metrx computes a composite readiness score from wearable data, subjective check-ins, and lab results, then prescribes personalized recovery protocols and training recommendations.
 
 ## Core Concepts
 

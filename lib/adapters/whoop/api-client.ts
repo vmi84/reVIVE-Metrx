@@ -145,6 +145,14 @@ export function sportName(sportId: number): string {
   return SPORT_MAP[sportId] ?? 'Activity';
 }
 
+/** Ensure date strings are full ISO 8601 (Whoop API requires it). */
+function toISO(date: string): string {
+  // Already ISO 8601 with time component
+  if (date.includes('T')) return date;
+  // Bare date like '2026-03-17' → '2026-03-17T00:00:00.000Z'
+  return `${date}T00:00:00.000Z`;
+}
+
 // ─── Client ──────────────────────────────────────────────────────────────────
 
 const SCOPES = [
@@ -244,56 +252,77 @@ export class WhoopApiClient {
     };
   }
 
+  // ── Profile endpoint ───────────────────────────────────────────────────────
+
+  async getProfile(token: string): Promise<{ user_id: number; email: string; first_name: string; last_name: string }> {
+    const res = await fetch(`${WHOOP_API_BASE}/v1/user/profile/basic`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Whoop profile error (${res.status}): ${text}`);
+    }
+    return res.json();
+  }
+
   // ── Data endpoints ─────────────────────────────────────────────────────────
 
   async getRecovery(
     token: string,
-    startDate: string,
+    startDate?: string,
     endDate?: string,
   ): Promise<WhoopRecoveryRecord[]> {
-    const params = new URLSearchParams({ start: startDate });
-    if (endDate) params.set('end', endDate);
+    const params = new URLSearchParams();
+    if (startDate) params.set('start', toISO(startDate));
+    if (endDate) params.set('end', toISO(endDate));
+    const qs = params.toString();
     return this.fetchPaginated<WhoopRecoveryRecord>(
-      `/v1/recovery?${params}`,
+      `/v1/recovery${qs ? `?${qs}` : ''}`,
       token,
     );
   }
 
   async getSleep(
     token: string,
-    startDate: string,
+    startDate?: string,
     endDate?: string,
   ): Promise<WhoopSleepRecord[]> {
-    const params = new URLSearchParams({ start: startDate });
-    if (endDate) params.set('end', endDate);
+    const params = new URLSearchParams();
+    if (startDate) params.set('start', toISO(startDate));
+    if (endDate) params.set('end', toISO(endDate));
+    const qs = params.toString();
     return this.fetchPaginated<WhoopSleepRecord>(
-      `/v1/sleep?${params}`,
+      `/v1/sleep${qs ? `?${qs}` : ''}`,
       token,
     );
   }
 
   async getWorkouts(
     token: string,
-    startDate: string,
+    startDate?: string,
     endDate?: string,
   ): Promise<WhoopWorkoutRecord[]> {
-    const params = new URLSearchParams({ start: startDate });
-    if (endDate) params.set('end', endDate);
+    const params = new URLSearchParams();
+    if (startDate) params.set('start', toISO(startDate));
+    if (endDate) params.set('end', toISO(endDate));
+    const qs = params.toString();
     return this.fetchPaginated<WhoopWorkoutRecord>(
-      `/v1/workout?${params}`,
+      `/v1/workout${qs ? `?${qs}` : ''}`,
       token,
     );
   }
 
   async getCycles(
     token: string,
-    startDate: string,
+    startDate?: string,
     endDate?: string,
   ): Promise<WhoopCycleRecord[]> {
-    const params = new URLSearchParams({ start: startDate });
-    if (endDate) params.set('end', endDate);
+    const params = new URLSearchParams();
+    if (startDate) params.set('start', toISO(startDate));
+    if (endDate) params.set('end', toISO(endDate));
+    const qs = params.toString();
     return this.fetchPaginated<WhoopCycleRecord>(
-      `/v1/cycle?${params}`,
+      `/v1/cycle${qs ? `?${qs}` : ''}`,
       token,
     );
   }

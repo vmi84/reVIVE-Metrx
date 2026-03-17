@@ -13,7 +13,7 @@ import { COLORS } from '../../lib/utils/constants';
 
 export default function Profile() {
   const { profile, signOut, user } = useAuth();
-  const { syncHistorical, syncing } = useWhoopSync();
+  const { syncHistorical, syncing, syncProgress } = useWhoopSync();
   const lastSync = useSyncStore(s => s.lastDeviceSync);
   const lastSyncSource = useSyncStore(s => s.lastSyncSource);
   const hasData = usePhysiologyStore(s => s.hasData);
@@ -73,12 +73,17 @@ export default function Profile() {
               </ThemedText>
             )}
             <Button
-              title={syncing ? 'Syncing...' : 'Sync Last 30 Days'}
+              title={syncing ? 'Syncing…' : 'Sync All Whoop Data'}
               variant="secondary"
-              onPress={() => syncHistorical(30)}
+              onPress={() => syncHistorical()}
               loading={syncing}
               style={styles.connectButton}
             />
+            {syncing && syncProgress && (
+              <ThemedText variant="caption" color={COLORS.textMuted} style={{ marginTop: 6, textAlign: 'center' }}>
+                {syncProgress}
+              </ThemedText>
+            )}
           </View>
         ) : (profile?.connected_devices ?? []).length > 0 ? (
           profile!.connected_devices.map((device, i) => (

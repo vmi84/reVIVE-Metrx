@@ -1,4 +1,4 @@
-# Comprehensive reVIVE MetRx Reference Data
+# Comprehensive reVIVE Metrx Reference Data
 
 > Compiled: March 2026
 > Purpose: Structured reference for building a scalable, wearable-agnostic athlete recovery application.

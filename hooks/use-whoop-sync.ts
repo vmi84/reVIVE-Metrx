@@ -176,6 +176,7 @@ export function useWhoopSync() {
   const { setDeviceSynced } = useDailyStore();
   const { upsertRecords } = usePhysiologyStore();
   const [syncing, setSyncing] = useState(false);
+  const [syncProgress, setSyncProgress] = useState<string | null>(null);
   const lastSyncDate = useRef<string | null>(null);
 
   /**
@@ -303,9 +304,10 @@ export function useWhoopSync() {
   }, []);
 
   /**
-   * Backfill historical data from Whoop API (e.g. last 30 days).
+   * Backfill historical data from Whoop API.
+   * Pass daysBack=0 (or undefined) to fetch ALL available data.
    */
-  const syncHistorical = useCallback(async (daysBack: number = 30) => {
+  const syncHistorical = useCallback(async (daysBack?: number) => {
     if (syncing) return;
     setSyncing(true);
     setSyncInProgress(true);
@@ -319,18 +321,22 @@ export function useWhoopSync() {
       }
 
       const { WhoopApiClient, sportName } = await import('../lib/adapters/whoop/api-client');
-      const { whoopAdapter } = await import('../lib/adapters/whoop/index');
       const client = new WhoopApiClient();
 
-      const startDate = daysAgo(daysBack);
+      const startDate = daysBack ? daysAgo(daysBack) : undefined;
       const endDate = today();
 
-      // Fetch all data types in parallel
-      const [recoveries, sleeps, workouts] = await Promise.all([
-        client.getRecovery(token, startDate, endDate),
-        client.getSleep(token, startDate, endDate),
-        client.getWorkouts(token, startDate, endDate),
-      ]);
+      setSyncProgress('Fetching recovery data…');
+
+      // Fetch all data types sequentially so we can show progress
+      const recoveries = await client.getRecovery(token, startDate, endDate);
+      setSyncProgress(`${recoveries.length} recoveries · Fetching sleep data…`);
+
+      const sleeps = await client.getSleep(token, startDate, endDate);
+      setSyncProgress(`${recoveries.length} recoveries · ${sleeps.length} sleeps · Fetching workouts…`);
+
+      const workouts = await client.getWorkouts(token, startDate, endDate);
+      setSyncProgress(`Processing ${recoveries.length + sleeps.length + workouts.length} records…`);
 
       // Group everything by date
       const byDate = new Map<string, {
@@ -516,6 +522,7 @@ export function useWhoopSync() {
     } finally {
       setSyncing(false);
       setSyncInProgress(false);
+      setSyncProgress(null);
     }
   }, [syncing]);
 
@@ -525,5 +532,6 @@ export function useWhoopSync() {
     syncHistorical,
     isConnected,
     syncing,
+    syncProgress,
   };
 }

@@ -35,8 +35,8 @@ export function TrainingCompatCard({ compatibility }: TrainingCompatCardProps) {
       </ThemedText>
       <View style={styles.grid}>
         {DASHBOARD_MODALITIES.map(({ key, label }) => {
-          const permission = compatibility[key];
-          const { icon, color } = PERMISSION_ICONS[permission];
+          const permission = compatibility?.[key] ?? 'allowed';
+          const { icon, color } = PERMISSION_ICONS[permission] ?? PERMISSION_ICONS.allowed;
           return (
             <View key={key} style={styles.row}>
               <ThemedText style={[styles.icon, { color }]}>{icon}</ThemedText>

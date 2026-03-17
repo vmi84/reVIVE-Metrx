@@ -2,7 +2,7 @@ import { ExpoConfig, ConfigContext } from 'expo/config';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: 'reVIVE MetRx',
+  name: 'reVIVE Metrx',
   slug: 'revive-metrx',
   version: '1.0.0',
   orientation: 'portrait',

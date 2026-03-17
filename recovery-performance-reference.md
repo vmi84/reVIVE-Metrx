@@ -1,4 +1,4 @@
-# reVIVE MetRx: Comprehensive Reference Document
+# reVIVE Metrx: Comprehensive Reference Document
 ## For Building an Endurance-Focused Recovery-Performance App
 
 ---

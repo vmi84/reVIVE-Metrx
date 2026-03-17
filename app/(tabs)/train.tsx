@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-import { View, ScrollView, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, ScrollView, StyleSheet, TouchableOpacity, TextInput, LayoutAnimation } from 'react-native';
 import { router } from 'expo-router';
 import { useDailyStore } from '../../store/daily-store';
 import { useWorkoutLogger } from '../../hooks/use-workout-logger';
@@ -42,6 +42,20 @@ export default function Train() {
   const trainingRecs = useTrainingRecommendations();
   const [recentWorkouts, setRecentWorkouts] = useState<Workout[]>([]);
   const [search, setSearch] = useState('');
+  const [expandedCats, setExpandedCats] = useState<Set<string>>(new Set());
+
+  const toggleCat = (label: string) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setExpandedCats((prev) => {
+      const next = new Set(prev);
+      if (next.has(label)) {
+        next.delete(label);
+      } else {
+        next.add(label);
+      }
+      return next;
+    });
+  };
 
   useEffect(() => {
     fetchRecentWorkouts();
@@ -111,30 +125,51 @@ export default function Train() {
       </Card>
 
       {/* Quick Log by Category */}
-      {filteredCategories.map((cat) => (
-        <Card key={cat.label} style={styles.section}>
-          <ThemedText variant="caption" style={styles.sectionHeader}>
-            {cat.icon} {cat.label.toUpperCase()}
-          </ThemedText>
-          <View style={styles.quickActions}>
-            {cat.keys.map((key) => {
-              const profile = TRAINING_RECOVERY_MAP[key as keyof typeof TRAINING_RECOVERY_MAP];
-              if (!profile) return null;
-              return (
-                <TouchableOpacity
-                  key={key}
-                  style={styles.quickAction}
-                  onPress={() => router.push('/post-workout')}
-                >
-                  <ThemedText variant="caption" style={styles.quickActionText}>
-                    {profile.label}
+      {filteredCategories.map((cat) => {
+        const isExpanded = expandedCats.has(cat.label);
+        return (
+          <Card key={cat.label} style={styles.section}>
+            <TouchableOpacity
+              style={styles.catHeader}
+              onPress={() => toggleCat(cat.label)}
+              activeOpacity={0.7}
+            >
+              <ThemedText variant="caption" style={styles.sectionHeader}>
+                {cat.icon} {cat.label.toUpperCase()}
+              </ThemedText>
+              <View style={styles.catHeaderRight}>
+                <View style={styles.catCount}>
+                  <ThemedText variant="caption" style={styles.catCountText}>
+                    {cat.keys.length}
                   </ThemedText>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </Card>
-      ))}
+                </View>
+                <ThemedText variant="caption" style={styles.chevron}>
+                  {isExpanded ? '▼' : '▶'}
+                </ThemedText>
+              </View>
+            </TouchableOpacity>
+            {isExpanded && (
+              <View style={styles.quickActions}>
+                {cat.keys.map((key) => {
+                  const profile = TRAINING_RECOVERY_MAP[key as keyof typeof TRAINING_RECOVERY_MAP];
+                  if (!profile) return null;
+                  return (
+                    <TouchableOpacity
+                      key={key}
+                      style={styles.quickAction}
+                      onPress={() => router.push('/post-workout')}
+                    >
+                      <ThemedText variant="caption" style={styles.quickActionText}>
+                        {profile.label}
+                      </ThemedText>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            )}
+          </Card>
+        );
+      })}
 
       {filteredCategories.length === 0 && search.trim() && (
         <Card style={styles.section}>
@@ -193,7 +228,34 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '700',
     color: COLORS.textMuted,
-    marginBottom: 10,
+    marginBottom: 0,
+  },
+  catHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 4,
+    marginBottom: 0,
+  },
+  catHeaderRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  catCount: {
+    backgroundColor: COLORS.surfaceLight,
+    borderRadius: 10,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+  },
+  catCountText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: COLORS.textMuted,
+  },
+  chevron: {
+    fontSize: 10,
+    color: COLORS.textMuted,
   },
   searchInput: {
     backgroundColor: COLORS.surfaceLight,
@@ -209,6 +271,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
+    marginTop: 10,
   },
   quickAction: {
     backgroundColor: COLORS.surfaceLight,

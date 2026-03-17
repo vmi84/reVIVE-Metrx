@@ -1,9 +1,34 @@
 // Global mocks for native modules used across tests
 
-// expo-file-system — in-memory Map
+// expo-file-system — in-memory Map (covers both legacy and class-based APIs)
 jest.mock('expo-file-system', () => {
   const store = new Map<string, string>();
+
+  // Class-based API (expo-file-system v55+) used by file-storage.ts
+  class MockFile {
+    uri: string;
+    constructor(parent: { uri: string } | string, name?: string) {
+      const base = typeof parent === 'string' ? parent : parent.uri;
+      this.uri = name ? `${base}/${name}` : base;
+    }
+    get exists() { return store.has(this.uri); }
+    async text() { return store.get(this.uri) ?? ''; }
+    write(content: string) { store.set(this.uri, content); }
+    delete() { store.delete(this.uri); }
+  }
+
+  class MockDirectory {
+    uri: string;
+    constructor(parent: { uri: string } | string, name?: string) {
+      const base = typeof parent === 'string' ? parent : parent.uri;
+      this.uri = name ? `${base}/${name}` : base;
+    }
+    get exists() { return true; }
+    create() {}
+  }
+
   return {
+    // Legacy API
     documentDirectory: '/mock/documents/',
     readAsStringAsync: jest.fn(async (uri: string) => {
       const val = store.get(uri);
@@ -25,6 +50,10 @@ jest.mock('expo-file-system', () => {
     })),
     makeDirectoryAsync: jest.fn(async () => {}),
     EncodingType: { UTF8: 'utf8', Base64: 'base64' },
+    // Class-based API
+    File: MockFile,
+    Directory: MockDirectory,
+    Paths: { document: { uri: '/mock/documents' } },
     __store: store, // exposed for test cleanup
   };
 });

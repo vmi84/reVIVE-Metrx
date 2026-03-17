@@ -55,7 +55,7 @@ export default function SignIn() {
           </View>
 
           <ThemedText variant="title" style={styles.title}>
-            reVIVE MetRx
+            reVIVE Metrx
           </ThemedText>
           <ThemedText variant="body" style={styles.subtitle}>
             Integrated Athlete Condition Index (IACI)
