@@ -1,4 +1,4 @@
-# reVIVE MetRx
+# reVIVE Metrx
 
 **Integrated Athlete Condition Index (IACI) — A 6-subsystem recovery intelligence platform.**
 
