@@ -54,8 +54,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
-          tabBarLabel: 'Profile',
+          title: 'Settings',
+          tabBarLabel: 'Settings',
         }}
       />
     </Tabs>

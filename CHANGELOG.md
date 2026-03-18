@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-03-18
+
+### Added
+- **5-Step Onboarding Questionnaire** — Full athlete profile setup:
+  - Step 1: Sport selection (33 sports, multi-select by category) + experience level
+  - Step 2: Training context — athlete mode (Self-Directed / Coach-Led), schedule (single/2-a-day), frequency, hours/week, training phase
+  - Step 3: Goals & recovery priorities (ranked, max 3)
+  - Step 4: Environment (gym/home/pool/outdoors), equipment (10 options), dietary approach
+  - Step 5: Baseline health (injuries/conditions) + profile summary review
+- **Settings tab** (renamed from Profile) with organized sections:
+  - Athlete Profile with "Edit Athlete Profile" button linking to onboarding
+  - Training Mode toggles (Self-Directed / Coach-Led, Single / Two-a-day)
+  - Connected Devices with Coming Soon list (Garmin, Oura, Apple Watch, Polar, COROS)
+  - Data section (Lab Results, Import Wearable Data)
+  - Account (Sign Out)
+- **Live athlete mode toggle** — Switching mode in Settings immediately updates the daily store and engine behavior
+
+### Changed
+- **Tab label** — "Profile" renamed to "Settings" in bottom navigation
+- **Onboarding screen** — Expanded from single sport-picker to 5-step questionnaire with progress dots, back/next navigation, and profile summary
+- **Onboarding route** — Now opens as modal, accessible from Settings > Edit Athlete Profile
+
 ## [3.0.0] - 2026-03-18
 
 ### Added

@@ -77,7 +77,7 @@ export default function RootLayout() {
               headerShown: false,
             }}
           />
-          <Stack.Screen name="onboarding" options={{ title: 'Select Your Sports', headerShown: false }} />
+          <Stack.Screen name="onboarding" options={{ title: 'Athlete Profile', headerShown: false, presentation: 'modal' }} />
           <Stack.Screen name="device-setup" options={{ title: 'Connect Device' }} />
           <Stack.Screen name="protocol/[slug]" options={{ title: 'Protocol' }} />
           <Stack.Screen name="import-data" options={{ title: 'Import Data' }} />
