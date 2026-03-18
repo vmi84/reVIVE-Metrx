@@ -66,7 +66,11 @@ export default function DeviceSetup() {
         responseType: AuthSession.ResponseType.Code,
       });
 
-      const result = await request.promptAsync(discovery);
+      // Use non-ephemeral session so Cloudflare cookies persist between attempts.
+      // This shares cookies with Safari, reducing bot-detection false positives.
+      const result = await request.promptAsync(discovery, {
+        preferEphemeralSession: false,
+      });
 
       if (result.type === 'success' && result.params.code) {
         // Exchange code for token — manual fetch because Whoop requires client_secret
