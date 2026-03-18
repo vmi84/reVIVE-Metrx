@@ -82,15 +82,35 @@ export function DailyCardExpanded({ day, onMetricAccept, onMetricEdit }: Props) 
         )}
       </View>
 
-      {/* IACI Ring */}
-      {hasIACI && (
-        <View style={styles.ringSection}>
-          <IACIRing score={day.iaci!.score} tier={day.iaci!.readinessTier} size={120} />
-          <ThemedText variant="caption" color={COLORS.textMuted} style={styles.completeness}>
-            Data completeness: {Math.round(day.iaci!.dataCompleteness * 100)}%
-          </ThemedText>
-        </View>
-      )}
+      {/* Scores Row: IACI Ring + Device Recovery side by side */}
+      <View style={styles.scoresRow}>
+        {hasIACI && (
+          <View style={styles.scoreBlock}>
+            <IACIRing score={day.iaci!.score} tier={day.iaci!.readinessTier} size={100} />
+            <ThemedText variant="caption" color={COLORS.textMuted} style={styles.scoreLabel}>
+              IACI Score
+            </ThemedText>
+            <ThemedText variant="caption" color={COLORS.textMuted} style={styles.completeness}>
+              {Math.round(day.iaci!.dataCompleteness * 100)}% data
+            </ThemedText>
+          </View>
+        )}
+        {phys?.recovery_score != null && (
+          <View style={styles.scoreBlock}>
+            <View style={[styles.recoveryCircle, { borderColor: recoveryColor(phys.recovery_score) }]}>
+              <ThemedText style={[styles.recoveryScoreLarge, { color: recoveryColor(phys.recovery_score) }]}>
+                {Math.round(phys.recovery_score)}
+              </ThemedText>
+              <ThemedText style={[styles.recoveryPctLabel, { color: recoveryColor(phys.recovery_score) }]}>
+                %
+              </ThemedText>
+            </View>
+            <ThemedText variant="caption" color={COLORS.textMuted} style={styles.scoreLabel}>
+              Device Recovery
+            </ThemedText>
+          </View>
+        )}
+      </View>
 
       {/* Device Key Metrics Summary */}
       {day.deviceSynced && phys && sourceMeta && (
@@ -311,6 +331,41 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
+  scoresRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingVertical: 8,
+  },
+  scoreBlock: {
+    alignItems: 'center',
+  },
+  scoreLabel: {
+    marginTop: 4,
+    fontSize: 10,
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+  },
+  recoveryCircle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.2)',
+  },
+  recoveryScoreLarge: {
+    fontSize: 36,
+    fontWeight: '800',
+    lineHeight: 40,
+  },
+  recoveryPctLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    lineHeight: 16,
+  },
   deviceBadge: {
     backgroundColor: '#1A1A2E',
     borderRadius: 4,
@@ -360,12 +415,8 @@ const styles = StyleSheet.create({
     color: COLORS.text,
     marginTop: 2,
   },
-  ringSection: {
-    alignItems: 'center',
-    marginBottom: 16,
-  },
   completeness: {
-    marginTop: 6,
+    fontSize: 9,
   },
   metricsCard: {
     marginBottom: 12,

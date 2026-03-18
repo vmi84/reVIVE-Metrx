@@ -1,14 +1,13 @@
 /**
  * DailyCardCollapsed — Compact view for non-expanded feed cards.
  *
- * Left: small IACIRing | Center: date + phenotype + device badge
- * Right: key metrics (HRV, Strain)
- *
- * Device badge label and color are resolved dynamically from deviceSource.
+ * Layout:
+ *   Left:   Recovery color bar + IACI score (large) + device recovery % (small)
+ *   Center: [WHOOP] badge + Date + phenotype
+ *   Right:  Stacked metrics (HRV, Sleep, Strain)
  */
 
 import { View, StyleSheet } from 'react-native';
-import { IACIRing } from '../dashboard/IACIRing';
 import { ThemedText } from '../ui/ThemedText';
 import { COLORS } from '../../lib/utils/constants';
 import { FeedDay, getSourceMeta } from '../../lib/types/feed';
@@ -26,7 +25,6 @@ function relativeDate(dateStr: string): string {
   return formatDate(dateStr, 'EEE MMM d');
 }
 
-/** Color-code recovery score (green/yellow/red). */
 function recoveryColor(score: number | null | undefined): string {
   if (score == null) return COLORS.textMuted;
   if (score >= 67) return '#00C48C';
@@ -36,79 +34,68 @@ function recoveryColor(score: number | null | undefined): string {
 
 export function DailyCardCollapsed({ day }: Props) {
   const hasIACI = day.iaci != null;
-  const score = day.iaci?.score ?? 0;
-  const tier = day.iaci?.readinessTier ?? 'maintain';
+  const iaciScore = day.iaci?.score ?? null;
   const phenotype = day.iaci?.phenotype?.label ?? (day.checkinCompleted ? '' : 'Check-in pending');
 
   const recovery = day.physiology?.recovery_score;
   const hrv = day.physiology?.hrv_rmssd;
-  const sleepMs = day.physiology?.sleep_duration_ms;
   const sleepPct = day.physiology?.sleep_performance_pct;
   const strain = day.physiology?.day_strain;
   const hasDevice = day.deviceSynced && day.physiology != null;
   const sourceMeta = day.deviceSource ? getSourceMeta(day.deviceSource) : null;
+  const recColor = recoveryColor(recovery);
 
   return (
     <View style={styles.row}>
-      {/* Left: IACI Ring */}
-      <View style={styles.ringContainer}>
-        {hasIACI ? (
-          <IACIRing score={score} tier={tier} size={56} />
-        ) : (
-          <View style={styles.ringPlaceholder}>
-            <ThemedText variant="caption" color={COLORS.textMuted}>--</ThemedText>
-          </View>
-        )}
-      </View>
-
-      {/* Center: Date + Phenotype + Device badge */}
-      <View style={styles.center}>
-        <View style={styles.dateLine}>
-          <ThemedText variant="body" style={styles.dateLabel}>
-            {relativeDate(day.date)}
+      {/* Left: color bar + scores */}
+      <View style={styles.leftGroup}>
+        <View style={[styles.colorBar, { backgroundColor: recColor }]} />
+        <View style={styles.scoreCol}>
+          <ThemedText style={styles.iaciScore}>
+            {hasIACI ? Math.round(iaciScore!) : '--'}
           </ThemedText>
-          {hasDevice && sourceMeta && (
-            <View style={[styles.deviceBadge, { borderColor: sourceMeta.color }]}>
-              <ThemedText variant="caption" style={[styles.deviceBadgeText, { color: sourceMeta.color }]}>
-                {sourceMeta.label}
-              </ThemedText>
-            </View>
+          {recovery != null && (
+            <ThemedText style={[styles.deviceScore, { color: recColor }]}>
+              {Math.round(recovery)}%
+            </ThemedText>
           )}
         </View>
-        {hasDevice ? (
-          <ThemedText variant="caption" color={COLORS.textSecondary} numberOfLines={1}>
-            Recovery{' '}
-            <ThemedText variant="caption" style={{ color: recoveryColor(recovery), fontWeight: '700' }}>
-              {recovery != null ? `${Math.round(recovery)}%` : '--'}
-            </ThemedText>
-            {'  '}Sleep{' '}
-            <ThemedText variant="caption" style={{ color: COLORS.text, fontWeight: '600' }}>
-              {sleepMs != null ? `${(Math.round(sleepMs / 3600000 * 10) / 10).toFixed(1)}h` : '--'}
-            </ThemedText>
-            {sleepPct != null && (
-              <ThemedText variant="caption" color={COLORS.textMuted}>
-                {` (${Math.round(sleepPct)}%)`}
-              </ThemedText>
-            )}
-          </ThemedText>
-        ) : (
-          <ThemedText variant="caption" color={COLORS.textSecondary} numberOfLines={1}>
-            {phenotype}
-          </ThemedText>
-        )}
       </View>
 
-      {/* Right: Key Metrics */}
-      <View style={styles.metricsGrid}>
-        <View style={styles.metricCell}>
-          <ThemedText variant="caption" color={COLORS.textMuted}>HRV</ThemedText>
-          <ThemedText variant="caption" style={styles.metricValue}>
-            {hrv != null ? Math.round(hrv) : '--'}
+      {/* Center: device badge + date + phenotype */}
+      <View style={styles.center}>
+        {hasDevice && sourceMeta && (
+          <View style={[styles.badge, { borderColor: sourceMeta.color }]}>
+            <ThemedText variant="caption" style={[styles.badgeText, { color: sourceMeta.color }]}>
+              {sourceMeta.label}
+            </ThemedText>
+          </View>
+        )}
+        <ThemedText variant="body" style={styles.dateLabel}>
+          {relativeDate(day.date)}
+        </ThemedText>
+        <ThemedText variant="caption" color={COLORS.textSecondary} numberOfLines={1}>
+          {phenotype}
+        </ThemedText>
+      </View>
+
+      {/* Right: stacked metrics */}
+      <View style={styles.metricsStack}>
+        <View style={styles.metricRow}>
+          <ThemedText variant="caption" color={COLORS.textMuted} style={styles.metricLabel}>HRV</ThemedText>
+          <ThemedText variant="caption" style={styles.metricVal}>
+            {hrv != null ? `${Math.round(hrv)} ms` : '--'}
           </ThemedText>
         </View>
-        <View style={styles.metricCell}>
-          <ThemedText variant="caption" color={COLORS.textMuted}>Strain</ThemedText>
-          <ThemedText variant="caption" style={styles.metricValue}>
+        <View style={styles.metricRow}>
+          <ThemedText variant="caption" color={COLORS.textMuted} style={styles.metricLabel}>Sleep</ThemedText>
+          <ThemedText variant="caption" style={styles.metricVal}>
+            {sleepPct != null ? `${Math.round(sleepPct)}%` : '--'}
+          </ThemedText>
+        </View>
+        <View style={styles.metricRow}>
+          <ThemedText variant="caption" color={COLORS.textMuted} style={styles.metricLabel}>Strain</ThemedText>
+          <ThemedText variant="caption" style={styles.metricVal}>
             {strain != null ? strain.toFixed(1) : '--'}
           </ThemedText>
         </View>
@@ -124,53 +111,70 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 12,
   },
-  ringContainer: {
-    width: 60,
-    alignItems: 'center',
-  },
-  ringPlaceholder: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: COLORS.surfaceLight,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  center: {
-    flex: 1,
-    marginHorizontal: 12,
-  },
-  dateLine: {
+  leftGroup: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
+  },
+  colorBar: {
+    width: 4,
+    height: 48,
+    borderRadius: 2,
+  },
+  scoreCol: {
+    width: 44,
+    alignItems: 'center',
+  },
+  iaciScore: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: COLORS.text,
+    lineHeight: 26,
+  },
+  deviceScore: {
+    fontSize: 11,
+    fontWeight: '700',
+    lineHeight: 14,
+  },
+  center: {
+    flex: 1,
+    marginHorizontal: 10,
+  },
+  badge: {
+    alignSelf: 'flex-start',
+    borderRadius: 4,
+    paddingHorizontal: 5,
+    paddingVertical: 1,
+    marginBottom: 2,
+    backgroundColor: '#1A1A2E',
+    borderWidth: 1,
+  },
+  badgeText: {
+    fontSize: 8,
+    fontWeight: '800',
+    letterSpacing: 0.8,
   },
   dateLabel: {
     fontWeight: '600',
     fontSize: 15,
   },
-  deviceBadge: {
-    backgroundColor: '#1A1A2E',
-    borderRadius: 4,
-    paddingHorizontal: 5,
-    paddingVertical: 1,
-    borderWidth: 1,
+  metricsStack: {
+    width: 82,
+    gap: 3,
   },
-  deviceBadgeText: {
-    fontSize: 8,
-    fontWeight: '700',
-    letterSpacing: 0.8,
-  },
-  metricsGrid: {
-    flexDirection: 'column',
-    width: 50,
-    gap: 4,
-  },
-  metricCell: {
+  metricRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
-  metricValue: {
-    fontWeight: '600',
+  metricLabel: {
+    fontSize: 10,
+    width: 36,
+  },
+  metricVal: {
+    fontWeight: '700',
     color: COLORS.text,
+    fontSize: 12,
+    textAlign: 'right',
   },
 });

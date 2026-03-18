@@ -67,6 +67,9 @@ export interface CanonicalPhysiologyRecord {
   cardiovascular: CardiovascularMetrics;
   recovery: RecoveryMetrics;
   workouts: WorkoutMetrics[];
+
+  /** Total day strain from the device cycle (e.g. Whoop day strain). */
+  dayStrain?: number | null;
 }
 
 export type DataQualityTier = 'high' | 'medium' | 'low' | 'estimated';

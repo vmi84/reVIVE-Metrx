@@ -184,6 +184,7 @@ export function useWhoopSync() {
    */
   const isConnected = useCallback(async (): Promise<boolean> => {
     const token = await SecureStore.getItemAsync(TOKEN_KEY);
+    console.log('[Whoop] isConnected check — token exists:', !!token);
     return !!token;
   }, []);
 
@@ -327,6 +328,7 @@ export function useWhoopSync() {
       const endDate = today();
 
       setSyncProgress('Fetching recovery data…');
+      console.log('[Whoop] syncHistorical: startDate=', startDate, 'endDate=', endDate);
 
       // Fetch all data types sequentially so we can show progress
       const recoveries = await client.getRecovery(token, startDate, endDate);
@@ -336,7 +338,25 @@ export function useWhoopSync() {
       setSyncProgress(`${recoveries.length} recoveries · ${sleeps.length} sleeps · Fetching workouts…`);
 
       const workouts = await client.getWorkouts(token, startDate, endDate);
+      setSyncProgress(`Fetching daily strain cycles…`);
+
+      // Cycle endpoint may not be available for all accounts — fail gracefully
+      let cycles: Awaited<ReturnType<typeof client.getCycles>> = [];
+      try {
+        cycles = await client.getCycles(token, startDate, endDate);
+      } catch {
+        console.warn('[Whoop] Cycle endpoint unavailable, skipping day strain');
+      }
       setSyncProgress(`Processing ${recoveries.length + sleeps.length + workouts.length} records…`);
+
+      // Index cycle strain by date
+      const cycleStrainByDate = new Map<string, number>();
+      for (const c of cycles) {
+        if (c.score?.strain != null) {
+          const date = c.start.slice(0, 10);
+          cycleStrainByDate.set(date, c.score.strain);
+        }
+      }
 
       // Group everything by date
       const byDate = new Map<string, {
@@ -484,6 +504,9 @@ export function useWhoopSync() {
           }
         }
 
+        // Day strain from cycle data (more accurate than summing workouts)
+        rec.dayStrain = cycleStrainByDate.get(date) ?? null;
+
         // Quality assessment
         const hasRecovery = rec.recovery.recoveryScore != null;
         const hasSleep = rec.sleep.totalSleepMs != null;
@@ -496,6 +519,8 @@ export function useWhoopSync() {
 
       // Sort by date and store
       records.sort((a, b) => a.date.localeCompare(b.date));
+      console.log('[Whoop] syncHistorical: storing', records.length, 'records',
+        records.length > 0 ? `(${records[0].date} → ${records[records.length - 1].date})` : '');
       upsertRecords(records);
 
       // Update metadata
@@ -518,6 +543,7 @@ export function useWhoopSync() {
 
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Historical sync failed';
+      console.error('[Whoop] syncHistorical error:', msg, err);
       setSyncError(msg);
     } finally {
       setSyncing(false);

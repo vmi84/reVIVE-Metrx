@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2.6.1] - 2026-03-17
+
+### Added
+- **Historical Whoop backfill** — Dashboard auto-syncs all available Whoop data on first connection (recovery, sleep, workouts, cycles), not just today
+- **Pull-to-refresh sync** — Pulling down on Dashboard syncs the last 7 days of Whoop data and refreshes the feed
+- **Sync progress banner** — Dashboard shows real-time sync status, record count, and errors with manual sync button
+- **Day strain from cycles** — Fetches Whoop cycle data for accurate total day strain (falls back to workout sum)
+- **Dual score display** — Expanded daily cards show IACI ring and device recovery circle side-by-side
+- **Device data on all historical cards** — Feed now extends beyond 14 days to show all imported Whoop dates
+
+### Changed
+- **Collapsed card layout** — Recovery color bar (green/yellow/red) on left, IACI score (large) over device recovery % (small), date with WHOOP badge above, HRV/Sleep %/Strain stacked on right
+- **Sleep metric** — Collapsed cards now show sleep performance percentage instead of hours
+- **Expanded card scores row** — IACI ring and device recovery displayed as equal peers with labels
+
+### Fixed
+- **Whoop cycle API 404** — Cycle endpoint fetch now fails gracefully if unavailable
+- **Day strain calculation** — Prefers cycle-level day strain over summed workout strain for accuracy
+- **Feed data quality** — `canonicalToPhysRow` properly maps `dayStrain` from canonical records
+
 ## [2.2.4] - 2026-03-14
 
 ### Added

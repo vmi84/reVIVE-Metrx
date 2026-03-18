@@ -5,8 +5,8 @@
  * CheckinPromptCard appears when morning check-in is incomplete.
  */
 
-import { useEffect, useCallback } from 'react';
-import { FlatList, View, StyleSheet, ActivityIndicator, RefreshControl } from 'react-native';
+import { useEffect, useCallback, useState } from 'react';
+import { FlatList, View, StyleSheet, ActivityIndicator, RefreshControl, TouchableOpacity } from 'react-native';
 import { useFeed } from '../../hooks/use-feed';
 import { useIACI } from '../../hooks/use-iaci';
 import { useWhoopSync } from '../../hooks/use-whoop-sync';
@@ -14,6 +14,7 @@ import { useLoadCapacity } from '../../hooks/use-load-capacity';
 import { useDailyStore } from '../../store/daily-store';
 import { usePhysiologyStore } from '../../store/physiology-store';
 import { useFeedStore } from '../../store/feed-store';
+import { useSyncStore } from '../../store/sync-store';
 import { DailyCard } from '../../components/feed/DailyCard';
 import { CheckinPromptCard } from '../../components/feed/CheckinPromptCard';
 import { ThemedText } from '../../components/ui/ThemedText';
@@ -25,20 +26,39 @@ import { isSupabaseConfigured } from '../../lib/supabase';
 export default function Dashboard() {
   const { days, loading, loadingMore, hasMore, loadMore, refresh, carryForwardCheckin } = useFeed();
   const { computeToday, computeDemo } = useIACI();
-  const { syncMorningData, isConnected, syncing } = useWhoopSync();
+  const { syncMorningData, syncHistorical, isConnected, syncing, syncProgress } = useWhoopSync();
   const { checkinCompleted, deviceSynced, iaci } = useDailyStore();
   const hasImportedData = usePhysiologyStore((s) => s.hasData);
+  const recordCount = usePhysiologyStore((s) => Object.keys(s.records).length);
   const { expandedCardDate, setExpandedCard } = useFeedStore();
+  const syncError = useSyncStore((s) => s.syncError);
+  const [syncStatus, setSyncStatus] = useState<string>('idle');
 
   // Trigger load capacity computation when IACI is available
   useLoadCapacity();
 
   // Auto-sync device data on mount — works in both online and offline mode
+  // If no data exists yet, trigger historical backfill (fetches all available data)
   useEffect(() => {
     (async () => {
+      setSyncStatus('checking connection…');
       const connected = await isConnected();
-      if (connected) {
-        syncMorningData();
+      setSyncStatus(connected ? 'connected' : 'not connected');
+      if (!connected) return;
+
+      try {
+        if (!hasImportedData) {
+          setSyncStatus('backfilling historical data…');
+          await syncHistorical();
+          setSyncStatus(`done — ${usePhysiologyStore.getState().lastImport?.recordCount ?? 0} records`);
+        } else {
+          setSyncStatus('syncing today…');
+          await syncMorningData();
+          setSyncStatus('synced');
+        }
+        refresh();
+      } catch (err) {
+        setSyncStatus(`error: ${err instanceof Error ? err.message : String(err)}`);
       }
     })();
   }, []);
@@ -67,6 +87,16 @@ export default function Dashboard() {
       setExpandedCard(today());
     }
   }, [days.length]);
+
+  // Pull-to-refresh: sync device data (last 7 days) then reload feed
+  const handleRefresh = useCallback(async () => {
+    const connected = await isConnected();
+    if (connected) {
+      // Sync last 7 days to catch any recent data changes
+      await syncHistorical(7);
+    }
+    await refresh();
+  }, [isConnected, syncHistorical, refresh]);
 
   const handleToggleExpand = useCallback((date: string) => {
     setExpandedCard(expandedCardDate === date ? null : date);
@@ -139,20 +169,51 @@ export default function Dashboard() {
     }
   }, [hasMore, loadingMore, loadMore]);
 
+  const SyncBanner = useCallback(() => {
+    // Always show status banner for debugging sync issues
+    const hasError = !!syncError;
+    const isActive = syncing && !!syncProgress;
+    const bannerColor = hasError ? '#FF444433' : isActive ? COLORS.surface : '#00C48C22';
+    const borderCol = hasError ? '#FF4444' : isActive ? COLORS.border : '#00C48C44';
+
+    return (
+      <View style={[styles.syncBanner, { backgroundColor: bannerColor, borderColor: borderCol }]}>
+        {isActive && <ActivityIndicator size="small" color={COLORS.primary} />}
+        <View style={{ flex: 1 }}>
+          <ThemedText variant="caption" color={hasError ? '#FF4444' : COLORS.textSecondary} style={styles.syncText}>
+            {hasError ? `Sync error: ${syncError}` : isActive ? syncProgress : `Sync: ${syncStatus} · ${recordCount} records stored`}
+          </ThemedText>
+        </View>
+        {!isActive && (
+          <TouchableOpacity onPress={handleRefresh}>
+            <ThemedText variant="caption" color={COLORS.primary} style={{ fontWeight: '700' }}>
+              Sync
+            </ThemedText>
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  }, [syncing, syncProgress, syncError, syncStatus, recordCount, handleRefresh]);
+
   return (
     <FlatList<FeedDay>
       data={days}
       renderItem={renderItem}
       keyExtractor={keyExtractor}
-      ListHeaderComponent={ListHeader}
+      ListHeaderComponent={() => (
+        <View>
+          <SyncBanner />
+          <ListHeader />
+        </View>
+      )}
       ListFooterComponent={ListFooter}
       ListEmptyComponent={ListEmpty}
       onEndReached={handleEndReached}
       onEndReachedThreshold={0.5}
       refreshControl={
         <RefreshControl
-          refreshing={loading && days.length > 0}
-          onRefresh={refresh}
+          refreshing={(loading && days.length > 0) || syncing}
+          onRefresh={handleRefresh}
           tintColor={COLORS.primary}
         />
       }
@@ -190,5 +251,21 @@ const styles = StyleSheet.create({
   footer: {
     paddingVertical: 20,
     alignItems: 'center',
+  },
+  syncBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: COLORS.surface,
+    borderRadius: 8,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  syncText: {
+    fontSize: 12,
   },
 });

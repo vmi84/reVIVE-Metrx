@@ -116,7 +116,9 @@ function buildFeedDay(
 // ---------------------------------------------------------------------------
 
 function canonicalToPhysRow(rec: import('../lib/types/canonical').CanonicalPhysiologyRecord): DailyPhysiologyRow {
-  const dayStrain = rec.workouts.reduce((s, w) => s + (w.strainScore ?? 0), 0) || null;
+  // Prefer cycle-level day strain, fall back to summing individual workout strains
+  const workoutStrain = rec.workouts.reduce((s, w) => s + (w.strainScore ?? 0), 0);
+  const dayStrain = rec.dayStrain ?? (workoutStrain > 0 ? workoutStrain : null);
   return {
     id: `imported-${rec.date}`,
     user_id: 'demo',
@@ -147,7 +149,7 @@ function canonicalToPhysRow(rec: import('../lib/types/canonical').CanonicalPhysi
     penalties_applied: null,
     inflammation_score: null,
     inflammation_flags: null,
-    sources: ['whoop_zip'],
+    sources: [rec.source ?? 'whoop'],
     data_completeness: 0,
   } as DailyPhysiologyRow;
 }
@@ -156,13 +158,24 @@ function generateMockFeed(): FeedDay[] {
   const days: FeedDay[] = [];
   const physStore = usePhysiologyStore.getState();
 
-  for (let i = 0; i < PAGE_SIZE; i++) {
+  // Determine how many days to show — at least PAGE_SIZE, but extend
+  // to cover all imported data dates
+  const importedDates = Object.keys(physStore.records).sort().reverse();
+  const oldestImported = importedDates.length > 0
+    ? Math.max(PAGE_SIZE, Math.ceil((Date.now() - new Date(importedDates[importedDates.length - 1]).getTime()) / 86400000) + 1)
+    : PAGE_SIZE;
+  const dayCount = Math.min(oldestImported, 365); // cap at 1 year
+
+  for (let i = 0; i < dayCount; i++) {
     const dateStr = daysAgo(i);
 
     // Use imported device data if available for this date
     const importedRec = physStore.getRecord(dateStr);
     const phys = importedRec ? canonicalToPhysRow(importedRec) : null;
-    const importSource = importedRec?.source ?? null; // e.g. 'whoop', 'garmin'
+    const importSource = importedRec?.source ?? null;
+
+    // Skip days with no data beyond the first PAGE_SIZE days
+    if (i >= PAGE_SIZE && !phys) continue;
 
     const score = Math.round(40 + Math.random() * 50);
     const tier = score >= 85 ? 'perform' :
@@ -205,7 +218,19 @@ function generateMockFeed(): FeedDay[] {
       deviceSynced: phys != null,
       deviceSource: importSource,
       checkinCompleted: i > 0,
-      workouts: [],
+      workouts: importedRec?.workouts?.map(w => ({
+        id: w.workoutId,
+        user_id: 'demo',
+        date: dateStr,
+        workout_type: w.workoutType,
+        start_time: w.startTime,
+        end_time: w.endTime,
+        duration_ms: w.durationMs,
+        avg_heart_rate: w.avgHeartRate,
+        max_heart_rate: w.maxHeartRate,
+        strain_score: w.strainScore,
+        calories_burned: w.caloriesBurned,
+      })) as any[] ?? [],
       metricSources: phys && importSource ? {
         hrv_rmssd: importSource,
         resting_heart_rate: importSource,
