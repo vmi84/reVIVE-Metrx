@@ -32,6 +32,16 @@ export default function Dashboard() {
   const { checkinCompleted, deviceSynced, iaci } = useDailyStore();
   const hasImportedData = usePhysiologyStore((s) => s.hasData);
   const recordCount = usePhysiologyStore((s) => Object.keys(s.records).length);
+  // Debug: check if recent dates exist in store
+  const recentDebug = usePhysiologyStore((s) => {
+    const t = today();
+    const y = new Date(); y.setDate(y.getDate() - 1);
+    const yStr = y.toISOString().slice(0, 10);
+    const d2 = new Date(); d2.setDate(d2.getDate() - 2);
+    const d2Str = d2.toISOString().slice(0, 10);
+    const allDates = Object.keys(s.records).sort().reverse().slice(0, 5);
+    return `${t}:${!!s.records[t]} ${yStr}:${!!s.records[yStr]} ${d2Str}:${!!s.records[d2Str]} top:[${allDates.join(',')}]`;
+  });
   const { expandedCardDate, setExpandedCard } = useFeedStore();
   const syncError = useSyncStore((s) => s.syncError);
   const [syncStatus, setSyncStatus] = useState<string>('idle');
@@ -205,7 +215,7 @@ export default function Dashboard() {
                 : `Sync error: ${syncError}`
               : isActive
                 ? syncProgress
-                : `${recordCount} days synced`}
+                : `${recordCount} days · ${recentDebug}`}
           </ThemedText>
         </View>
         {!isActive && (
@@ -217,7 +227,7 @@ export default function Dashboard() {
         )}
       </View>
     );
-  }, [syncing, syncProgress, syncError, syncStatus, recordCount, handleRefresh]);
+  }, [syncing, syncProgress, syncError, syncStatus, recordCount, recentDebug, handleRefresh]);
 
   return (
     <FlatList<FeedDay>

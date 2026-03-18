@@ -146,10 +146,12 @@ export function sportName(sportId: number): string {
 }
 
 /** Ensure date strings are full ISO 8601 (Whoop API requires it). */
-function toISO(date: string): string {
+function toISO(date: string, endOfDay: boolean = false): string {
   // Already ISO 8601 with time component
   if (date.includes('T')) return date;
-  // Bare date like '2026-03-17' → '2026-03-17T00:00:00.000Z'
+  // Bare date like '2026-03-17'
+  // For end dates, use end of day to include the full day's records
+  if (endOfDay) return `${date}T23:59:59.999Z`;
   return `${date}T00:00:00.000Z`;
 }
 
@@ -274,7 +276,7 @@ export class WhoopApiClient {
   ): Promise<WhoopRecoveryRecord[]> {
     const params = new URLSearchParams();
     if (startDate) params.set('start', toISO(startDate));
-    if (endDate) params.set('end', toISO(endDate));
+    if (endDate) params.set('end', toISO(endDate, true));
     const qs = params.toString();
     return this.fetchPaginated<WhoopRecoveryRecord>(
       `/v1/recovery${qs ? `?${qs}` : ''}`,
@@ -289,7 +291,7 @@ export class WhoopApiClient {
   ): Promise<WhoopSleepRecord[]> {
     const params = new URLSearchParams();
     if (startDate) params.set('start', toISO(startDate));
-    if (endDate) params.set('end', toISO(endDate));
+    if (endDate) params.set('end', toISO(endDate, true));
     const qs = params.toString();
     return this.fetchPaginated<WhoopSleepRecord>(
       `/v1/sleep${qs ? `?${qs}` : ''}`,
@@ -304,7 +306,7 @@ export class WhoopApiClient {
   ): Promise<WhoopWorkoutRecord[]> {
     const params = new URLSearchParams();
     if (startDate) params.set('start', toISO(startDate));
-    if (endDate) params.set('end', toISO(endDate));
+    if (endDate) params.set('end', toISO(endDate, true));
     const qs = params.toString();
     return this.fetchPaginated<WhoopWorkoutRecord>(
       `/v1/workout${qs ? `?${qs}` : ''}`,
@@ -319,7 +321,7 @@ export class WhoopApiClient {
   ): Promise<WhoopCycleRecord[]> {
     const params = new URLSearchParams();
     if (startDate) params.set('start', toISO(startDate));
-    if (endDate) params.set('end', toISO(endDate));
+    if (endDate) params.set('end', toISO(endDate, true));
     const qs = params.toString();
     return this.fetchPaginated<WhoopCycleRecord>(
       `/v1/cycle${qs ? `?${qs}` : ''}`,

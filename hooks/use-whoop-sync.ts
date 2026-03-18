@@ -519,8 +519,16 @@ export function useWhoopSync() {
 
       // Sort by date and store
       records.sort((a, b) => a.date.localeCompare(b.date));
+      // Log recent dates to debug missing days
+      const recentDates = records.filter(r => r.date >= daysAgo(7)).map(r => ({
+        date: r.date,
+        hasRecovery: r.recovery.recoveryScore != null,
+        hasSleep: r.sleep.totalSleepMs != null,
+        workouts: r.workouts.length,
+      }));
       console.log('[Whoop] syncHistorical: storing', records.length, 'records',
-        records.length > 0 ? `(${records[0].date} → ${records[records.length - 1].date})` : '');
+        records.length > 0 ? `(${records[0].date} → ${records[records.length - 1].date})` : '',
+        '\nRecent 7 days:', JSON.stringify(recentDates, null, 2));
       upsertRecords(records);
 
       // Update metadata

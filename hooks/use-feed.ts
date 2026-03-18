@@ -166,6 +166,14 @@ function generateMockFeed(): FeedDay[] {
     : PAGE_SIZE;
   const dayCount = Math.min(oldestImported, 365); // cap at 1 year
 
+  // Debug: log what dates have records
+  const allDates = Object.keys(physStore.records).sort().reverse();
+  if (allDates.length > 0) {
+    console.log('[Feed] Physiology store has', allDates.length, 'records.',
+      'Last 7:', allDates.slice(0, 7).join(', '),
+      'Today=', daysAgo(0), 'Yesterday=', daysAgo(1));
+  }
+
   for (let i = 0; i < dayCount; i++) {
     const dateStr = daysAgo(i);
 
@@ -173,6 +181,11 @@ function generateMockFeed(): FeedDay[] {
     const importedRec = physStore.getRecord(dateStr);
     const phys = importedRec ? canonicalToPhysRow(importedRec) : null;
     const importSource = importedRec?.source ?? null;
+
+    // Debug first 3 days
+    if (i < 3) {
+      console.log(`[Feed] Day ${i} (${dateStr}): record=${!!importedRec}, phys=${!!phys}, source=${importSource}`);
+    }
 
     // Skip days with no data beyond the first PAGE_SIZE days
     if (i >= PAGE_SIZE && !phys) continue;
