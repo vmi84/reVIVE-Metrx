@@ -140,6 +140,72 @@ export default function DeviceSetup() {
     }
   }
 
+  async function refreshAndSync() {
+    setConnecting(true);
+    try {
+      const refreshToken = await SecureStore.getItemAsync('whoop_refresh_token');
+      if (!refreshToken) {
+        Alert.alert('Session Expired', 'No refresh token available. Please reconnect.', [
+          { text: 'Reconnect', onPress: () => { setWhoopConnected(false); } },
+        ]);
+        return;
+      }
+
+      // Attempt token refresh
+      const res = await fetch(WHOOP_TOKEN_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          grant_type: 'refresh_token',
+          refresh_token: refreshToken,
+          client_id: clientId,
+          client_secret: clientSecret,
+        }).toString(),
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        if (res.status === 401 || res.status === 400) {
+          // Refresh token expired — need full re-auth
+          await SecureStore.deleteItemAsync('whoop_access_token');
+          await SecureStore.deleteItemAsync('whoop_refresh_token');
+          await SecureStore.deleteItemAsync('whoop_token_expires_at');
+          setWhoopConnected(false);
+          Alert.alert('Session Expired', 'Your Whoop session has expired. Please reconnect.');
+          return;
+        }
+        throw new Error(`Token refresh failed (${res.status}): ${errText}`);
+      }
+
+      const data = await res.json() as {
+        access_token: string;
+        refresh_token: string;
+        expires_in: number;
+      };
+
+      // Store refreshed tokens
+      await SecureStore.setItemAsync('whoop_access_token', data.access_token);
+      if (data.refresh_token) {
+        await SecureStore.setItemAsync('whoop_refresh_token', data.refresh_token);
+      }
+      const expiresAt = Date.now() + data.expires_in * 1000;
+      await SecureStore.setItemAsync('whoop_token_expires_at', String(expiresAt));
+
+      // Clear sync error
+      useSyncStore.getState().setSyncError(null);
+      useDailyStore.getState().setDeviceSynced(true, 'whoop');
+
+      Alert.alert('Connection Refreshed', 'Token refreshed. Returning to Dashboard to sync.', [
+        { text: 'OK', onPress: () => router.replace('/(tabs)/dashboard') },
+      ]);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Failed to refresh connection';
+      Alert.alert('Refresh Failed', msg);
+    } finally {
+      setConnecting(false);
+    }
+  }
+
   async function disconnectWhoop() {
     Alert.alert(
       'Disconnect Whoop',
@@ -199,8 +265,15 @@ export default function DeviceSetup() {
               </ThemedText>
             )}
             <Button
-              title="Disconnect"
+              title="Refresh Connection & Sync"
               variant="secondary"
+              onPress={refreshAndSync}
+              loading={connecting}
+              style={styles.connectButton}
+            />
+            <Button
+              title="Disconnect"
+              variant="ghost"
               onPress={disconnectWhoop}
               loading={disconnecting}
               style={{ ...styles.connectButton, opacity: 0.7 }}

@@ -22,6 +22,7 @@ import { COLORS } from '../lib/utils/constants';
 import { SPORT_PROFILES, SportCategory } from '../data/sport-profiles';
 import { useAuthStore } from '../store/auth-store';
 import { useDailyStore } from '../store/daily-store';
+import { useSettingsStore } from '../store/settings-store';
 import { isSupabaseConfigured } from '../lib/supabase';
 import type { AthleteMode, TrainingSchedule, TrainingPhase, ExperienceLevel } from '../lib/types/athlete-mode';
 
@@ -69,7 +70,7 @@ const RECOVERY_PRIORITIES = [
 const EQUIPMENT_OPTIONS = [
   'Foam Roller', 'Resistance Bands', 'Kettlebells', 'Sauna',
   'Cold Plunge/Ice Bath', 'Massage Gun', 'Yoga Mat', 'Pull-up Bar',
-  'Swimming Pool', 'Stationary Bike',
+  'Swimming Pool', 'Stationary Bike', 'Treadmill',
 ];
 
 const ENVIRONMENT_OPTIONS = ['Gym', 'Home', 'Outdoors', 'Pool', 'Studio'];
@@ -125,6 +126,12 @@ export default function OnboardingScreen() {
   // Step 5: Health
   const [conditions, setConditions] = useState((profile as any)?.known_conditions ?? '');
 
+  // Custom user-added items (not in preset lists)
+  const [customEquipment, setCustomEquipment] = useState<string[]>([]);
+  const [customEnvironment, setCustomEnvironment] = useState<string[]>([]);
+  const [customGoals, setCustomGoals] = useState<string[]>([]);
+  const [customPriorities, setCustomPriorities] = useState<string[]>([]);
+
   const toggleSet = (set: Set<string>, key: string, setter: (s: Set<string>) => void) => {
     const next = new Set(set);
     if (next.has(key)) next.delete(key); else next.add(key);
@@ -145,29 +152,48 @@ export default function OnboardingScreen() {
   };
 
   const handleComplete = async () => {
-    const updates: Record<string, any> = {
-      sport: Array.from(sports),
-      experience_level: experience,
-      athlete_mode: athleteMode,
-      training_schedule: schedule,
-      training_frequency: parseInt(frequency) || null,
-      training_hours_week: parseInt(hoursWeek) || null,
-      training_phase: phase,
-      primary_goal: goal || null,
-      recovery_priorities: Array.from(priorities),
-      available_equipment: Array.from(equipment),
-      training_environment: Array.from(environment),
-      dietary_approach: diet || null,
-      known_conditions: conditions || null,
-      onboarding_completed: true,
-    };
+    // Save to persisted settings store (survives restarts)
+    useSettingsStore.getState().updateProfile({
+      onboardingCompleted: true,
+      sports: Array.from(sports),
+      experienceLevel: experience,
+      athleteMode,
+      trainingSchedule: schedule,
+      trainingFrequency: parseInt(frequency) || null,
+      trainingHoursWeek: parseInt(hoursWeek) || null,
+      trainingPhase: phase,
+      primaryGoal: goal,
+      recoveryPriorities: Array.from(priorities),
+      availableEquipment: Array.from(equipment),
+      trainingEnvironment: Array.from(environment),
+      dietaryApproach: diet,
+      knownConditions: conditions,
+    });
 
-    // Update daily store immediately
+    // Update daily store immediately (for current session)
     setAthleteMode(athleteMode);
     setTrainingSchedule(schedule);
 
+    // Also push to Supabase if available
     if (isSupabaseConfigured) {
-      try { await updateProfile(updates); } catch { /* non-blocking */ }
+      try {
+        await updateProfile({
+          sport: Array.from(sports) as any,
+          experience_level: experience,
+          athlete_mode: athleteMode,
+          training_schedule: schedule,
+          training_frequency: parseInt(frequency) || null,
+          training_hours_week: parseInt(hoursWeek) || null,
+          training_phase: phase,
+          primary_goal: goal || null,
+          recovery_priorities: Array.from(priorities),
+          available_equipment: Array.from(equipment),
+          training_environment: Array.from(environment),
+          dietary_approach: diet || null,
+          known_conditions: conditions || null,
+          onboarding_completed: true,
+        } as any);
+      } catch { /* non-blocking */ }
     }
 
     router.replace('/(tabs)/dashboard');
@@ -301,7 +327,7 @@ export default function OnboardingScreen() {
 
             <Text style={styles.sectionTitle}>Primary Goal</Text>
             <View style={styles.chipGrid}>
-              {GOAL_OPTIONS.map(g => (
+              {[...GOAL_OPTIONS, ...customGoals].map(g => (
                 <TouchableOpacity
                   key={g}
                   style={[styles.chip, goal === g && styles.chipSelected]}
@@ -311,10 +337,14 @@ export default function OnboardingScreen() {
                 </TouchableOpacity>
               ))}
             </View>
+            <AddCustomInput placeholder="Add other goal..." onAdd={(val) => {
+              setCustomGoals(prev => [...prev, val]);
+              setGoal(val);
+            }} />
 
             <Text style={styles.sectionTitle}>Recovery Priorities (select up to 3)</Text>
             <View style={styles.chipGrid}>
-              {RECOVERY_PRIORITIES.map(p => (
+              {[...RECOVERY_PRIORITIES, ...customPriorities].map(p => (
                 <TouchableOpacity
                   key={p}
                   style={[styles.chip, priorities.has(p) && styles.chipSelected,
@@ -328,6 +358,10 @@ export default function OnboardingScreen() {
                 </TouchableOpacity>
               ))}
             </View>
+            <AddCustomInput placeholder="Add other priority..." onAdd={(val) => {
+              setCustomPriorities(prev => [...prev, val]);
+              if (priorities.size < 3) setPriorities(prev => new Set([...prev, val]));
+            }} />
           </>
         )}
 
@@ -338,7 +372,7 @@ export default function OnboardingScreen() {
 
             <Text style={styles.sectionTitle}>Training Environment</Text>
             <View style={styles.chipGrid}>
-              {ENVIRONMENT_OPTIONS.map(e => (
+              {[...ENVIRONMENT_OPTIONS, ...customEnvironment].map(e => (
                 <TouchableOpacity
                   key={e}
                   style={[styles.chip, environment.has(e) && styles.chipSelected]}
@@ -348,10 +382,14 @@ export default function OnboardingScreen() {
                 </TouchableOpacity>
               ))}
             </View>
+            <AddCustomInput placeholder="Add other environment..." onAdd={(val) => {
+              setCustomEnvironment(prev => [...prev, val]);
+              setEnvironment(prev => new Set([...prev, val]));
+            }} />
 
             <Text style={styles.sectionTitle}>Available Equipment</Text>
             <View style={styles.chipGrid}>
-              {EQUIPMENT_OPTIONS.map(e => (
+              {[...EQUIPMENT_OPTIONS, ...customEquipment].map(e => (
                 <TouchableOpacity
                   key={e}
                   style={[styles.chip, equipment.has(e) && styles.chipSelected]}
@@ -361,6 +399,10 @@ export default function OnboardingScreen() {
                 </TouchableOpacity>
               ))}
             </View>
+            <AddCustomInput placeholder="Add other equipment..." onAdd={(val) => {
+              setCustomEquipment(prev => [...prev, val]);
+              setEquipment(prev => new Set([...prev, val]));
+            }} />
 
             <Text style={styles.sectionTitle}>Dietary Approach</Text>
             <View style={styles.chipGrid}>
@@ -438,6 +480,42 @@ export default function OnboardingScreen() {
     </SafeAreaView>
   );
 }
+
+/** Inline "Add custom" input for any chip grid */
+function AddCustomInput({ placeholder, onAdd }: { placeholder: string; onAdd: (val: string) => void }) {
+  const [text, setText] = useState('');
+  const handleAdd = () => {
+    const trimmed = text.trim();
+    if (trimmed) {
+      onAdd(trimmed);
+      setText('');
+    }
+  };
+  return (
+    <View style={customStyles.row}>
+      <TextInput
+        style={customStyles.input}
+        value={text}
+        onChangeText={setText}
+        placeholder={placeholder}
+        placeholderTextColor={COLORS.textMuted}
+        onSubmitEditing={handleAdd}
+        returnKeyType="done"
+      />
+      <TouchableOpacity style={[customStyles.addBtn, !text.trim() && customStyles.addBtnDisabled]} onPress={handleAdd} disabled={!text.trim()}>
+        <Text style={customStyles.addText}>+ Add</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const customStyles = StyleSheet.create({
+  row: { flexDirection: 'row', gap: 8, marginTop: 8 },
+  input: { flex: 1, backgroundColor: COLORS.surface, borderRadius: 10, height: 40, paddingHorizontal: 12, color: COLORS.text, fontSize: 14, borderWidth: 1, borderColor: COLORS.border },
+  addBtn: { backgroundColor: COLORS.primary, borderRadius: 10, paddingHorizontal: 16, justifyContent: 'center' },
+  addBtnDisabled: { opacity: 0.4 },
+  addText: { color: '#fff', fontWeight: '600', fontSize: 13 },
+});
 
 function SummaryRow({ label, value }: { label: string; value: string }) {
   return (

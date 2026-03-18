@@ -7,6 +7,7 @@
 
 import { useEffect, useCallback, useState } from 'react';
 import { FlatList, View, StyleSheet, ActivityIndicator, RefreshControl, TouchableOpacity } from 'react-native';
+import { router } from 'expo-router';
 import { useFeed } from '../../hooks/use-feed';
 import { useIACI } from '../../hooks/use-iaci';
 import { useWhoopSync } from '../../hooks/use-whoop-sync';
@@ -22,6 +23,7 @@ import { FeedDay } from '../../lib/types/feed';
 import { COLORS } from '../../lib/utils/constants';
 import { today } from '../../lib/utils/date';
 import { isSupabaseConfigured } from '../../lib/supabase';
+import { useSettingsStore } from '../../store/settings-store';
 
 export default function Dashboard() {
   const { days, loading, loadingMore, hasMore, loadMore, refresh, carryForwardCheckin } = useFeed();
@@ -33,6 +35,15 @@ export default function Dashboard() {
   const { expandedCardDate, setExpandedCard } = useFeedStore();
   const syncError = useSyncStore((s) => s.syncError);
   const [syncStatus, setSyncStatus] = useState<string>('idle');
+
+  // Hydrate daily store from persisted settings on mount
+  useEffect(() => {
+    const s = useSettingsStore.getState();
+    if (s.onboardingCompleted) {
+      useDailyStore.getState().setAthleteMode(s.athleteMode);
+      useDailyStore.getState().setTrainingSchedule(s.trainingSchedule);
+    }
+  }, []);
 
   // Trigger load capacity computation when IACI is available
   useLoadCapacity();
@@ -48,12 +59,15 @@ export default function Dashboard() {
 
       try {
         if (!hasImportedData) {
+          // First sync — backfill all available data
           setSyncStatus('backfilling historical data…');
           await syncHistorical();
           setSyncStatus(`done — ${usePhysiologyStore.getState().lastImport?.recordCount ?? 0} records`);
         } else {
-          setSyncStatus('syncing today…');
-          await syncMorningData();
+          // Regular sync — always fetch last 7 days to catch gaps
+          // (handles reconnections, missed days, and token refreshes)
+          setSyncStatus('syncing recent data…');
+          await syncHistorical(7);
           setSyncStatus('synced');
         }
         refresh();
@@ -170,10 +184,14 @@ export default function Dashboard() {
   }, [hasMore, loadingMore, loadMore]);
 
   const SyncBanner = useCallback(() => {
-    // Always show status banner for debugging sync issues
     const hasError = !!syncError;
     const isActive = syncing && !!syncProgress;
-    const bannerColor = hasError ? '#FF444433' : isActive ? COLORS.surface : '#00C48C22';
+    const isDisconnected = hasError && (syncError.includes('not connected') || syncError.includes('Not connected'));
+
+    // Hide banner when everything is fine and not actively syncing
+    if (!hasError && !isActive && syncStatus === 'synced') return null;
+
+    const bannerColor = hasError ? '#FF444422' : isActive ? COLORS.surface : '#00C48C15';
     const borderCol = hasError ? '#FF4444' : isActive ? COLORS.border : '#00C48C44';
 
     return (
@@ -181,13 +199,19 @@ export default function Dashboard() {
         {isActive && <ActivityIndicator size="small" color={COLORS.primary} />}
         <View style={{ flex: 1 }}>
           <ThemedText variant="caption" color={hasError ? '#FF4444' : COLORS.textSecondary} style={styles.syncText}>
-            {hasError ? `Sync error: ${syncError}` : isActive ? syncProgress : `Sync: ${syncStatus} · ${recordCount} records stored`}
+            {hasError
+              ? isDisconnected
+                ? 'Whoop not connected. Reconnect in Settings > Connect Device.'
+                : `Sync error: ${syncError}`
+              : isActive
+                ? syncProgress
+                : `${recordCount} days synced`}
           </ThemedText>
         </View>
         {!isActive && (
-          <TouchableOpacity onPress={handleRefresh}>
+          <TouchableOpacity onPress={isDisconnected ? () => router.push('/device-setup') : handleRefresh}>
             <ThemedText variant="caption" color={COLORS.primary} style={{ fontWeight: '700' }}>
-              Sync
+              {isDisconnected ? 'Reconnect' : 'Sync'}
             </ThemedText>
           </TouchableOpacity>
         )}

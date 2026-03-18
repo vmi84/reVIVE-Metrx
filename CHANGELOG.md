@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [3.1.1] - 2026-03-18
+
+### Added
+- **Persisted settings store** — Onboarding data (athlete mode, sports, equipment, goals, etc.) now survives app restarts via file-system persistence
+- **Custom item input** on onboarding — "Add other..." text input on equipment, environment, goals, and recovery priorities sections
+- **Treadmill** added to equipment options
+- **Refresh Connection & Sync** button on Device Setup — refreshes OAuth token without full re-auth flow
+- **Reconnect button** on Dashboard sync banner — links to Device Setup when connection is lost
+
+### Changed
+- **Dashboard sync** — Always syncs last 7 days on mount (was today-only when data exists), catches gaps after reconnections
+- **Settings tab** reads from persisted settings store instead of Supabase profile (works offline)
+- **Dashboard hydrates** daily store from persisted settings on mount
+
+### Fixed
+- **Onboarding not persisting** — Settings now saved to both file-system store (local) and Supabase (when available)
+- **Whoop sync missing recent days** — After reconnect, syncs 7 days instead of just today
+- **Sync banner** — Hides when everything is fine; shows "Reconnect" for auth errors instead of useless "Sync" button
+
 ## [3.1.0] - 2026-03-18
 
 ### Added

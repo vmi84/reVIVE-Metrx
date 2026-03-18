@@ -18,6 +18,7 @@ import { useWhoopSync } from '../../hooks/use-whoop-sync';
 import { useSyncStore } from '../../store/sync-store';
 import { usePhysiologyStore } from '../../store/physiology-store';
 import { useDailyStore } from '../../store/daily-store';
+import { useSettingsStore } from '../../store/settings-store';
 import { Card } from '../../components/ui/Card';
 import { ThemedText } from '../../components/ui/ThemedText';
 import { Button } from '../../components/ui/Button';
@@ -31,6 +32,7 @@ export default function Settings() {
   const hasData = usePhysiologyStore(s => s.hasData);
   const lastImport = usePhysiologyStore(s => s.lastImport);
   const { athleteMode, trainingSchedule, setAthleteMode, setTrainingSchedule } = useDailyStore();
+  const settings = useSettingsStore();
   const [whoopConnected, setWhoopConnected] = useState(false);
 
   useEffect(() => {
@@ -62,12 +64,12 @@ export default function Settings() {
             {Array.isArray(profile.sport) ? profile.sport.join(', ') : profile.sport}
           </ThemedText>
         )}
-        <SettingRow label="Experience" value={(profile as any)?.experience_level ?? 'Not set'} />
-        <SettingRow label="Goal" value={(profile as any)?.primary_goal ?? 'Not set'} />
-        <SettingRow label="Diet" value={profile?.dietary_approach ?? 'Not set'} />
+        <SettingRow label="Experience" value={settings.experienceLevel || 'Not set'} />
+        <SettingRow label="Goal" value={settings.primaryGoal || 'Not set'} />
+        <SettingRow label="Diet" value={settings.dietaryApproach || 'Not set'} />
         <SettingRow label="Equipment" value={
-          (profile?.available_equipment ?? []).length > 0
-            ? `${profile!.available_equipment.length} items`
+          settings.availableEquipment.length > 0
+            ? `${settings.availableEquipment.length} items`
             : 'Not set'
         } />
         <Button
@@ -88,7 +90,7 @@ export default function Settings() {
         <View style={styles.toggleRow}>
           <TouchableOpacity
             style={[styles.toggleBtn, athleteMode === 'recreational' && styles.toggleBtnActive]}
-            onPress={() => setAthleteMode('recreational')}
+            onPress={() => { setAthleteMode('recreational'); settings.updateProfile({ athleteMode: 'recreational' }); }}
           >
             <ThemedText variant="caption" style={athleteMode === 'recreational' ? styles.toggleTextActive : styles.toggleText}>
               Self-Directed
@@ -96,7 +98,7 @@ export default function Settings() {
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.toggleBtn, athleteMode === 'competitive' && styles.toggleBtnActive]}
-            onPress={() => setAthleteMode('competitive')}
+            onPress={() => { setAthleteMode('competitive'); settings.updateProfile({ athleteMode: 'competitive' }); }}
           >
             <ThemedText variant="caption" style={athleteMode === 'competitive' ? styles.toggleTextActive : styles.toggleText}>
               Coach-Led
@@ -115,7 +117,7 @@ export default function Settings() {
         <View style={styles.toggleRow}>
           <TouchableOpacity
             style={[styles.toggleBtn, trainingSchedule === 'single' && styles.toggleBtnActive]}
-            onPress={() => setTrainingSchedule('single')}
+            onPress={() => { setTrainingSchedule('single'); settings.updateProfile({ trainingSchedule: 'single' }); }}
           >
             <ThemedText variant="caption" style={trainingSchedule === 'single' ? styles.toggleTextActive : styles.toggleText}>
               Single
@@ -123,7 +125,7 @@ export default function Settings() {
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.toggleBtn, trainingSchedule === 'double' && styles.toggleBtnActive]}
-            onPress={() => setTrainingSchedule('double')}
+            onPress={() => { setTrainingSchedule('double'); settings.updateProfile({ trainingSchedule: 'double' }); }}
           >
             <ThemedText variant="caption" style={trainingSchedule === 'double' ? styles.toggleTextActive : styles.toggleText}>
               Two-a-day
@@ -131,10 +133,10 @@ export default function Settings() {
           </TouchableOpacity>
         </View>
 
-        <SettingRow label="Phase" value={(profile as any)?.training_phase ?? 'Not set'} />
+        <SettingRow label="Phase" value={settings.trainingPhase || 'Not set'} />
         <SettingRow label="Frequency" value={
-          (profile as any)?.training_frequency
-            ? `${(profile as any).training_frequency} days/week`
+          settings.trainingFrequency
+            ? `${settings.trainingFrequency} days/week`
             : 'Not set'
         } />
       </Card>
