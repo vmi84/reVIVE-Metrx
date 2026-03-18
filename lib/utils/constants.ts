@@ -54,6 +54,18 @@ export const PENALTIES = {
   multi_system_impairment: 8,
 } as const;
 
+// Competitive athlete overrides
+export const COMPETITIVE_TIER_THRESHOLDS = {
+  perform: 75,
+  train: 60,
+  maintain: 45,
+  recover: 25,
+  protect: 0,
+} as const;
+
+export const COMPETITIVE_ACWR_DANGER_MIN = 1.5;
+export const COMPETITIVE_PENALTY_SCALING = 0.6;
+
 // Whoop API
 export const WHOOP_API_BASE = 'https://api.prod.whoop.com/developer';
 export const WHOOP_AUTH_URL = 'https://api.prod.whoop.com/oauth/oauth2/auth';

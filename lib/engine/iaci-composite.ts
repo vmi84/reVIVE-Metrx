@@ -17,13 +17,18 @@ import { computePenalties, totalPenaltyPoints } from './penalty-logic';
 import { classifyPhenotype } from './phenotype-classifier';
 import { prescribeProtocol } from './protocol-engine';
 import { clamp } from '../utils/math';
+import type { AthleteModeConfig } from '../types/athlete-mode';
 
+/**
+ * @param athleteMode - Optional config for competitive athlete threshold/penalty adjustments
+ */
 export function computeIACI(
   date: string,
   subsystemScores: SubsystemScores,
   weights: SubsystemWeights = DEFAULT_WEIGHTS,
   dataCompleteness: number = 1.0,
   sportKeys?: string | string[] | null,
+  athleteMode?: AthleteModeConfig | null,
 ): IACIResult {
   // Level 3: Weighted composite
   const baseScore = Math.round(
@@ -35,18 +40,19 @@ export function computeIACI(
     subsystemScores.psychological.score * weights.psychological,
   );
 
-  // Level 3.5: Penalties
-  const penalties = computePenalties(subsystemScores);
+  // Level 3.5: Penalties (scaled for competitive athletes)
+  const penaltyScaling = athleteMode?.penaltyScaling ?? 1.0;
+  const penalties = computePenalties(subsystemScores, penaltyScaling);
   const penaltyTotal = totalPenaltyPoints(penalties);
   const finalScore = clamp(baseScore - penaltyTotal, 0, 100);
 
   // Level 4: Phenotype classification
   const phenotype = classifyPhenotype(subsystemScores, penalties);
 
-  // Level 5: Protocol prescription
+  // Level 5: Protocol prescription (with athlete mode for threshold shifts)
   const readinessTier = getReadinessTier(finalScore);
   const protocolClass = getProtocolClass(finalScore);
-  const protocol = prescribeProtocol(finalScore, phenotype, subsystemScores, sportKeys);
+  const protocol = prescribeProtocol(finalScore, phenotype, subsystemScores, sportKeys, athleteMode);
 
   return {
     date,

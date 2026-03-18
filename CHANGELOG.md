@@ -6,6 +6,49 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-03-18
+
+### Added
+- **Athlete Mode** — New `competitive` vs `recreational` mode that flows through the entire scoring pipeline
+  - Competitive mode: relaxed IACI tier thresholds (75/60/45/25 vs 85/70/55/35)
+  - 40% reduced penalty scaling for competitive athletes (coach manages risk)
+  - ACWR danger threshold shifts from 1.3 to 1.5 (normal build phase for endurance athletes)
+  - Performance modality permissions upgraded (`caution` → `allowed`) when coach-supervised
+- **Training Plan Ingestion** — New `training-plan-store` with support for:
+  - Manual session entry (workout type + duration + intensity zone)
+  - Weekly template with auto-expansion to 7-day planned sessions
+  - Future TrainingPeaks and .ics calendar import interfaces
+- **Plan-Aware Recovery Engine** (`lib/engine/plan-aware-recovery.ts`) — 4 recovery strategies:
+  - Aggressive: hard today + hard tomorrow → cold exposure, compression, sleep optimization
+  - Preparation: easy today + hard tomorrow → mobility, activation, hydration
+  - Inter-session: between AM and PM sessions → shortest high-impact modalities (capped 15min)
+  - Standard: general recovery recommendations
+- **3 New Sport Profiles** — Ultramarathon, Biathlon, Track & Field (33 total sports)
+- **Train Tab Competitive Mode** — Shows today's planned sessions + plan-aware recovery recommendations + "What's your training today?" quick entry
+- **RecoveryBetweenSessions component** — Strategy-aware recovery stack with color-coded urgency badges
+- **PlanInput component** — Chip-based workout type/zone/duration picker for quick session entry
+- **2-a-day support** — AM/PM session slots in training plan and workout store
+- **Session intensity classifier** — Maps workout type strings to rest/easy/moderate/hard/key intensity levels
+- **ProfileRow extended** — 10 new fields: athlete_mode, training_schedule, training_frequency, training_hours_week, training_phase, experience_level, primary_goal, recovery_priorities, upcoming_events, known_conditions, onboarding_completed
+- **Competitive constants** — `COMPETITIVE_TIER_THRESHOLDS`, `COMPETITIVE_ACWR_DANGER_MIN`, `COMPETITIVE_PENALTY_SCALING`
+- **39 new tests** across 6 test files (563 total, 39 suites)
+
+### Changed
+- **`computeIACI`** — New optional `athleteMode` parameter threads through penalties and protocol prescription
+- **`computePenalties`** — New optional `penaltyScaling` parameter (default 1.0 preserves existing behavior)
+- **`getTrainingCompatibility`** — Accepts configurable tier thresholds and athlete mode config
+- **`prescribeProtocol`** — Threads athlete mode to training compatibility
+- **`getBasePermissions`** — Parameterized tier thresholds instead of hardcoded 85/70/55/35
+- **Load capacity ACWR** — Configurable danger threshold via `acwrDangerMin` (was hardcoded 1.3)
+- **Daily store** — Added `athleteMode` and `trainingSchedule` state with setters
+
+### Technical
+- All engine changes use optional parameters with backward-compatible defaults
+- Existing 524 tests pass unchanged — zero breaking changes
+- New types: `AthleteModeConfig`, `PlannedSession`, `WeeklyTemplate`, `SessionIntensity`, `RecoveryRecommendation`
+- New engine files: `athlete-mode.ts`, `plan-aware-recovery.ts`
+- New store: `training-plan-store.ts` (persisted via file-storage)
+
 ## [2.6.1] - 2026-03-17
 
 ### Added

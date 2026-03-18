@@ -516,6 +516,72 @@ export const SPORT_PROFILES: SportProfile[] = [
     ],
     iaciWeightPreset: 'older_athlete',
   },
+
+  // ===================== NEW v2.7.0 =====================
+
+  {
+    key: 'ultramarathon',
+    label: 'Ultramarathon',
+    icon: '🏔️',
+    category: 'endurance',
+    subsystemStress: stress('high', 'very_high', 'very_high', 'high', 'very_high', 'high'),
+    stressMarkers: [
+      { name: 'Eccentric Muscle Damage', subsystem: 'musculoskeletal', description: 'Extreme downhill/eccentric loading over 50-100+ miles', unit: 'rating', range: [0, 10] },
+      { name: 'Glycogen Depletion', subsystem: 'metabolic', description: 'Multi-hour fueling demands and caloric deficit risk', unit: 'rating', range: [0, 10] },
+      { name: 'Sleep Disruption', subsystem: 'sleep', description: 'Overnight races and multi-day recovery impact', unit: 'hours_missed', range: [0, 24] },
+      { name: 'Cardiac Drift', subsystem: 'cardiometabolic', description: 'Sustained cardiac output over extended duration', unit: 'bpm', range: [0, 30] },
+      { name: 'Mental Fatigue', subsystem: 'psychological', description: 'Decision-making and pain tolerance over 8-30+ hours', unit: 'rating', range: [0, 10] },
+    ],
+    primaryRecoveryNeeds: ['musculoskeletal', 'metabolic', 'sleep'],
+    recommendedModalities: [
+      'walkingRecovery', 'aquaticRecovery', 'massage', 'yoga',
+      'meditation', 'breathworkActive', 'eccentricRecovery', 'mobilityFlow',
+      'sauna', 'coldExposure', 'easyCycling', 'swimEasy',
+    ],
+    iaciWeightPreset: 'endurance',
+  },
+
+  {
+    key: 'biathlon',
+    label: 'Biathlon',
+    icon: '🎯',
+    category: 'endurance',
+    subsystemStress: stress('high', 'high', 'very_high', 'moderate', 'high', 'high'),
+    stressMarkers: [
+      { name: 'HR Suppression for Shooting', subsystem: 'autonomic', description: 'Rapid HR recovery needed for precision shooting', unit: 'bpm_drop', range: [0, 60] },
+      { name: 'Aerobic Demand', subsystem: 'cardiometabolic', description: 'XC skiing at race intensity between shooting stages', unit: 'watts', range: [0, 400] },
+      { name: 'Fine Motor Control', subsystem: 'psychological', description: 'Shooting precision under extreme fatigue', unit: 'rating', range: [0, 10] },
+      { name: 'Cold Exposure Stress', subsystem: 'metabolic', description: 'Thermoregulation and caloric cost in cold conditions', unit: 'celsius', range: [-30, 10] },
+    ],
+    primaryRecoveryNeeds: ['autonomic', 'cardiometabolic', 'psychological'],
+    recommendedModalities: [
+      'breathworkActive', 'meditation', 'yoga', 'walkingRecovery',
+      'easyCycling', 'swimEasy', 'sauna', 'massage',
+      'mobilityFlow', 'taiChi',
+    ],
+    iaciWeightPreset: 'endurance',
+  },
+
+  {
+    key: 'track_field',
+    label: 'Track & Field',
+    icon: '🏃‍♂️',
+    category: 'field_court',
+    subsystemStress: stress('high', 'very_high', 'high', 'moderate', 'moderate', 'high'),
+    stressMarkers: [
+      { name: 'Sprint/Jump Load', subsystem: 'musculoskeletal', description: 'High-velocity ground contact forces and explosive loading', unit: 'rating', range: [0, 10] },
+      { name: 'CNS Fatigue', subsystem: 'autonomic', description: 'Central nervous system demand from maximal-effort repeats', unit: 'rating', range: [0, 10] },
+      { name: 'Lactate Accumulation', subsystem: 'cardiometabolic', description: 'Anaerobic energy system stress from 200m-1500m events', unit: 'mmol_L', range: [0, 25] },
+      { name: 'Competition Stress', subsystem: 'psychological', description: 'Performance anxiety, focus, and race execution demands', unit: 'rating', range: [0, 10] },
+    ],
+    primaryRecoveryNeeds: ['musculoskeletal', 'autonomic', 'psychological'],
+    recommendedModalities: [
+      'eccentricRecovery', 'correctiveExercise', 'mobilityFlow', 'massage',
+      'coldExposure', 'yoga', 'breathworkActive', 'meditation',
+      'walkingRecovery', 'swimEasy', 'aquaticRecovery',
+    ],
+    iaciWeightPreset: 'power',
+  },
 ];
 
 // ---------------------------------------------------------------------------

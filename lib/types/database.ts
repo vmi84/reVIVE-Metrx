@@ -20,6 +20,18 @@ export interface ProfileRow {
   weight_preferences: Record<string, number> | null;
   notification_preferences: Record<string, boolean> | null;
   travel_status: boolean;
+  // Athlete mode (v2.7.0)
+  athlete_mode: 'recreational' | 'competitive' | null;
+  training_schedule: 'single' | 'double' | null;
+  training_frequency: number | null;
+  training_hours_week: number | null;
+  training_phase: 'base' | 'build' | 'peak' | 'taper' | 'offseason' | null;
+  experience_level: 'beginner' | 'intermediate' | 'advanced' | 'elite' | null;
+  primary_goal: string | null;
+  recovery_priorities: string[] | null;
+  upcoming_events: Array<{ date: string; type: string }> | null;
+  known_conditions: string | null;
+  onboarding_completed: boolean;
   created_at: string;
   updated_at: string;
 }

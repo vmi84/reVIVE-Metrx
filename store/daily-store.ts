@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { IACIResult, SubsystemScores } from '../lib/types/iaci';
 import { RecoveryRecommendation } from '../lib/types/protocols';
 import { DeviceSourceKey } from '../lib/types/feed';
+import type { AthleteMode, TrainingSchedule } from '../lib/types/athlete-mode';
 
 /** Check-in data stored for demo mode IACI computation */
 export interface CheckinData {
@@ -32,6 +33,10 @@ interface DailyState {
   /** Which device provided today's data (e.g. 'whoop', 'garmin'). */
   deviceSource: DeviceSourceKey | null;
   checkinData: CheckinData | null;
+  /** Athlete mode: recreational (default) or competitive. */
+  athleteMode: AthleteMode;
+  /** Training schedule: single or double (2-a-day). */
+  trainingSchedule: TrainingSchedule;
 
   setDate: (date: string) => void;
   setIACI: (result: IACIResult) => void;
@@ -39,6 +44,8 @@ interface DailyState {
   setDeviceSynced: (val: boolean, source?: DeviceSourceKey) => void;
   setLoading: (val: boolean) => void;
   setCheckinData: (data: CheckinData) => void;
+  setAthleteMode: (mode: AthleteMode) => void;
+  setTrainingSchedule: (schedule: TrainingSchedule) => void;
   reset: () => void;
 }
 
@@ -50,6 +57,8 @@ export const useDailyStore = create<DailyState>((set) => ({
   deviceSynced: false,
   deviceSource: null,
   checkinData: null,
+  athleteMode: 'recreational',
+  trainingSchedule: 'single',
 
   setDate: (date) => set({ date }),
   setIACI: (result) => set({ iaci: result, loading: false }),
@@ -57,6 +66,8 @@ export const useDailyStore = create<DailyState>((set) => ({
   setDeviceSynced: (val, source) => set({ deviceSynced: val, deviceSource: source ?? null }),
   setLoading: (val) => set({ loading: val }),
   setCheckinData: (data) => set({ checkinData: data }),
+  setAthleteMode: (mode) => set({ athleteMode: mode }),
+  setTrainingSchedule: (schedule) => set({ trainingSchedule: schedule }),
   reset: () => set({
     date: null,
     iaci: null,
@@ -65,5 +76,7 @@ export const useDailyStore = create<DailyState>((set) => ({
     deviceSynced: false,
     deviceSource: null,
     checkinData: null,
+    athleteMode: 'recreational',
+    trainingSchedule: 'single',
   }),
 }));

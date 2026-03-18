@@ -8,7 +8,11 @@
 import { SubsystemScores, PenaltyResult } from '../types/iaci';
 import { PENALTIES } from '../utils/constants';
 
-export function computePenalties(scores: SubsystemScores): PenaltyResult[] {
+/**
+ * @param scores - Subsystem scores
+ * @param penaltyScaling - Multiplier for penalty points (1.0 = full, 0.6 = competitive reduction)
+ */
+export function computePenalties(scores: SubsystemScores, penaltyScaling: number = 1.0): PenaltyResult[] {
   const penalties: PenaltyResult[] = [];
 
   const a = scores.autonomic.score;
@@ -79,6 +83,13 @@ export function computePenalties(scores: SubsystemScores): PenaltyResult[] {
       triggeredBy: ['autonomic', 'musculoskeletal', 'cardiometabolic', 'sleep', 'metabolic', 'psychological']
         .filter((_, i) => [a, b, c, d, e, f][i] < 40) as any,
     });
+  }
+
+  // Apply scaling (competitive athletes get reduced penalties)
+  if (penaltyScaling !== 1.0) {
+    for (const p of penalties) {
+      p.points = Math.round(p.points * penaltyScaling);
+    }
   }
 
   return penalties;

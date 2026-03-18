@@ -78,6 +78,12 @@ export function TrainingRecommendationCard({ modality, isTopPick }: Props) {
 
       {expanded && (
         <View style={styles.details}>
+          {/* Sample Exercises — first so users see actionable info immediately */}
+          <View style={styles.detailSection}>
+            <Text style={styles.detailLabel}>Sample Exercises</Text>
+            <Text style={styles.detailValue}>{modality.examples.join(', ')}</Text>
+          </View>
+
           {/* Intensity guidance */}
           <View style={styles.detailSection}>
             <Text style={styles.detailLabel}>Recovery Zone</Text>
@@ -95,12 +101,6 @@ export function TrainingRecommendationCard({ modality, isTopPick }: Props) {
               {modality.durationRange.min}-{modality.durationRange.max} min
               (sweet spot: {modality.durationRange.sweet} min)
             </Text>
-          </View>
-
-          {/* Examples */}
-          <View style={styles.detailSection}>
-            <Text style={styles.detailLabel}>Examples</Text>
-            <Text style={styles.detailValue}>{modality.examples.join(', ')}</Text>
           </View>
         </View>
       )}

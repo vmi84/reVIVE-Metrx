@@ -266,7 +266,7 @@ export const TRAINING_RECOVERY_MAP: Record<TrainingModalityKey, TrainingRecovery
     environment: ['gym', 'home'],
     durationRange: { min: 10, sweet: 20, max: 30 },
     iaciFloor: 40,
-    examples: ['Slow Nordic curls', 'Eccentric calf raises', 'Slow squats', 'Tempo push-ups'],
+    examples: ['Slow lowering squats', 'Slow calf raises', 'Slow push-ups', 'Slow lunges'],
   },
 
   correctiveExercise: {
@@ -304,7 +304,7 @@ export const TRAINING_RECOVERY_MAP: Record<TrainingModalityKey, TrainingRecovery
     environment: ['gym', 'home', 'outdoors'],
     durationRange: { min: 10, sweet: 20, max: 30 },
     iaciFloor: 40,
-    examples: ['Light swings', 'Turkish get-ups', 'Halos', 'Goblet squats', 'Windmills'],
+    examples: ['Light kettlebell swings', 'Goblet squats', 'Kettlebell deadlifts', 'Overhead press (light)', 'Farmer carries'],
   },
 
   // ===================== BODYWEIGHT (2) =====================
@@ -343,7 +343,7 @@ export const TRAINING_RECOVERY_MAP: Record<TrainingModalityKey, TrainingRecovery
     environment: ['home', 'gym', 'outdoors', 'anywhere'],
     durationRange: { min: 10, sweet: 20, max: 30 },
     iaciFloor: 40,
-    examples: ['Animal flows', 'Ground-up sequences', 'Handstand play', 'L-sit to plank transitions'],
+    examples: ['Bear crawls', 'Crab walks', 'Inch worms', 'Frog jumps', 'Crawling patterns'],
   },
 
   // ===================== AGT (2) =====================
@@ -422,7 +422,7 @@ export const TRAINING_RECOVERY_MAP: Record<TrainingModalityKey, TrainingRecovery
     environment: ['home', 'studio', 'anywhere'],
     durationRange: { min: 15, sweet: 30, max: 60 },
     iaciFloor: 10,
-    examples: ['Yin yoga', 'Restorative poses', 'Gentle flow', 'Yoga nidra'],
+    examples: ['Gentle stretching yoga', 'Restorative poses', 'Gentle flow', 'Guided relaxation'],
   },
 
   taiChi: {
@@ -441,7 +441,7 @@ export const TRAINING_RECOVERY_MAP: Record<TrainingModalityKey, TrainingRecovery
     environment: ['outdoors', 'home', 'studio', 'anywhere'],
     durationRange: { min: 10, sweet: 20, max: 40 },
     iaciFloor: 10,
-    examples: ['Tai chi forms', 'Qigong sequences', 'Standing meditation', 'Silk reeling'],
+    examples: ['Tai chi', 'Slow flowing movements', 'Standing meditation', 'Balance exercises'],
   },
 
   breathworkActive: {
@@ -460,7 +460,7 @@ export const TRAINING_RECOVERY_MAP: Record<TrainingModalityKey, TrainingRecovery
     environment: ['anywhere'],
     durationRange: { min: 5, sweet: 10, max: 20 },
     iaciFloor: 5,
-    examples: ['Box breathing', '4-7-8 breathing', 'Coherent breathing', 'Physiological sigh'],
+    examples: ['Box breathing', 'Deep belly breathing', 'Slow exhale breathing', '4-7-8 breathing'],
   },
 
   meditation: {
@@ -499,7 +499,7 @@ export const TRAINING_RECOVERY_MAP: Record<TrainingModalityKey, TrainingRecovery
     environment: ['home', 'gym', 'anywhere'],
     durationRange: { min: 10, sweet: 15, max: 25 },
     iaciFloor: 15,
-    examples: ['CARs (Controlled Articular Rotations)', 'World\'s greatest stretch', 'Hip 90/90', 'Thoracic rotations'],
+    examples: ['Hip circles', 'Shoulder circles', 'Leg swings', 'Arm crossovers', 'Trunk rotations', 'Ankle rolls'],
   },
 
   // ===================== AQUATIC & LOW-IMPACT (4) =====================

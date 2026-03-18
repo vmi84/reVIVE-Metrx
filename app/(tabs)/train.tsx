@@ -5,6 +5,8 @@ import { useDailyStore } from '../../store/daily-store';
 import { useWorkoutLogger } from '../../hooks/use-workout-logger';
 import { useTrainingRecommendations } from '../../hooks/use-training-recommendations';
 import { TrainingCompatCard } from '../../components/dashboard/TrainingCompatCard';
+import { RecoveryBetweenSessions } from '../../components/train/RecoveryBetweenSessions';
+import { PlanInput } from '../../components/train/PlanInput';
 import { Card } from '../../components/ui/Card';
 import { ThemedText } from '../../components/ui/ThemedText';
 import { Button } from '../../components/ui/Button';
@@ -37,7 +39,8 @@ const QUICK_CATEGORIES = [
 ];
 
 export default function Train() {
-  const { iaci } = useDailyStore();
+  const { iaci, athleteMode } = useDailyStore();
+  const isCompetitive = athleteMode === 'competitive';
   const { fetchRecentWorkouts, logWorkout, activeWorkout } = useWorkoutLogger();
   const trainingRecs = useTrainingRecommendations();
   const [recentWorkouts, setRecentWorkouts] = useState<Workout[]>([]);
@@ -76,6 +79,14 @@ export default function Train() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      {/* Competitive mode: plan-aware recovery between sessions */}
+      {isCompetitive && (
+        <>
+          <RecoveryBetweenSessions />
+          <PlanInput />
+        </>
+      )}
+
       {/* Training compatibility from IACI */}
       {iaci && (
         <View style={styles.section}>
@@ -83,7 +94,7 @@ export default function Train() {
         </View>
       )}
 
-      {!iaci && (
+      {!iaci && !isCompetitive && (
         <Card style={styles.section}>
           <ThemedText variant="body" color={COLORS.textSecondary}>
             Complete your morning check-in to see training recommendations.

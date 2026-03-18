@@ -92,7 +92,9 @@ function computeSubsystemStress(
         break;
       }
       case 'cardiometabolic': {
-        if (inputs.acwr != null && inputs.acwr > 1.3) {
+        // ACWR danger threshold: 1.3 for recreational, configurable for competitive
+        const acwrDanger = (inputs as any).acwrDangerMin ?? 1.3;
+        if (inputs.acwr != null && inputs.acwr > acwrDanger) {
           modifiers += 10;
           keyDrivers.push(`ACWR elevated (${inputs.acwr.toFixed(2)})`);
         }

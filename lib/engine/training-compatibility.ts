@@ -19,6 +19,8 @@ import {
   RankedTrainingModality,
 } from '../types/iaci';
 import { TRAINING_RECOVERY_MAP, TrainingRecoveryProfile } from '../../data/training-recovery-map';
+import type { AthleteModeConfig } from '../types/athlete-mode';
+import { TIER_THRESHOLDS } from '../utils/constants';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -57,18 +59,53 @@ function makeCompat(values: Record<TrainingModalityKey, P>): TrainingCompatibili
 // Base Permissions by IACI Tier
 // ---------------------------------------------------------------------------
 
+/**
+ * @param athleteMode - Optional athlete mode config for competitive threshold shifts
+ */
 export function getTrainingCompatibility(
   iaciScore: number,
   phenotypeKey: PhenotypeKey,
   scores: SubsystemScores,
+  athleteMode?: AthleteModeConfig | null,
 ): TrainingCompatibility {
-  const base = getBasePermissions(iaciScore);
+  const thresholds = athleteMode?.tierThresholds ?? {
+    perform: TIER_THRESHOLDS.perform,
+    train: TIER_THRESHOLDS.train,
+    maintain: TIER_THRESHOLDS.maintain,
+    recover: TIER_THRESHOLDS.recover,
+    protect: 0,
+  };
+  let base = getBasePermissions(iaciScore, thresholds);
+
+  // Competitive mode: upgrade caution → allowed for performance modalities
+  if (athleteMode?.upgradePerformancePermissions) {
+    const performanceKeys: TrainingModalityKey[] = [
+      'intervals', 'tempo', 'strengthHeavy', 'strengthLight', 'plyometrics',
+      'zone2', 'agtAlactic', 'agtAerobic',
+    ];
+    for (const key of performanceKeys) {
+      if (base[key] === 'caution') {
+        base = { ...base, [key]: 'allowed' };
+      }
+    }
+  }
+
   return applyPhenotypeOverrides(base, phenotypeKey, scores);
 }
 
-function getBasePermissions(iaciScore: number): TrainingCompatibility {
-  // Perform tier (≥85): Nearly everything open
-  if (iaciScore >= 85) {
+interface TierThresholds {
+  perform: number;
+  train: number;
+  maintain: number;
+  recover: number;
+  protect: number;
+}
+
+function getBasePermissions(iaciScore: number, t?: TierThresholds): TrainingCompatibility {
+  const thresholds = t ?? { perform: 85, train: 70, maintain: 55, recover: 35, protect: 0 };
+
+  // Perform tier: Nearly everything open
+  if (iaciScore >= thresholds.perform) {
     return makeCompat({
       // Performance
       zone1: R, zone2: R, intervals: R, tempo: R,
@@ -93,8 +130,8 @@ function getBasePermissions(iaciScore: number): TrainingCompatibility {
     });
   }
 
-  // Train tier (70-84)
-  if (iaciScore >= 70) {
+  // Train tier
+  if (iaciScore >= thresholds.train) {
     return makeCompat({
       zone1: R, zone2: R, intervals: A, tempo: A,
       strengthHeavy: C, strengthLight: A, techniqueDrill: R, plyometrics: C,
@@ -110,8 +147,8 @@ function getBasePermissions(iaciScore: number): TrainingCompatibility {
     });
   }
 
-  // Maintain tier (55-69)
-  if (iaciScore >= 55) {
+  // Maintain tier
+  if (iaciScore >= thresholds.maintain) {
     return makeCompat({
       zone1: R, zone2: A, intervals: C, tempo: C,
       strengthHeavy: X, strengthLight: C, techniqueDrill: A, plyometrics: X,
@@ -127,8 +164,8 @@ function getBasePermissions(iaciScore: number): TrainingCompatibility {
     });
   }
 
-  // Recover tier (35-54)
-  if (iaciScore >= 35) {
+  // Recover tier
+  if (iaciScore >= thresholds.recover) {
     return makeCompat({
       zone1: A, zone2: C, intervals: X, tempo: X,
       strengthHeavy: X, strengthLight: X, techniqueDrill: C, plyometrics: X,
