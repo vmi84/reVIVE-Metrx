@@ -116,9 +116,23 @@ export default function Dashboard() {
   const handleRefresh = useCallback(async () => {
     const connected = await isConnected();
     if (connected) {
-      // Sync last 7 days to catch any recent data changes
       await syncHistorical(7);
     }
+    await refresh();
+  }, [isConnected, syncHistorical, refresh]);
+
+  // Force full re-sync: clear cached data and re-fetch everything
+  const handleForceSync = useCallback(async () => {
+    const connected = await isConnected();
+    if (!connected) {
+      router.push('/device-setup');
+      return;
+    }
+    // Clear old data so we get a fresh full backfill
+    usePhysiologyStore.getState().clear();
+    setSyncStatus('force re-syncing all data…');
+    await syncHistorical();
+    setSyncStatus(`done — ${usePhysiologyStore.getState().lastImport?.recordCount ?? 0} records`);
     await refresh();
   }, [isConnected, syncHistorical, refresh]);
 
@@ -219,9 +233,9 @@ export default function Dashboard() {
           </ThemedText>
         </View>
         {!isActive && (
-          <TouchableOpacity onPress={isDisconnected ? () => router.push('/device-setup') : handleRefresh}>
+          <TouchableOpacity onPress={isDisconnected ? () => router.push('/device-setup') : handleForceSync}>
             <ThemedText variant="caption" color={COLORS.primary} style={{ fontWeight: '700' }}>
-              {isDisconnected ? 'Reconnect' : 'Sync'}
+              {isDisconnected ? 'Reconnect' : 'Re-sync All'}
             </ThemedText>
           </TouchableOpacity>
         )}
