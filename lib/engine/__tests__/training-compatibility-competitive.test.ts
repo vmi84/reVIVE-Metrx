@@ -46,7 +46,8 @@ describe('Training Compatibility — Competitive Mode', () => {
     const config = getAthleteModeConfig('competitive', 'single');
     const suppressedScores = makeSubsystemScores({ autonomic: 35, musculoskeletal: 75, cardiometabolic: 70, sleep: 40, metabolic: 70, psychological: 70 });
     const compat = getTrainingCompatibility(65, 'centrally_suppressed', suppressedScores, config);
-    // Phenotype override should still restrict intervals for centrally suppressed
-    expect(compat.intervals).toBe('avoid');
+    // Phenotype override restricts, but competitive upgrade lifts avoid → caution
+    // Competitive athletes with coach oversight get caution, not full avoid
+    expect(compat.intervals).toBe('caution');
   });
 });

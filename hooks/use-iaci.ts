@@ -449,10 +449,10 @@ export function useIACI() {
 
       // Get athlete mode config from daily store
       const { athleteMode: mode, trainingSchedule } = useDailyStore.getState();
-      // getAthleteModeConfig imported at top of file
       const athleteModeConfig = mode === 'competitive'
         ? getAthleteModeConfig('competitive', trainingSchedule)
         : undefined;
+      console.log('[IACI] computeDemo: athleteMode=', mode, 'config=', athleteModeConfig ? 'COMPETITIVE' : 'RECREATIONAL');
 
       const result = computeIACI(
         dateStr, adjustedScores, weights, dataCompleteness, sportKeys,

@@ -13,6 +13,8 @@ import { Button } from '../../components/ui/Button';
 import { COLORS } from '../../lib/utils/constants';
 import { Workout } from '../../lib/types/exercises';
 import { TRAINING_RECOVERY_MAP } from '../../data/training-recovery-map';
+import { useTrainingPlanStore } from '../../store/training-plan-store';
+import { today } from '../../lib/utils/date';
 
 // Quick-access categories for the train tab
 const QUICK_CATEGORIES = [
@@ -41,6 +43,8 @@ const QUICK_CATEGORIES = [
 export default function Train() {
   const { iaci, athleteMode } = useDailyStore();
   const isCompetitive = athleteMode === 'competitive';
+  const todaySessions = useTrainingPlanStore((s) => s.plannedSessions[today()] ?? []);
+  const todayHasPlan = todaySessions.length > 0;
   const { fetchRecentWorkouts, logWorkout, activeWorkout } = useWorkoutLogger();
   const trainingRecs = useTrainingRecommendations();
   const [recentWorkouts, setRecentWorkouts] = useState<Workout[]>([]);
@@ -95,7 +99,7 @@ export default function Train() {
       )}
 
       {/* ═══ STEP 2: Log Training — What are you doing / did you do? ═══ */}
-      {isCompetitive && <PlanInput />}
+      <PlanInput hasPlanForToday={todayHasPlan} />
 
       {/* ═══ STEP 3: Recovery Recommendations — Based on your training ═══ */}
       {/* Competitive mode: plan-aware recovery between sessions */}

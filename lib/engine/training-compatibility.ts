@@ -75,22 +75,32 @@ export function getTrainingCompatibility(
     recover: TIER_THRESHOLDS.recover,
     protect: 0,
   };
+  console.log('[TrainingCompat] IACI=', iaciScore, 'mode=', athleteMode?.mode ?? 'recreational', 'thresholds=', JSON.stringify(thresholds));
   let base = getBasePermissions(iaciScore, thresholds);
 
-  // Competitive mode: upgrade caution → allowed for performance modalities
+  // Apply phenotype overrides FIRST
+  let result = applyPhenotypeOverrides(base, phenotypeKey, scores);
+
+  // Competitive mode: upgrade caution/avoid → allowed for performance modalities AFTER phenotype
+  // This ensures competitive athletes aren't unnecessarily restricted by phenotype downgrades
   if (athleteMode?.upgradePerformancePermissions) {
+    console.log('[TrainingCompat] Applying competitive upgrades (post-phenotype)');
     const performanceKeys: TrainingModalityKey[] = [
       'intervals', 'tempo', 'strengthHeavy', 'strengthLight', 'plyometrics',
       'zone2', 'agtAlactic', 'agtAerobic',
     ];
     for (const key of performanceKeys) {
-      if (base[key] === 'caution') {
-        base = { ...base, [key]: 'allowed' };
+      if (result[key] === 'caution') {
+        console.log('[TrainingCompat] Upgrading', key, 'from caution → allowed');
+        result = { ...result, [key]: 'allowed' };
+      } else if (result[key] === 'avoid') {
+        console.log('[TrainingCompat] Upgrading', key, 'from avoid → caution');
+        result = { ...result, [key]: 'caution' };
       }
     }
   }
 
-  return applyPhenotypeOverrides(base, phenotypeKey, scores);
+  return result;
 }
 
 interface TierThresholds {

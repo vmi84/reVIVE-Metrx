@@ -127,17 +127,7 @@ export function DailyCardExpanded({ day, onMetricAccept, onMetricEdit }: Props) 
             </View>
           </View>
           <View style={styles.heroRow}>
-            {phys.recovery_score != null && (
-              <View style={styles.heroCell}>
-                <ThemedText variant="caption" color={COLORS.textMuted}>Recovery</ThemedText>
-                <ThemedText variant="subtitle" style={{
-                  color: recoveryColor(phys.recovery_score),
-                  fontWeight: '700',
-                }}>
-                  {Math.round(phys.recovery_score)}%
-                </ThemedText>
-              </View>
-            )}
+            {/* Recovery score shown at top next to IACI — not duplicated here */}
             {phys.sleep_duration_ms != null && (
               <View style={styles.heroCell}>
                 <ThemedText variant="caption" color={COLORS.textMuted}>Sleep</ThemedText>
