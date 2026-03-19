@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {
   View,
   TextInput,
+  Image,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
@@ -49,9 +50,11 @@ export default function SignIn() {
         <View style={styles.content}>
           {/* Logo */}
           <View style={styles.logoContainer}>
-            <View style={styles.logoCircle}>
-              <ThemedText style={styles.logoText}>rV</ThemedText>
-            </View>
+            <Image
+              source={require('../../assets/logo.png')}
+              style={styles.logoImage}
+              resizeMode="contain"
+            />
           </View>
 
           <ThemedText variant="title" style={styles.title}>
@@ -132,19 +135,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  logoCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: COLORS.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logoText: {
-    fontSize: 32,
-    fontWeight: '800',
-    color: '#FFFFFF',
-    letterSpacing: -1,
+  logoImage: {
+    width: 120,
+    height: 120,
   },
   title: {
     textAlign: 'center',
