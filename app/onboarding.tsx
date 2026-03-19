@@ -213,13 +213,13 @@ export default function OnboardingScreen() {
         {step === 1 && (
           <>
             <Text style={styles.title}>About You</Text>
-            <Text style={styles.subtitle}>Select your sport(s) and experience level.</Text>
+            <Text style={styles.subtitle}>Select your sport(s) and experience level</Text>
 
             {CATEGORY_ORDER.map(cat => {
               const catSports = SPORT_PROFILES.filter(s => s.category === cat);
               return (
                 <View key={cat} style={styles.categorySection}>
-                  <Text style={styles.categoryLabel}>{CATEGORY_LABELS[cat]}</Text>
+                  <Text style={styles.categoryLabel}>{CATEGORY_LABELS[cat]} <Text style={styles.selectionHint}>(select all that apply)</Text></Text>
                   <View style={styles.chipGrid}>
                     {catSports.map(sp => (
                       <TouchableOpacity
@@ -238,7 +238,7 @@ export default function OnboardingScreen() {
               );
             })}
 
-            <Text style={styles.sectionTitle}>Experience Level</Text>
+            <Text style={styles.sectionTitle}>Experience Level <Text style={styles.selectionHint}>(select one)</Text></Text>
             {EXPERIENCE_OPTIONS.map(opt => (
               <TouchableOpacity
                 key={opt.key}
@@ -260,7 +260,7 @@ export default function OnboardingScreen() {
             <Text style={styles.title}>Training Context</Text>
             <Text style={styles.subtitle}>How do you train?</Text>
 
-            <Text style={styles.sectionTitle}>Training Style</Text>
+            <Text style={styles.sectionTitle}>Training Style <Text style={styles.selectionHint}>(select one)</Text></Text>
             {MODE_OPTIONS.map(opt => (
               <TouchableOpacity
                 key={opt.key}
@@ -275,7 +275,7 @@ export default function OnboardingScreen() {
               </TouchableOpacity>
             ))}
 
-            <Text style={styles.sectionTitle}>Daily Schedule</Text>
+            <Text style={styles.sectionTitle}>Daily Schedule <Text style={styles.selectionHint}>(select one)</Text></Text>
             <View style={styles.toggleRow}>
               {SCHEDULE_OPTIONS.map(opt => (
                 <TouchableOpacity
@@ -303,7 +303,7 @@ export default function OnboardingScreen() {
               </View>
             </View>
 
-            <Text style={styles.sectionTitle}>Current Phase</Text>
+            <Text style={styles.sectionTitle}>Current Phase <Text style={styles.selectionHint}>(select one)</Text></Text>
             <View style={styles.chipGrid}>
               {PHASE_OPTIONS.map(opt => (
                 <TouchableOpacity
@@ -325,7 +325,7 @@ export default function OnboardingScreen() {
             <Text style={styles.title}>Goals & Priorities</Text>
             <Text style={styles.subtitle}>What are you optimizing for?</Text>
 
-            <Text style={styles.sectionTitle}>Primary Goal</Text>
+            <Text style={styles.sectionTitle}>Primary Goal <Text style={styles.selectionHint}>(select one)</Text></Text>
             <View style={styles.chipGrid}>
               {[...GOAL_OPTIONS, ...customGoals].map(g => (
                 <TouchableOpacity
@@ -370,7 +370,7 @@ export default function OnboardingScreen() {
             <Text style={styles.title}>Environment & Equipment</Text>
             <Text style={styles.subtitle}>What recovery tools and spaces do you have access to?</Text>
 
-            <Text style={styles.sectionTitle}>Training Environment</Text>
+            <Text style={styles.sectionTitle}>Training Environment <Text style={styles.selectionHint}>(select all that apply)</Text></Text>
             <View style={styles.chipGrid}>
               {[...ENVIRONMENT_OPTIONS, ...customEnvironment].map(e => (
                 <TouchableOpacity
@@ -387,7 +387,7 @@ export default function OnboardingScreen() {
               setEnvironment(prev => new Set([...prev, val]));
             }} />
 
-            <Text style={styles.sectionTitle}>Available Equipment</Text>
+            <Text style={styles.sectionTitle}>Available Equipment <Text style={styles.selectionHint}>(select all that apply)</Text></Text>
             <View style={styles.chipGrid}>
               {[...EQUIPMENT_OPTIONS, ...customEquipment].map(e => (
                 <TouchableOpacity
@@ -404,7 +404,7 @@ export default function OnboardingScreen() {
               setEquipment(prev => new Set([...prev, val]));
             }} />
 
-            <Text style={styles.sectionTitle}>Dietary Approach</Text>
+            <Text style={styles.sectionTitle}>Dietary Approach <Text style={styles.selectionHint}>(select one)</Text></Text>
             <View style={styles.chipGrid}>
               {DIETARY_OPTIONS.map(d => (
                 <TouchableOpacity
@@ -539,6 +539,7 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 14, fontWeight: '600', color: COLORS.primary, textTransform: 'uppercase', letterSpacing: 1, marginTop: 20, marginBottom: 10 },
   categorySection: { marginBottom: 16 },
   categoryLabel: { fontSize: 12, fontWeight: '600', color: COLORS.primary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 },
+  selectionHint: { fontSize: 11, fontWeight: '400', color: COLORS.textMuted, textTransform: 'none', letterSpacing: 0 },
   chipGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   chip: { flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.surface, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 10, borderWidth: 1, borderColor: COLORS.border },
   chipSelected: { backgroundColor: COLORS.primary + '20', borderColor: COLORS.primary },
