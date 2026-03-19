@@ -200,7 +200,7 @@ function generateMockFeed(): FeedDay[] {
       date: dateStr,
       physiology: phys,
       subjective: null,
-      iaci: i === 0 ? null : { // Today has no IACI yet (needs check-in)
+      iaci: i === 0 ? (useDailyStore.getState().iaci ?? null) : { // Use real IACI for today
         date: dateStr,
         score,
         readinessTier: tier as IACIResult['readinessTier'],
@@ -230,7 +230,7 @@ function generateMockFeed(): FeedDay[] {
       recoveryDayPlan: null,
       deviceSynced: phys != null,
       deviceSource: importSource,
-      checkinCompleted: i > 0,
+      checkinCompleted: i === 0 ? useDailyStore.getState().checkinCompleted : (i > 0),
       workouts: importedRec?.workouts?.map(w => ({
         id: w.workoutId,
         user_id: 'demo',

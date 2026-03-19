@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import { fileStorage } from '../lib/utils/file-storage';
 import { IACIResult, SubsystemScores } from '../lib/types/iaci';
 import { RecoveryRecommendation } from '../lib/types/protocols';
 import { DeviceSourceKey } from '../lib/types/feed';
@@ -55,34 +57,52 @@ interface DailyState {
   reset: () => void;
 }
 
-export const useDailyStore = create<DailyState>((set) => ({
-  date: null,
-  iaci: null,
-  loading: false,
-  checkinCompleted: false,
-  deviceSynced: false,
-  deviceSource: null,
-  checkinData: null,
-  athleteMode: 'recreational',
-  trainingSchedule: 'single',
+export const useDailyStore = create<DailyState>()(
+  persist(
+    (set) => ({
+      date: null,
+      iaci: null,
+      loading: false,
+      checkinCompleted: false,
+      deviceSynced: false,
+      deviceSource: null,
+      checkinData: null,
+      athleteMode: 'recreational' as AthleteMode,
+      trainingSchedule: 'single' as TrainingSchedule,
 
-  setDate: (date) => set({ date }),
-  setIACI: (result) => set({ iaci: result, loading: false }),
-  setCheckinCompleted: (val) => set({ checkinCompleted: val }),
-  setDeviceSynced: (val, source) => set({ deviceSynced: val, deviceSource: source ?? null }),
-  setLoading: (val) => set({ loading: val }),
-  setCheckinData: (data) => set({ checkinData: data }),
-  setAthleteMode: (mode) => set({ athleteMode: mode }),
-  setTrainingSchedule: (schedule) => set({ trainingSchedule: schedule }),
-  reset: () => set({
-    date: null,
-    iaci: null,
-    loading: false,
-    checkinCompleted: false,
-    deviceSynced: false,
-    deviceSource: null,
-    checkinData: null,
-    athleteMode: 'recreational',
-    trainingSchedule: 'single',
-  }),
-}));
+      setDate: (date) => set({ date }),
+      setIACI: (result) => set({ iaci: result, loading: false }),
+      setCheckinCompleted: (val) => set({ checkinCompleted: val }),
+      setDeviceSynced: (val, source) => set({ deviceSynced: val, deviceSource: source ?? null }),
+      setLoading: (val) => set({ loading: val }),
+      setCheckinData: (data) => set({ checkinData: data }),
+      setAthleteMode: (mode) => set({ athleteMode: mode }),
+      setTrainingSchedule: (schedule) => set({ trainingSchedule: schedule }),
+      reset: () => set({
+        date: null,
+        iaci: null,
+        loading: false,
+        checkinCompleted: false,
+        deviceSynced: false,
+        deviceSource: null,
+        checkinData: null,
+        athleteMode: 'recreational' as AthleteMode,
+        trainingSchedule: 'single' as TrainingSchedule,
+      }),
+    }),
+    {
+      name: 'revive-daily-store',
+      storage: createJSONStorage(() => fileStorage),
+      partialize: (state) => ({
+        date: state.date,
+        iaci: state.iaci,
+        checkinCompleted: state.checkinCompleted,
+        checkinData: state.checkinData,
+        deviceSynced: state.deviceSynced,
+        deviceSource: state.deviceSource,
+        athleteMode: state.athleteMode,
+        trainingSchedule: state.trainingSchedule,
+      }),
+    },
+  ),
+);

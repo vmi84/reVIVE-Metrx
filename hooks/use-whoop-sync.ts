@@ -13,12 +13,14 @@
  *  - Error handling with user-friendly messages
  */
 
-import { useCallback, useState, useRef } from 'react';
+import { useCallback, useState, useRef, useEffect } from 'react';
+import { AppState, type AppStateStatus } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import Constants from 'expo-constants';
 import { useSyncStore } from '../store/sync-store';
 import { useDailyStore } from '../store/daily-store';
 import { usePhysiologyStore } from '../store/physiology-store';
+import { useSettingsStore } from '../store/settings-store';
 import { today, daysAgo } from '../lib/utils/date';
 import { WHOOP_TOKEN_URL } from '../lib/utils/constants';
 import type { CanonicalPhysiologyRecord } from '../lib/types/canonical';
@@ -29,8 +31,8 @@ const TOKEN_KEY = 'whoop_access_token';
 const REFRESH_KEY = 'whoop_refresh_token';
 const EXPIRY_KEY = 'whoop_token_expires_at';
 
-// Refresh 10 minutes before expiry (aggressive to avoid edge cases)
-const REFRESH_BUFFER_MS = 10 * 60 * 1000;
+// Refresh 30 minutes before expiry (very aggressive — never let token expire)
+const REFRESH_BUFFER_MS = 30 * 60 * 1000;
 
 // Retry config
 const MAX_RETRIES = 3;
@@ -171,6 +173,8 @@ async function refreshToken(): Promise<string | null> {
     await SecureStore.setItemAsync(EXPIRY_KEY, String(expiresAt));
 
     console.log(`[Whoop] Token refreshed, expires in ${data.expires_in}s`);
+    // Backup to persisted store
+    backupTokens().catch(() => {});
     return data.access_token;
   } catch (err) {
     // Network error after all retries — don't clear tokens (transient)
@@ -186,6 +190,46 @@ async function clearTokens(): Promise<void> {
   await SecureStore.deleteItemAsync(TOKEN_KEY);
   await SecureStore.deleteItemAsync(REFRESH_KEY);
   await SecureStore.deleteItemAsync(EXPIRY_KEY);
+  // Also clear backup
+  useSettingsStore.getState().updateProfile({
+    whoopTokenBackup: null,
+  });
+}
+
+/**
+ * Backup tokens to persisted settings store (survives SecureStore wipes).
+ * Not as secure as SecureStore but prevents losing connection on simulator reset.
+ */
+async function backupTokens(): Promise<void> {
+  const token = await SecureStore.getItemAsync(TOKEN_KEY);
+  const refresh = await SecureStore.getItemAsync(REFRESH_KEY);
+  const expiry = await SecureStore.getItemAsync(EXPIRY_KEY);
+  if (token && refresh) {
+    useSettingsStore.getState().updateProfile({
+      whoopTokenBackup: { token, refresh, expiry: expiry ?? '' },
+    });
+  }
+}
+
+/**
+ * Restore tokens from backup if SecureStore is empty.
+ * Returns true if tokens were restored.
+ */
+async function restoreFromBackup(): Promise<boolean> {
+  const existing = await SecureStore.getItemAsync(TOKEN_KEY);
+  if (existing) return false; // SecureStore has tokens, no restore needed
+
+  const backup = useSettingsStore.getState().whoopTokenBackup;
+  if (!backup?.token || !backup?.refresh) return false;
+
+  console.log('[Whoop] Restoring tokens from backup…');
+  await SecureStore.setItemAsync(TOKEN_KEY, backup.token);
+  await SecureStore.setItemAsync(REFRESH_KEY, backup.refresh);
+  if (backup.expiry) await SecureStore.setItemAsync(EXPIRY_KEY, backup.expiry);
+
+  // Immediately try to refresh since backup tokens may be old
+  const refreshed = await refreshToken();
+  return refreshed !== null;
 }
 
 /**
@@ -306,6 +350,51 @@ export function useWhoopSync() {
   const [syncing, setSyncing] = useState(false);
   const [syncProgress, setSyncProgress] = useState<string | null>(null);
   const lastSyncDate = useRef<string | null>(null);
+
+  // ── Auto-restore from backup on mount ──
+  useEffect(() => {
+    restoreFromBackup().then((restored) => {
+      if (restored) console.log('[Whoop] Tokens restored from backup');
+    }).catch(() => {});
+  }, []);
+
+  // ── Foreground health check: refresh token when app returns from background ──
+  useEffect(() => {
+    const handleAppState = (state: AppStateStatus) => {
+      if (state === 'active') {
+        checkTokenHealth().then((status) => {
+          if (status === 'refreshed') {
+            console.log('[Whoop] Token refreshed on app foreground');
+          } else if (status === 'expired') {
+            setSyncError('Whoop session expired. Please reconnect in Settings > Manage Devices.');
+          }
+        }).catch(() => {});
+      }
+    };
+    const sub = AppState.addEventListener('change', handleAppState);
+    return () => sub.remove();
+  }, []);
+
+  // ── Periodic proactive refresh every 30 minutes while app is active ──
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if (AppState.currentState === 'active') {
+        const token = await SecureStore.getItemAsync(TOKEN_KEY);
+        if (token) {
+          const expiryStr = await SecureStore.getItemAsync(EXPIRY_KEY);
+          if (expiryStr) {
+            const timeLeft = Number(expiryStr) - Date.now();
+            // Refresh if less than 30 minutes remain
+            if (timeLeft < 30 * 60 * 1000) {
+              console.log('[Whoop] Proactive refresh (30min window)');
+              await refreshToken();
+            }
+          }
+        }
+      }
+    }, 15 * 60 * 1000); // Check every 15 minutes
+    return () => clearInterval(interval);
+  }, []);
 
   /**
    * Check if Whoop is connected (has valid token).
