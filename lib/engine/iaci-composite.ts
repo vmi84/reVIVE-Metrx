@@ -37,6 +37,7 @@ export function computeIACI(
   illnessSymptomCount: number = 0,
   illnessSeverityScore: number = 0,
   userEnvironment?: string[],
+  preferredActivities?: string[],
 ): IACIResult {
   // Level 3: Weighted composite
   const baseScore = Math.round(
@@ -60,7 +61,7 @@ export function computeIACI(
   // Level 5: Protocol prescription (with athlete mode for threshold shifts)
   const readinessTier = getReadinessTier(finalScore);
   const protocolClass = getProtocolClass(finalScore);
-  const protocol = prescribeProtocol(finalScore, phenotype, subsystemScores, sportKeys, athleteMode, userEnvironment);
+  const protocol = prescribeProtocol(finalScore, phenotype, subsystemScores, sportKeys, athleteMode, userEnvironment, preferredActivities);
 
   return {
     date,

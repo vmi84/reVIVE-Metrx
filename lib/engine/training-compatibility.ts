@@ -364,6 +364,7 @@ function applyPhenotypeOverrides(
  *   2. Weight recommendations by athlete's sport (runners get aerobic options weighted higher)
  *   3. Active movement always ranks above passive/mind-body (meditation never #1 for IACI > 30)
  *   4. Include Zone 1 low-intensity modalities even though they're technically "performance"
+ *   5. Preferred recovery activities from user profile get weighted higher (+15 relevance)
  */
 export function getRecoveryTrainingRecommendations(
   compatibility: TrainingCompatibility,
@@ -372,6 +373,7 @@ export function getRecoveryTrainingRecommendations(
   maxResults: number = 8,
   userEnvironment?: string[],
   athleteSportKeys?: string[],
+  preferredActivities?: string[],
 ): RankedTrainingModality[] {
   const results: RankedTrainingModality[] = [];
   const envSet = userEnvironment && userEnvironment.length > 0
@@ -433,8 +435,35 @@ export function getRecoveryTrainingRecommendations(
     // Mind-body demotion — meditation/breathwork should support, not lead (unless very low IACI)
     const mindBodyPenalty = (profile.category === 'mind_body' && iaciScore > 30) ? -10 : 0;
 
+    // User preference bonus — match preferred activities to modality labels
+    const prefBonus = (preferredActivities && preferredActivities.length > 0)
+      ? (preferredActivities.some(pref => {
+          const p = pref.toLowerCase();
+          const label = profile.label.toLowerCase();
+          return label.includes(p) || p.includes(label) ||
+            // Common mappings
+            (p.includes('walk') && key === 'walkingRecovery') ||
+            (p.includes('run') && (key === 'zone1' || key === 'agtAerobic')) ||
+            (p.includes('cycling') && key === 'easyCycling') ||
+            (p.includes('swim') && (key === 'swimEasy' || key === 'aquaticRecovery')) ||
+            (p.includes('yoga') && key === 'yoga') ||
+            (p.includes('foam') && key === 'massage') ||
+            (p.includes('stretch') && key === 'mobilityFlow') ||
+            (p.includes('sauna') && key === 'sauna') ||
+            (p.includes('cold') && key === 'coldExposure') ||
+            (p.includes('breath') && key === 'breathworkActive') ||
+            (p.includes('meditat') && key === 'meditation') ||
+            (p.includes('row') && key === 'agtAerobic') ||
+            (p.includes('ellip') && key === 'easyCycling') ||
+            (p.includes('hik') && key === 'hiking') ||
+            (p.includes('mobility') && key === 'mobilityFlow') ||
+            (p.includes('strength') && key === 'strengthLight') ||
+            (p.includes('massage') && key === 'massage');
+        }) ? 15 : 0)
+      : 0;
+
     const relevanceScore = primaryDeficit + 0.3 * secondaryDeficit
-      + sportBonus + permissionBonus + activeBonus + enduranceBonus + mindBodyPenalty;
+      + sportBonus + permissionBonus + activeBonus + enduranceBonus + mindBodyPenalty + prefBonus;
 
     // RPE — for aerobic at avoided permission, force to Zone 0-1
     const effectivePermission = (isActiveAerobic && permission === 'avoid') ? 'caution' as TrainingPermission : permission;
