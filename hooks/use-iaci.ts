@@ -428,12 +428,19 @@ export function useIACI() {
       // Get user's environment for filtering recovery recommendations
       const userEnvironment = useSettingsStore.getState().trainingEnvironment;
 
+      // Merge preferred recovery activities + training modalities for weighting
+      const settingsState = useSettingsStore.getState();
+      const allPreferred = [
+        ...settingsState.preferredRecoveryActivities,
+        ...settingsState.preferredTrainingModalities,
+      ];
+
       const result = computeIACI(
         dateStr, adjustedScores, weights, dataCompleteness, sportKeys,
         undefined, // athleteMode
         illnessReported, illnessSymptomCount, illnessSeverityScore,
         userEnvironment.length > 0 ? userEnvironment : undefined,
-        useSettingsStore.getState().preferredRecoveryActivities,
+        allPreferred.length > 0 ? allPreferred : undefined,
       );
       setIACI(result);
     } catch (err) {
