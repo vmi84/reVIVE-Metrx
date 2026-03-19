@@ -23,6 +23,8 @@ export interface CheckinData {
   giIssues: number;            // 1-5
   readiness: number;           // 1-5 (Tier 1 quick input)
   quickCheckInOnly: boolean;   // true if only Tier 1 was submitted
+  feelingIll: boolean;
+  illnessSymptoms: string[];   // e.g. ['Sore throat', 'Fever', 'Congestion']
 }
 
 interface DailyState {

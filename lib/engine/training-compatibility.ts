@@ -387,6 +387,9 @@ export function getRecoveryTrainingRecommendations(
 
     const relevanceScore = primaryDeficit + 0.3 * secondaryDeficit + sportBonus + permissionBonus;
 
+    // Compute recommended RPE based on IACI score + modality
+    const rpe = computeRecommendedRPE(iaciScore, profile.isPerformanceModality, profile.category);
+
     results.push({
       key,
       label: profile.label,
@@ -396,6 +399,7 @@ export function getRecoveryTrainingRecommendations(
       secondarySubsystems: profile.secondarySubsystems,
       recoveryFraming: profile.recoveryFraming,
       intensityGuidance: profile.intensityGuidance,
+      recommendedRPE: rpe,
       category: profile.category,
       evidenceLevel: profile.evidenceLevel,
       durationRange: profile.durationRange,
@@ -423,6 +427,25 @@ function avgDeficit(subsystems: SubsystemKey[], scores: SubsystemScores): number
     return sum + (100 - (scores[key]?.score ?? 50));
   }, 0);
   return total / subsystems.length;
+}
+
+/**
+ * Compute recommended RPE (1-10) based on IACI score and modality type.
+ * Higher IACI → higher RPE allowed. Recovery modalities cap lower.
+ */
+function computeRecommendedRPE(
+  iaciScore: number,
+  isPerformance: boolean,
+  category: string,
+): string {
+  // Mind-body and lifestyle categories always low RPE
+  if (category === 'mind_body' || category === 'lifestyle') return 'RPE 1-3';
+
+  if (iaciScore >= 85) return isPerformance ? 'RPE 7-9' : 'RPE 3-5';
+  if (iaciScore >= 70) return isPerformance ? 'RPE 6-8' : 'RPE 3-5';
+  if (iaciScore >= 55) return isPerformance ? 'RPE 5-7' : 'RPE 2-4';
+  if (iaciScore >= 35) return 'RPE 2-4';
+  return 'RPE 1-3';
 }
 
 /** Quick IACI estimate from subsystem scores (unweighted average) */

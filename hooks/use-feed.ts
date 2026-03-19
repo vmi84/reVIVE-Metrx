@@ -455,6 +455,8 @@ export function useFeed() {
         giIssues: 1,
         readiness: 3,
         quickCheckInOnly: true,
+        feelingIll: false,
+        illnessSymptoms: [],
       };
 
       store.setCheckinData(defaultData);

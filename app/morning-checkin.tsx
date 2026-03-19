@@ -52,6 +52,10 @@ export default function MorningCheckin() {
   const [isTraveling, setIsTraveling] = useState(false);
   const [giIssues, setGiIssues] = useState(1);
 
+  // Illness
+  const [feelingIll, setFeelingIll] = useState(false);
+  const [illnessSymptoms, setIllnessSymptoms] = useState<string[]>([]);
+
   // Track if user opened any detail section
   const [detailTouched, setDetailTouched] = useState(false);
 
@@ -128,9 +132,19 @@ export default function MorningCheckin() {
 
   function flagsSummary(): string {
     const parts: string[] = [];
+    if (feelingIll) parts.push('Illness');
     if (isTraveling) parts.push('Traveling');
     if (giIssues > 1) parts.push(`GI: ${giIssues}/5`);
     return parts.length > 0 ? parts.join(' · ') : '—';
+  }
+
+  const ILLNESS_OPTIONS = ['Sore throat', 'Congestion', 'Sneezing', 'Cough', 'Fever', 'Body aches', 'Headache', 'Fatigue/malaise'];
+
+  function toggleSymptom(symptom: string) {
+    setDetailTouched(true);
+    setIllnessSymptoms(prev =>
+      prev.includes(symptom) ? prev.filter(s => s !== symptom) : [...prev, symptom],
+    );
   }
 
   // ── Submit ──
@@ -168,6 +182,7 @@ export default function MorningCheckin() {
           late_alcohol: lateAlcohol,
           is_traveling: isTraveling,
           gi_disruption: giIssues,
+          illness_symptoms: feelingIll ? illnessSymptoms : [],
           willingness_to_train: finalMotivation,
           mood: finalEnergy,
           concentration: 5 - finalMentalFatigue + 1,
@@ -192,6 +207,8 @@ export default function MorningCheckin() {
         giIssues,
         readiness,
         quickCheckInOnly: quickOnly,
+        feelingIll,
+        illnessSymptoms: feelingIll ? illnessSymptoms : [],
       });
 
       setCheckinCompleted(true);
@@ -298,6 +315,36 @@ export default function MorningCheckin() {
 
           <DetailSection title="Flags" summary={flagsSummary()}>
             <View style={styles.toggleRow}>
+              <ThemedText variant="body">Feeling ill</ThemedText>
+              <Switch value={feelingIll} onValueChange={(v) => { setFeelingIll(v); setDetailTouched(true); if (!v) setIllnessSymptoms([]); }} trackColor={{ true: COLORS.error }} />
+            </View>
+            {feelingIll && (
+              <View style={styles.symptomGrid}>
+                <ThemedText variant="caption" color={COLORS.textMuted} style={{ marginBottom: 6 }}>
+                  Select symptoms:
+                </ThemedText>
+                <View style={styles.chipRow}>
+                  {ILLNESS_OPTIONS.map((s) => {
+                    const active = illnessSymptoms.includes(s);
+                    return (
+                      <TouchableOpacity
+                        key={s}
+                        onPress={() => toggleSymptom(s)}
+                        style={[styles.symptomChip, active && styles.symptomChipActive]}
+                      >
+                        <ThemedText
+                          variant="caption"
+                          style={[styles.symptomText, active && styles.symptomTextActive]}
+                        >
+                          {s}
+                        </ThemedText>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </View>
+            )}
+            <View style={styles.toggleRow}>
               <ThemedText variant="body">Traveling</ThemedText>
               <Switch value={isTraveling} onValueChange={(v) => { setIsTraveling(v); setDetailTouched(true); }} trackColor={{ true: COLORS.primary }} />
             </View>
@@ -363,6 +410,34 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
+  },
+  symptomGrid: {
+    paddingVertical: 8,
+  },
+  chipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  symptomChip: {
+    backgroundColor: COLORS.surfaceLight,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  symptomChipActive: {
+    backgroundColor: COLORS.error + '20',
+    borderColor: COLORS.error,
+  },
+  symptomText: {
+    fontSize: 12,
+    color: COLORS.textSecondary,
+  },
+  symptomTextActive: {
+    color: COLORS.error,
+    fontWeight: '600',
   },
   bottomSpacer: {
     height: 40,

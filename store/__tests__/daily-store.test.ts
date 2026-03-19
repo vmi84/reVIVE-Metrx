@@ -62,6 +62,7 @@ describe('useDailyStore', () => {
       proteinAdequate: true, lateCaffeine: false, lateAlcohol: false,
       isTraveling: false, giIssues: 1,
       readiness: 3, quickCheckInOnly: false,
+      feelingIll: false, illnessSymptoms: [],
     };
     useDailyStore.getState().setCheckinData(data);
     expect(useDailyStore.getState().checkinData).toEqual(data);

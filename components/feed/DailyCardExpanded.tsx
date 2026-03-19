@@ -140,14 +140,20 @@ export function DailyCardExpanded({ day, onMetricAccept, onMetricEdit }: Props) 
             {phys.sleep_duration_ms != null && (
               <View style={styles.heroCell}>
                 <ThemedText variant="caption" color={COLORS.textMuted}>Sleep</ThemedText>
-                <ThemedText variant="subtitle" style={styles.heroValue}>
-                  {(Math.round(phys.sleep_duration_ms / 3600000 * 10) / 10).toFixed(1)}h
-                </ThemedText>
-                {phys.sleep_performance_pct != null && (
-                  <ThemedText variant="caption" color={COLORS.textMuted}>
-                    {Math.round(phys.sleep_performance_pct)}% perf
+                {phys.sleep_performance_pct != null ? (
+                  <ThemedText variant="subtitle" style={styles.heroValue}>
+                    {Math.round(phys.sleep_performance_pct)}%
+                  </ThemedText>
+                ) : (
+                  <ThemedText variant="subtitle" style={styles.heroValue}>
+                    {(Math.round(phys.sleep_duration_ms / 3600000 * 10) / 10).toFixed(1)}h
                   </ThemedText>
                 )}
+                <ThemedText variant="caption" color={COLORS.textMuted}>
+                  {phys.sleep_performance_pct != null
+                    ? `${(Math.round(phys.sleep_duration_ms / 3600000 * 10) / 10).toFixed(1)}h`
+                    : ''}
+                </ThemedText>
               </View>
             )}
             {phys.day_strain != null && (

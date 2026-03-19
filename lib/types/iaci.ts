@@ -161,6 +161,8 @@ export interface RankedTrainingModality {
   secondarySubsystems: SubsystemKey[];
   recoveryFraming: string;
   intensityGuidance: { recoveryZone: string; loadingThreshold: string };
+  /** Recommended RPE (1-10) based on IACI tier + modality type */
+  recommendedRPE: string;
   category: TrainingCategory;
   evidenceLevel: 'strong' | 'moderate' | 'emerging';
   durationRange: { min: number; sweet: number; max: number };
