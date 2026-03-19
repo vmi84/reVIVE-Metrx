@@ -113,9 +113,18 @@ export default function Train() {
             onPress={() => router.push('/post-workout')}
             activeOpacity={0.7}
           >
-            <ThemedText variant="body" style={styles.topPickLabel}>
-              {trainingRecs.topPick.label}
-            </ThemedText>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <ThemedText variant="body" style={styles.topPickLabel}>
+                {trainingRecs.topPick.label}
+              </ThemedText>
+              {trainingRecs.topPick.recommendedRPE && (
+                <View style={{ backgroundColor: COLORS.primary + '20', borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 }}>
+                  <ThemedText variant="caption" style={{ color: COLORS.primary, fontWeight: '700', fontSize: 10 }}>
+                    {trainingRecs.topPick.recommendedRPE}
+                  </ThemedText>
+                </View>
+              )}
+            </View>
             <ThemedText variant="caption" color={COLORS.textSecondary} numberOfLines={2}>
               {trainingRecs.topPick.recoveryFraming}
             </ThemedText>

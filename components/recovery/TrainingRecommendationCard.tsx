@@ -48,6 +48,11 @@ export function TrainingRecommendationCard({ modality, isTopPick }: Props) {
       <View style={styles.header}>
         <View style={styles.titleRow}>
           <Text style={styles.title}>{modality.label}</Text>
+          {modality.recommendedRPE && (
+            <View style={[styles.rpeBadge]}>
+              <Text style={styles.rpeText}>{modality.recommendedRPE}</Text>
+            </View>
+          )}
           <View style={[styles.permBadge, { backgroundColor: permConfig.color + '20' }]}>
             <Text style={[styles.permText, { color: permConfig.color }]}>{permConfig.label}</Text>
           </View>
@@ -163,11 +168,24 @@ const styles = StyleSheet.create({
     color: COLORS.text,
     flex: 1,
   },
+  rpeBadge: {
+    backgroundColor: '#4DA6FF20',
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    marginLeft: 6,
+  },
+  rpeText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#4DA6FF',
+    letterSpacing: 0.5,
+  },
   permBadge: {
     borderRadius: 6,
     paddingHorizontal: 8,
     paddingVertical: 3,
-    marginLeft: 8,
+    marginLeft: 6,
   },
   permText: {
     fontSize: 11,

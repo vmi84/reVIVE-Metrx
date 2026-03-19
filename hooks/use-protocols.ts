@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useAuthStore } from '../store/auth-store';
 import { useDailyStore } from '../store/daily-store';
+import { useSettingsStore } from '../store/settings-store';
 import { SubsystemScores } from '../lib/types/iaci';
 import { RecoveryProtocol } from '../lib/types/protocols';
 import localProtocols from '../data/recovery-protocols.json';
@@ -20,6 +21,8 @@ const EMPTY_GROUPED: GroupedProtocols = { strong: [], moderate: [], emerging: []
 export function useProtocols() {
   const { user } = useAuthStore();
   const { iaci } = useDailyStore();
+  const userEquipment = useSettingsStore(s => s.availableEquipment);
+  const userEnvironment = useSettingsStore(s => s.trainingEnvironment);
   const [protocols, setProtocols] = useState<RecoveryProtocol[]>([]);
   const [recommended, setRecommended] = useState<RecoveryProtocol[]>([]);
   const [grouped, setGrouped] = useState<GroupedProtocols>(EMPTY_GROUPED);
@@ -77,7 +80,7 @@ export function useProtocols() {
     });
 
     // Rank by relevance to user's current subsystem scores
-    const ranked = rankByRelevance(filtered, iaci.subsystemScores, recommendedSlugs);
+    const ranked = rankByRelevance(filtered, iaci.subsystemScores, recommendedSlugs, userEquipment, userEnvironment);
 
     setRecommended(ranked);
 
@@ -123,8 +126,32 @@ function rankByRelevance(
   protocols: RecoveryProtocol[],
   subsystemScores: SubsystemScores,
   recommendedSlugs: string[],
+  availableEquipment?: string[],
+  trainingEnvironment?: string[],
 ): RankedProtocol[] {
-  const ranked = protocols.map(p => {
+  // Filter by equipment: exclude protocols requiring equipment the user doesn't have
+  let filtered = protocols;
+  if (availableEquipment && availableEquipment.length > 0) {
+    const equipSet = new Set(availableEquipment.map(e => e.toLowerCase()));
+    // Always include protocols with no equipment needed
+    filtered = filtered.filter(p => {
+      if (!p.equipmentNeeded || p.equipmentNeeded.length === 0) return true;
+      // Keep if user has at least one of the required items
+      return p.equipmentNeeded.some(e => equipSet.has(e.toLowerCase()));
+    });
+  }
+
+  // Filter by environment: exclude pool-based if no pool, etc.
+  if (trainingEnvironment && trainingEnvironment.length > 0) {
+    const envSet = new Set(trainingEnvironment.map(e => e.toLowerCase()));
+    filtered = filtered.filter(p => {
+      if (!p.environment || p.environment.length === 0) return true;
+      // Keep if user has access to at least one of the required environments
+      return p.environment.some(e => envSet.has(e.toLowerCase()) || e.toLowerCase() === 'anywhere');
+    });
+  }
+
+  const ranked = filtered.map(p => {
     let relevanceScore = 0;
 
     const targeted = p.iaciSubsystemsTargeted ?? [];
