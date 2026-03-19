@@ -460,18 +460,18 @@ function computeRecommendedRPE(
   permission?: TrainingPermission,
 ): string {
   // Mind-body and lifestyle categories always low RPE
-  if (category === 'mind_body' || category === 'lifestyle') return 'RPE 1-3';
+  if (category === 'mind_body' || category === 'lifestyle') return 'RPE 1-3/10';
 
   // Permission overrides: caution = very easy, avoid = don't do it
-  if (permission === 'avoid') return 'RPE 1';
-  if (permission === 'caution') return 'RPE 1-2';
+  if (permission === 'avoid') return 'RPE 1/10';
+  if (permission === 'caution') return 'RPE 1-2/10';
 
   // Recommended/allowed: scale by IACI tier
-  if (iaciScore >= 85) return isPerformance ? 'RPE 7-9' : 'RPE 3-5';
-  if (iaciScore >= 70) return isPerformance ? 'RPE 6-8' : 'RPE 3-5';
-  if (iaciScore >= 55) return isPerformance ? 'RPE 5-7' : 'RPE 2-4';
-  if (iaciScore >= 35) return 'RPE 2-3';
-  return 'RPE 1-2';
+  if (iaciScore >= 85) return isPerformance ? 'RPE 7-9/10' : 'RPE 3-5/10';
+  if (iaciScore >= 70) return isPerformance ? 'RPE 6-8/10' : 'RPE 3-5/10';
+  if (iaciScore >= 55) return isPerformance ? 'RPE 5-7/10' : 'RPE 2-4/10';
+  if (iaciScore >= 35) return 'RPE 2-3/10';
+  return 'RPE 1-2/10';
 }
 
 /** Quick IACI estimate from subsystem scores (unweighted average) */
