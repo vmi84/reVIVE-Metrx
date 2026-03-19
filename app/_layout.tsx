@@ -80,6 +80,7 @@ export default function RootLayout() {
           <Stack.Screen name="onboarding" options={{ title: 'Athlete Profile', headerShown: false, presentation: 'modal' }} />
           <Stack.Screen name="device-setup" options={{ title: 'Connect Device' }} />
           <Stack.Screen name="protocol/[slug]" options={{ title: 'Protocol' }} />
+          <Stack.Screen name="exercise-library" options={{ title: 'Exercise Library', headerShown: false, presentation: 'modal' }} />
           <Stack.Screen name="import-data" options={{ title: 'Import Data' }} />
           <Stack.Screen name="lab-results" options={{ title: 'Lab Results' }} />
         </Stack>

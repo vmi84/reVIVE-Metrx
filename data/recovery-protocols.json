@@ -25,14 +25,15 @@
       "decrease_soreness",
       "improve_circulation",
       "relax_nervous_system",
-      "reduce_swelling"
+      "reduce_swelling",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "immersion_tub"
     ],
     "evidenceLevel": "strong",
     "doseMin": "3-5 min",
-    "doseSweetSpot": "10-15 min at 10-15°C",
+    "doseSweetSpot": "10-15 min at 10-15\u00b0C",
     "doseUpperLimit": ">15-20 min",
     "instructions": "Submerge body up to chest in cold water. Practice slow nasal breathing throughout. Exit immediately if shivering becomes uncontrollable.",
     "avoidCautions": "Avoid during hypertrophy training blocks. Contraindicated for Raynaud's disease, open wounds, and uncontrolled hypertension.",
@@ -92,9 +93,9 @@
     ],
     "evidenceLevel": "moderate",
     "doseMin": "5-10 min",
-    "doseSweetSpot": "10-15 min at 40-42°C",
+    "doseSweetSpot": "10-15 min at 40-42\u00b0C",
     "doseUpperLimit": ">15-20 min",
-    "instructions": "Submerge in warm water at 40-42°C. Breathe slowly and relax fully. Hydrate before and after.",
+    "instructions": "Submerge in warm water at 40-42\u00b0C. Breathe slowly and relax fully. Hydrate before and after.",
     "avoidCautions": "Avoid immediately before competition. Contraindicated with dehydration and cardiovascular disease.",
     "idealTiming": "Ideal for back-to-back events and cold-environment recovery.",
     "evidenceNotes": null,
@@ -139,7 +140,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "reduce_swelling"
+      "reduce_swelling",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "immersion_tub"
@@ -148,7 +150,7 @@
     "doseMin": "8-10 min",
     "doseSweetSpot": "10-15 min alternating cycles",
     "doseUpperLimit": "20 min",
-    "instructions": "Alternate between hot (40-42°C) and cold (10-15°C) water in 1-2 min cycles. End on cold. Maintain slow breathing throughout.",
+    "instructions": "Alternate between hot (40-42\u00b0C) and cold (10-15\u00b0C) water in 1-2 min cycles. End on cold. Maintain slow breathing throughout.",
     "avoidCautions": "Same contraindications as hot and cold immersion. Avoid with Raynaud's, open wounds, CVD, and uncontrolled hypertension.",
     "idealTiming": "Effective for DOMS reduction and rapid vascular flushing between sessions.",
     "evidenceNotes": null,
@@ -203,9 +205,9 @@
     ],
     "evidenceLevel": "moderate",
     "doseMin": "8-10 min",
-    "doseSweetSpot": "15-20 min at 80-90°C",
+    "doseSweetSpot": "15-20 min at 80-90\u00b0C",
     "doseUpperLimit": ">20 min",
-    "instructions": "Sit or lie in dry sauna at 80-90°C. Breathe steadily through the nose. Hydrate well before and after. Cool down gradually on exit.",
+    "instructions": "Sit or lie in dry sauna at 80-90\u00b0C. Breathe steadily through the nose. Hydrate well before and after. Cool down gradually on exit.",
     "avoidCautions": "Avoid before events or competition. Do not use when dehydrated or with uncontrolled hypertension.",
     "idealTiming": "Best in the evening for sleep quality enhancement, or for heat acclimation protocols.",
     "evidenceNotes": null,
@@ -315,7 +317,8 @@
       "decrease_soreness",
       "improve_circulation",
       "restore_mobility",
-      "reduce_swelling"
+      "reduce_swelling",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "nmes_device",
@@ -378,7 +381,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "reduce_swelling"
+      "reduce_swelling",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "pneumatic_compression_boots"
@@ -557,7 +561,7 @@
     "evidenceLevel": "strong",
     "doseMin": "Night 7h / Nap 20 min",
     "doseSweetSpot": "Night 8-10h / Nap 20-90 min",
-    "doseUpperLimit": "Night 11h / Nap ≤90 min",
+    "doseUpperLimit": "Night 11h / Nap \u226490 min",
     "instructions": "Prioritize consistent sleep and wake times. Use 20-min power naps or 90-min full-cycle naps. Keep room cool, dark, and quiet.",
     "avoidCautions": "Avoid unmanaged insomnia without professional support. Avoid late naps (after 3 PM) as they may disrupt nighttime sleep.",
     "idealTiming": "Critical during heavy training blocks, travel across time zones, and when HRV is low.",
@@ -926,7 +930,8 @@
     "benefits": [
       "decrease_soreness",
       "relax_nervous_system",
-      "reduce_swelling"
+      "reduce_swelling",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [],
     "evidenceLevel": "strong",
@@ -982,7 +987,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "foam_roller"
@@ -1039,7 +1045,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "foam_roller"
@@ -1096,7 +1103,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "foam_roller"
@@ -1153,7 +1161,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "foam_roller"
@@ -1210,7 +1219,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "foam_roller"
@@ -1268,7 +1278,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "foam_roller"
@@ -1325,7 +1336,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "foam_roller"
@@ -1382,7 +1394,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "foam_roller"
@@ -1441,7 +1454,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "foam_roller"
@@ -1498,7 +1512,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "foam_roller"
@@ -1556,7 +1571,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "foam_roller"
@@ -1615,7 +1631,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "lacrosse_ball"
@@ -1673,7 +1690,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "lacrosse_ball"
@@ -1731,7 +1749,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "tennis_ball"
@@ -1790,7 +1809,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "lacrosse_ball"
@@ -1849,7 +1869,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "lacrosse_ball"
@@ -1907,7 +1928,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "lacrosse_ball"
@@ -1966,7 +1988,8 @@
     "benefits": [
       "decrease_soreness",
       "improve_circulation",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "foam_roller"
@@ -2953,7 +2976,8 @@
     "benefits": [
       "improve_circulation",
       "decrease_soreness",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "pool"
@@ -3010,7 +3034,8 @@
     "benefits": [
       "improve_circulation",
       "decrease_soreness",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "pool"
@@ -3068,7 +3093,8 @@
     "benefits": [
       "improve_circulation",
       "decrease_soreness",
-      "restore_mobility"
+      "restore_mobility",
+      "lymphatic_drainage"
     ],
     "equipmentNeeded": [
       "pool",

@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [4.0.0] - 2026-03-19
+
+### Added
+- **Exercise Video Library** — Dedicated browsable/searchable exercise demo library
+  - 56 exercises across 11 categories: Foam Rolling, Mobility, Stretching, Breathing, Yoga, Corrective/Balance, Bodyweight, Lymphatic Flush, Aquatic, Thermal, Walking/Cycling
+  - 2-column compact grid with search and category chip filters
+  - Exercise detail view with video player (placeholder until AI demos generated), form cues, target areas, equipment, difficulty rating
+  - Accessible as modal from protocol detail pages and training recommendation cards
+- **Lymphatic System Integration** — New "Lymphatic Flush" exercise category
+  - Happy Baby pose, Legs Up the Wall, Diaphragmatic Breathing, Gentle Bouncing/Rebounding
+  - `supportsLymphatic` tag on exercises and `lymphatic_drainage` benefit on 26 recovery protocols
+  - Foam rolling, compression (Normatec), cold immersion, aquatic, and walking protocols tagged
+- **Pull-ups/Chin-ups** added to bodyweight recovery exercises
+- **Stretching category** covering all major muscle groups: hips, glutes, hamstrings, quads, calves, back, shoulders, neck
+- **Corrective/Balance** category (renamed from Corrective) with single-leg balance, clamshells, bird-dog, glute bridge
+- **Happy Baby Pose** cross-listed in both Yoga and Lymphatic Flush categories
+- **Thermal protocols** (sauna, cold plunge, contrast) as description-only entries (no video needed)
+
+### Changed
+- Exercise library route registered in app layout as modal screen
+- Recovery protocols JSON updated with lymphatic_drainage benefit tags
+
 ## [3.4.0] - 2026-03-18
 
 ### Added
