@@ -330,22 +330,43 @@ export function useWhoopSync() {
       setSyncProgress('Fetching recovery data…');
       console.log('[Whoop] syncHistorical: startDate=', startDate, 'endDate=', endDate);
 
-      // Fetch all data types sequentially so we can show progress
-      const recoveries = await client.getRecovery(token, startDate, endDate);
-      setSyncProgress(`${recoveries.length} recoveries · Fetching sleep data…`);
+      // Fetch all data types — each wrapped to fail gracefully
+      setSyncProgress('Fetching recovery data…');
+      let recoveries: Awaited<ReturnType<typeof client.getRecovery>> = [];
+      try {
+        recoveries = await client.getRecovery(token, startDate, endDate);
+      } catch (e) {
+        console.warn('[Whoop] Recovery fetch failed:', e);
+      }
 
-      const sleeps = await client.getSleep(token, startDate, endDate);
+      setSyncProgress(`${recoveries.length} recoveries · Fetching sleep…`);
+      let sleeps: Awaited<ReturnType<typeof client.getSleep>> = [];
+      try {
+        sleeps = await client.getSleep(token, startDate, endDate);
+      } catch (e) {
+        console.warn('[Whoop] Sleep fetch failed:', e);
+      }
+
       setSyncProgress(`${recoveries.length} recoveries · ${sleeps.length} sleeps · Fetching workouts…`);
+      let workouts: Awaited<ReturnType<typeof client.getWorkouts>> = [];
+      try {
+        workouts = await client.getWorkouts(token, startDate, endDate);
+      } catch (e) {
+        console.warn('[Whoop] Workout fetch failed:', e);
+      }
 
-      const workouts = await client.getWorkouts(token, startDate, endDate);
       setSyncProgress(`Fetching daily strain cycles…`);
-
-      // Cycle endpoint may not be available for all accounts — fail gracefully
       let cycles: Awaited<ReturnType<typeof client.getCycles>> = [];
       try {
         cycles = await client.getCycles(token, startDate, endDate);
       } catch {
         console.warn('[Whoop] Cycle endpoint unavailable, skipping day strain');
+      }
+
+      // If we got zero data from all endpoints, report error
+      if (recoveries.length === 0 && sleeps.length === 0 && workouts.length === 0) {
+        setSyncError('No data returned from Whoop. Try again in a few minutes.');
+        return;
       }
       setSyncProgress(`Processing ${recoveries.length + sleeps.length + workouts.length} records…`);
 
@@ -493,13 +514,13 @@ export function useWhoopSync() {
               maxHeartRate: w.score.max_heart_rate,
               strainScore: w.score.strain,
               caloriesBurned: Math.round(w.score.kilojoule / 4.184),
-              hrZones: {
-                zone1Ms: w.score.zone_duration.zone_one_milli,
-                zone2Ms: w.score.zone_duration.zone_two_milli,
-                zone3Ms: w.score.zone_duration.zone_three_milli,
-                zone4Ms: w.score.zone_duration.zone_four_milli,
-                zone5Ms: w.score.zone_duration.zone_five_milli,
-              },
+              hrZones: w.score.zone_duration ? {
+                zone1Ms: w.score.zone_duration.zone_one_milli ?? 0,
+                zone2Ms: w.score.zone_duration.zone_two_milli ?? 0,
+                zone3Ms: w.score.zone_duration.zone_three_milli ?? 0,
+                zone4Ms: w.score.zone_duration.zone_four_milli ?? 0,
+                zone5Ms: w.score.zone_duration.zone_five_milli ?? 0,
+              } : null,
             });
           }
         }

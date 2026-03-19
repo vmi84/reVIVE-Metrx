@@ -1,0 +1,24 @@
+App development notes:
+
+You have several simulators available. To run the app:
+
+```bash
+cd "/Users/jeffwhite/Athlete Recovery_claude.ai"
+npx expo start --ios
+```
+
+This starts the Expo dev server and launches the app in the **iPhone 16 Pro** simulator (it picks the latest by default). 
+
+**Alternatively**, to target a specific device:
+
+```bash
+npx expo run:ios --device "iPhone 16 Pro"
+```
+
+**Quick notes:**
+- The first launch takes a minute or two to build the JS bundle
+- You'll need your `.env` values set (copy `.env.example` to `.env` and fill in Supabase URL/key) for any data features to work
+- Without Supabase configured, you can still see the auth screens and UI layout
+- Press `r` in the terminal to reload, `m` to toggle the dev menu
+
+Would you like me to start it up?

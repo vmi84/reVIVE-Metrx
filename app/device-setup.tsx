@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, Alert } from 'react-native';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { View, ScrollView, StyleSheet, Alert, Linking } from 'react-native';
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
@@ -36,6 +36,71 @@ export default function DeviceSetup() {
     tokenEndpoint: WHOOP_TOKEN_URL,
   };
 
+  // Track whether we're waiting for an OAuth callback
+  const pendingAuth = useRef(false);
+
+  // Exchange an auth code for tokens — extracted so both promptAsync result
+  // AND deep link fallback can use it
+  const exchangeCodeForTokens = useCallback(async (code: string) => {
+    console.log('[Whoop OAuth] Exchanging code for tokens…');
+    const tokenRes = await fetch(WHOOP_TOKEN_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code',
+        code,
+        client_id: clientId,
+        client_secret: clientSecret,
+        redirect_uri: redirectUri,
+      }).toString(),
+    });
+
+    if (!tokenRes.ok) {
+      const errText = await tokenRes.text();
+      if (tokenRes.status === 400 && errText.includes('redirect_uri')) {
+        throw new Error(`Redirect URI mismatch. Must exactly match: ${redirectUri}`);
+      }
+      if (tokenRes.status === 401) {
+        throw new Error('Invalid client credentials. Check your WHOOP_CLIENT_SECRET in .env');
+      }
+      throw new Error(`Token exchange failed (${tokenRes.status}): ${errText}`);
+    }
+
+    const tokenData = await tokenRes.json() as {
+      access_token: string;
+      refresh_token: string;
+      expires_in: number;
+    };
+
+    await SecureStore.setItemAsync('whoop_access_token', tokenData.access_token);
+    if (tokenData.refresh_token) {
+      await SecureStore.setItemAsync('whoop_refresh_token', tokenData.refresh_token);
+    }
+    const expiresAt = Date.now() + tokenData.expires_in * 1000;
+    await SecureStore.setItemAsync('whoop_token_expires_at', String(expiresAt));
+
+    try {
+      const devices = [...(profile?.connected_devices ?? [])];
+      if (!devices.includes('whoop')) devices.push('whoop');
+      await updateProfile({
+        connected_devices: devices,
+        primary_device: 'whoop',
+      });
+    } catch {
+      // Offline mode
+    }
+
+    useDailyStore.getState().setDeviceSynced(true, 'whoop');
+    useSyncStore.getState().setLastDeviceSync(new Date().toISOString(), 'whoop');
+    setWhoopConnected(true);
+    setConnecting(false);
+    pendingAuth.current = false;
+
+    Alert.alert('Success', 'Whoop connected! Your data will sync automatically.', [
+      { text: 'OK', onPress: () => router.back() },
+    ]);
+  }, [clientId, clientSecret, redirectUri, profile]);
+
   // Check connection status on mount
   useEffect(() => {
     (async () => {
@@ -43,6 +108,28 @@ export default function DeviceSetup() {
       setWhoopConnected(!!token);
     })();
   }, []);
+
+  // Deep link fallback — catches OAuth callback if promptAsync doesn't
+  useEffect(() => {
+    const handleUrl = ({ url }: { url: string }) => {
+      console.log('[Whoop OAuth] Deep link received:', url);
+      if (!pendingAuth.current) return;
+      if (!url.includes('auth/whoop/callback')) return;
+
+      const params = new URL(url).searchParams ?? new URLSearchParams(url.split('?')[1] ?? '');
+      const code = params.get('code');
+      if (code) {
+        exchangeCodeForTokens(code).catch((err) => {
+          Alert.alert('Connection Error', err.message);
+          setConnecting(false);
+          pendingAuth.current = false;
+        });
+      }
+    };
+
+    const sub = Linking.addEventListener('url', handleUrl);
+    return () => sub.remove();
+  }, [exchangeCodeForTokens]);
 
   async function connectWhoop() {
     if (!clientId) {
@@ -58,6 +145,7 @@ export default function DeviceSetup() {
     console.log('[Whoop OAuth] Redirect URI:', redirectUri);
 
     setConnecting(true);
+    pendingAuth.current = true;
     try {
       const request = new AuthSession.AuthRequest({
         clientId,
@@ -67,74 +155,26 @@ export default function DeviceSetup() {
       });
 
       // Use non-ephemeral session so Cloudflare cookies persist between attempts.
-      // This shares cookies with Safari, reducing bot-detection false positives.
+      console.log('[Whoop OAuth] Starting auth with redirectUri:', redirectUri);
       const result = await request.promptAsync(discovery, {
         preferEphemeralSession: false,
       });
+      console.log('[Whoop OAuth] Result:', JSON.stringify({ type: result.type, params: (result as any).params }));
 
       if (result.type === 'success' && result.params.code) {
-        // Exchange code for token — manual fetch because Whoop requires client_secret
-        const tokenRes = await fetch(WHOOP_TOKEN_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({
-            grant_type: 'authorization_code',
-            code: result.params.code,
-            client_id: clientId,
-            client_secret: clientSecret,
-            redirect_uri: redirectUri,
-          }).toString(),
-        });
-
-        if (!tokenRes.ok) {
-          const errText = await tokenRes.text();
-          // Provide actionable error messages for common OAuth failures
-          if (tokenRes.status === 400 && errText.includes('redirect_uri')) {
-            throw new Error(
-              `Redirect URI mismatch. The URI registered with Whoop must exactly match: ${redirectUri}`,
-            );
+        await exchangeCodeForTokens(result.params.code);
+      } else if (result.type === 'dismiss' || result.type === 'cancel') {
+        // User dismissed — the deep link listener may still catch the callback
+        console.log('[Whoop OAuth] Browser dismissed, waiting for deep link fallback…');
+        // Don't clear connecting — deep link handler will handle it
+        // Set a timeout to clear connecting state if no callback arrives
+        setTimeout(() => {
+          if (pendingAuth.current) {
+            pendingAuth.current = false;
+            setConnecting(false);
           }
-          if (tokenRes.status === 401) {
-            throw new Error('Invalid client credentials. Check your WHOOP_CLIENT_SECRET in .env');
-          }
-          throw new Error(`Token exchange failed (${tokenRes.status}): ${errText}`);
-        }
-
-        const tokenData = await tokenRes.json() as {
-          access_token: string;
-          refresh_token: string;
-          expires_in: number;
-        };
-
-        // Store tokens securely
-        await SecureStore.setItemAsync('whoop_access_token', tokenData.access_token);
-        if (tokenData.refresh_token) {
-          await SecureStore.setItemAsync('whoop_refresh_token', tokenData.refresh_token);
-        }
-        // Store expiry for auto-refresh
-        const expiresAt = Date.now() + tokenData.expires_in * 1000;
-        await SecureStore.setItemAsync('whoop_token_expires_at', String(expiresAt));
-
-        // Update profile — works in online mode
-        try {
-          const devices = [...(profile?.connected_devices ?? [])];
-          if (!devices.includes('whoop')) devices.push('whoop');
-          await updateProfile({
-            connected_devices: devices,
-            primary_device: 'whoop',
-          });
-        } catch {
-          // Offline mode — profile update is optional
-        }
-
-        // Mark device as connected in local stores
-        useDailyStore.getState().setDeviceSynced(true, 'whoop');
-        useSyncStore.getState().setLastDeviceSync(new Date().toISOString(), 'whoop');
-        setWhoopConnected(true);
-
-        Alert.alert('Success', 'Whoop connected! Your data will sync automatically.', [
-          { text: 'OK', onPress: () => router.back() },
-        ]);
+        }, 10000);
+        return; // Don't clear connecting in finally
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Failed to connect Whoop';

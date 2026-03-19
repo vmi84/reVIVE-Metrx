@@ -200,13 +200,13 @@ function handleWorkoutUpdated(
       maxHeartRate: s.max_heart_rate,
       strainScore: s.strain,
       caloriesBurned: Math.round(s.kilojoule / 4.184), // kJ → kcal
-      hrZones: {
-        zone1Ms: s.zone_duration.zone_one_milli,
-        zone2Ms: s.zone_duration.zone_two_milli,
-        zone3Ms: s.zone_duration.zone_three_milli,
-        zone4Ms: s.zone_duration.zone_four_milli,
-        zone5Ms: s.zone_duration.zone_five_milli,
-      },
+      hrZones: s.zone_duration ? {
+        zone1Ms: s.zone_duration.zone_one_milli ?? 0,
+        zone2Ms: s.zone_duration.zone_two_milli ?? 0,
+        zone3Ms: s.zone_duration.zone_three_milli ?? 0,
+        zone4Ms: s.zone_duration.zone_four_milli ?? 0,
+        zone5Ms: s.zone_duration.zone_five_milli ?? 0,
+      } : null,
     };
 
     record.workouts = [workout];

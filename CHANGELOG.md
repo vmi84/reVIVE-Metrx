@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [3.2.0] - 2026-03-18
+
+### Changed
+- **Whoop API migrated to v2** — All endpoints updated from deprecated v1 to v2 (`/v2/recovery`, `/v2/activity/sleep`, `/v2/activity/workout`, `/v2/cycle`, `/v2/user/profile/basic`). v1 endpoints were returning 404.
+- **Graceful API fallbacks** — Each Whoop data endpoint (recovery, sleep, workout, cycle) now fails independently. If one endpoint errors, the others still sync.
+- **Zone duration optional** — HR zone data (`zone_duration`) is now safely optional in workout parsing. v2 API may omit this field; app handles it gracefully instead of crashing.
+
+### Fixed
+- **Whoop sync returning no data** — Root cause was v1 API deprecation. Migrated all endpoints to v2.
+- **"Cannot read property 'zone_one_milli' of undefined"** — Workout zone_duration field made optional across adapter, sync hook, and webhook handler.
+- **OAuth deep link fallback** — Added `Linking` event listener as fallback for native dev builds where `AuthSession.promptAsync` doesn't capture the redirect callback. Handles both prompt result and deep link paths.
+- **Sync error visibility** — Full error messages now displayed on Settings screen below Sync button (was truncated in toast).
+
+### Added
+- **Deep link OAuth fallback** — Native dev builds now have a secondary callback handler via React Native `Linking` API, catching OAuth redirects that `AuthSession` misses.
+- **Privacy Policy & Callback files** — Added for Whoop Developer Portal compliance.
+
 ## [3.1.1] - 2026-03-18
 
 ### Added

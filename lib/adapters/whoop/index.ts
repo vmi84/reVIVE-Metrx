@@ -232,13 +232,13 @@ export const whoopAdapter: WearableAdapter = {
           maxHeartRate: w.score.max_heart_rate,
           strainScore: w.score.strain,
           caloriesBurned: Math.round(w.score.kilojoule / 4.184),
-          hrZones: {
-            zone1Ms: w.score.zone_duration.zone_one_milli,
-            zone2Ms: w.score.zone_duration.zone_two_milli,
-            zone3Ms: w.score.zone_duration.zone_three_milli,
-            zone4Ms: w.score.zone_duration.zone_four_milli,
-            zone5Ms: w.score.zone_duration.zone_five_milli,
-          },
+          hrZones: w.score.zone_duration ? {
+            zone1Ms: w.score.zone_duration.zone_one_milli ?? 0,
+            zone2Ms: w.score.zone_duration.zone_two_milli ?? 0,
+            zone3Ms: w.score.zone_duration.zone_three_milli ?? 0,
+            zone4Ms: w.score.zone_duration.zone_four_milli ?? 0,
+            zone5Ms: w.score.zone_duration.zone_five_milli ?? 0,
+          } : null,
         };
 
         record.workouts.push(workout);

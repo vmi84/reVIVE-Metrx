@@ -28,6 +28,7 @@ import type { AthleteMode, TrainingSchedule } from '../../lib/types/athlete-mode
 export default function Settings() {
   const { profile, signOut, user } = useAuth();
   const { syncHistorical, syncing, syncProgress } = useWhoopSync();
+  const syncError = useSyncStore(s => s.syncError);
   const lastSync = useSyncStore(s => s.lastDeviceSync);
   const hasData = usePhysiologyStore(s => s.hasData);
   const lastImport = usePhysiologyStore(s => s.lastImport);
@@ -163,13 +164,24 @@ export default function Settings() {
             <Button
               title={syncing ? 'Syncing...' : 'Sync All Data'}
               variant="secondary"
-              onPress={() => syncHistorical()}
+              onPress={async () => {
+                try {
+                  await syncHistorical();
+                } catch (e: any) {
+                  Alert.alert('Sync Error', e?.message ?? String(e));
+                }
+              }}
               loading={syncing}
               style={styles.connectButton}
             />
             {syncing && syncProgress && (
               <ThemedText variant="caption" color={COLORS.textMuted} style={{ marginTop: 6, textAlign: 'center' }}>
                 {syncProgress}
+              </ThemedText>
+            )}
+            {syncError && !syncing && (
+              <ThemedText variant="caption" color={COLORS.error} style={{ marginTop: 6 }}>
+                {syncError}
               </ThemedText>
             )}
           </View>

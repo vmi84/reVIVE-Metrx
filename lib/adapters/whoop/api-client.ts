@@ -1,11 +1,12 @@
 /**
- * Whoop Developer API v1 client.
+ * Whoop Developer API v2 client.
  *
- * Endpoints:
- *   GET /v1/recovery      — recovery metrics (HRV, RHR, SpO2, skin temp, respiratory rate)
- *   GET /v1/sleep          — sleep data (duration, stages, performance, consistency, latency)
- *   GET /v1/workout        — workout data (HR, strain, zones, duration, calories)
- *   GET /v1/cycle          — daily strain cycle
+ * Endpoints (migrated from v1 to v2 — March 2026):
+ *   GET /v2/recovery           — recovery metrics (HRV, RHR, SpO2, skin temp)
+ *   GET /v2/activity/sleep     — sleep data (duration, stages, performance)
+ *   GET /v2/activity/workout   — workout data (HR, strain, zones, calories)
+ *   GET /v2/cycle              — daily strain cycle
+ *   GET /v2/user/profile/basic — user profile
  *
  * Uses the Fetch API. OAuth tokens are passed per-request; refresh is
  * handled via refreshAccessToken().
@@ -91,14 +92,14 @@ export interface WhoopWorkoutRecord {
     distance_meter: number | null;
     altitude_gain_meter: number | null;
     altitude_change_meter: number | null;
-    zone_duration: {
+    zone_duration?: {
       zone_zero_milli: number;
       zone_one_milli: number;
       zone_two_milli: number;
       zone_three_milli: number;
       zone_four_milli: number;
       zone_five_milli: number;
-    };
+    } | null;
   } | null;
 }
 
@@ -257,7 +258,7 @@ export class WhoopApiClient {
   // ── Profile endpoint ───────────────────────────────────────────────────────
 
   async getProfile(token: string): Promise<{ user_id: number; email: string; first_name: string; last_name: string }> {
-    const res = await fetch(`${WHOOP_API_BASE}/v1/user/profile/basic`, {
+    const res = await fetch(`${WHOOP_API_BASE}/v2/user/profile/basic`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (!res.ok) {
@@ -279,7 +280,7 @@ export class WhoopApiClient {
     if (endDate) params.set('end', toISO(endDate, true));
     const qs = params.toString();
     return this.fetchPaginated<WhoopRecoveryRecord>(
-      `/v1/recovery${qs ? `?${qs}` : ''}`,
+      `/v2/recovery${qs ? `?${qs}` : ''}`,
       token,
     );
   }
@@ -294,7 +295,7 @@ export class WhoopApiClient {
     if (endDate) params.set('end', toISO(endDate, true));
     const qs = params.toString();
     return this.fetchPaginated<WhoopSleepRecord>(
-      `/v1/sleep${qs ? `?${qs}` : ''}`,
+      `/v2/activity/sleep${qs ? `?${qs}` : ''}`,
       token,
     );
   }
@@ -309,7 +310,7 @@ export class WhoopApiClient {
     if (endDate) params.set('end', toISO(endDate, true));
     const qs = params.toString();
     return this.fetchPaginated<WhoopWorkoutRecord>(
-      `/v1/workout${qs ? `?${qs}` : ''}`,
+      `/v2/activity/workout${qs ? `?${qs}` : ''}`,
       token,
     );
   }
@@ -324,7 +325,7 @@ export class WhoopApiClient {
     if (endDate) params.set('end', toISO(endDate, true));
     const qs = params.toString();
     return this.fetchPaginated<WhoopCycleRecord>(
-      `/v1/cycle${qs ? `?${qs}` : ''}`,
+      `/v2/cycle${qs ? `?${qs}` : ''}`,
       token,
     );
   }
