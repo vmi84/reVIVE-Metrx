@@ -380,6 +380,16 @@ export function useIACI() {
         overallEnergy: checkinData?.overallEnergy ?? null,
       });
 
+      // Illness suppresses multiple subsystems even if objective metrics look OK
+      if (checkinData?.feelingIll && (checkinData?.illnessSymptoms?.length ?? 0) > 0) {
+        const symptomCount = checkinData.illnessSymptoms.length;
+        // Scale suppression: 1 symptom = -5pts, 4+ symptoms = -15pts per subsystem
+        const suppression = Math.min(5 + symptomCount * 2.5, 20);
+        autonomic.score = Math.max(autonomic.score - suppression, 10);
+        cardiometabolic.score = Math.max(cardiometabolic.score - suppression, 10);
+        psychological.score = Math.max(psychological.score - Math.round(suppression * 0.5), 10);
+      }
+
       const subsystemScores: SubsystemScores = {
         autonomic,
         musculoskeletal,
@@ -409,7 +419,15 @@ export function useIACI() {
       if (checkinData?.hydrationLiters != null) presentFields++;
       const dataCompleteness = Math.min(presentFields / totalFields, 1);
 
-      const result = computeIACI(dateStr, adjustedScores, weights, dataCompleteness, sportKeys);
+      // Pass illness data from check-in into penalty computation
+      const illnessReported = checkinData?.feelingIll ?? false;
+      const illnessSymptomCount = checkinData?.illnessSymptoms?.length ?? 0;
+
+      const result = computeIACI(
+        dateStr, adjustedScores, weights, dataCompleteness, sportKeys,
+        undefined, // athleteMode
+        illnessReported, illnessSymptomCount,
+      );
       setIACI(result);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to compute demo IACI');
