@@ -330,7 +330,7 @@ export default function MorningCheckin() {
 
         <SegmentedRating label="Energy" value={energy} onChange={setEnergy} />
         <SegmentedRating label="Sleep" value={sleep} onChange={setSleep} />
-        <SegmentedRating label="Soreness" value={soreness} onChange={setSorenessQuick} />
+        <SegmentedRating label="Soreness" value={soreness} onChange={setSorenessQuick} inverted />
         <SegmentedRating label="Readiness" value={readiness} onChange={setReadiness} />
 
         <ThemedText variant="caption" color={COLORS.textMuted} style={styles.legend}>
