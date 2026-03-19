@@ -10,7 +10,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, ScrollView, StyleSheet, TouchableOpacity, Alert, LayoutAnimation } from 'react-native';
 import { router } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { useAuth } from '../../hooks/use-auth';
@@ -35,6 +35,15 @@ export default function Settings() {
   const { athleteMode, trainingSchedule, setAthleteMode, setTrainingSchedule } = useDailyStore();
   const settings = useSettingsStore();
   const [whoopConnected, setWhoopConnected] = useState(false);
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+  const toggleGroup = (key: string) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setExpandedGroups(prev => {
+      const next = new Set(prev);
+      next.has(key) ? next.delete(key) : next.add(key);
+      return next;
+    });
+  };
 
   useEffect(() => {
     (async () => {
@@ -62,71 +71,64 @@ export default function Settings() {
         <ThemedText variant="caption" color={COLORS.textSecondary}>{user?.email}</ThemedText>
 
         {/* About */}
-        <View style={styles.profileGroup}>
-          <View style={styles.profileGroupHeader}>
-            <ThemedText variant="caption" style={styles.profileGroupTitle}>ABOUT</ThemedText>
-            <TouchableOpacity onPress={() => router.push('/onboarding?step=1')}>
-              <ThemedText variant="caption" color={COLORS.primary}>Edit</ThemedText>
-            </TouchableOpacity>
-          </View>
-          <SettingRow label="Sports" value={
-            settings.sports.length > 0 ? settings.sports.join(', ') : 'Not set'
-          } />
+        <ProfileGroup
+          title="ABOUT"
+          summary={[settings.sports.join(', ') || 'No sports', settings.experienceLevel || ''].filter(Boolean).join(' · ')}
+          expanded={expandedGroups.has('about')}
+          onToggle={() => toggleGroup('about')}
+          onEdit={() => router.push('/onboarding?step=1')}
+        >
+          <SettingRow label="Sports" value={settings.sports.length > 0 ? settings.sports.join(', ') : 'Not set'} />
           <SettingRow label="Experience" value={settings.experienceLevel || 'Not set'} />
-        </View>
+        </ProfileGroup>
 
         {/* Goals & Recovery */}
-        <View style={styles.profileGroup}>
-          <View style={styles.profileGroupHeader}>
-            <ThemedText variant="caption" style={styles.profileGroupTitle}>GOALS & RECOVERY</ThemedText>
-            <TouchableOpacity onPress={() => router.push('/onboarding?step=3')}>
-              <ThemedText variant="caption" color={COLORS.primary}>Edit</ThemedText>
-            </TouchableOpacity>
-          </View>
+        <ProfileGroup
+          title="GOALS & RECOVERY"
+          summary={settings.primaryGoal || 'No goal set'}
+          expanded={expandedGroups.has('goals')}
+          onToggle={() => toggleGroup('goals')}
+          onEdit={() => router.push('/onboarding?step=3')}
+        >
           <SettingRow label="Primary Goal" value={settings.primaryGoal || 'Not set'} />
           <SettingRow label="Recovery Priorities" value={
-            settings.recoveryPriorities.length > 0
-              ? settings.recoveryPriorities.join(', ')
-              : 'Not set'
+            settings.recoveryPriorities.length > 0 ? settings.recoveryPriorities.join(', ') : 'Not set'
           } />
           <SettingRow label="Preferred Activities" value={
-            settings.preferredRecoveryActivities.length > 0
-              ? settings.preferredRecoveryActivities.join(', ')
-              : 'Not set'
+            settings.preferredRecoveryActivities.length > 0 ? settings.preferredRecoveryActivities.join(', ') : 'Not set'
           } />
-        </View>
+        </ProfileGroup>
 
         {/* Environment & Equipment */}
-        <View style={styles.profileGroup}>
-          <View style={styles.profileGroupHeader}>
-            <ThemedText variant="caption" style={styles.profileGroupTitle}>ENVIRONMENT & EQUIPMENT</ThemedText>
-            <TouchableOpacity onPress={() => router.push('/onboarding?step=4')}>
-              <ThemedText variant="caption" color={COLORS.primary}>Edit</ThemedText>
-            </TouchableOpacity>
-          </View>
+        <ProfileGroup
+          title="ENVIRONMENT & EQUIPMENT"
+          summary={[
+            settings.trainingEnvironment.length > 0 ? settings.trainingEnvironment.join(', ') : '',
+            settings.availableEquipment.length > 0 ? `${settings.availableEquipment.length} items` : '',
+          ].filter(Boolean).join(' · ') || 'Not set'}
+          expanded={expandedGroups.has('env')}
+          onToggle={() => toggleGroup('env')}
+          onEdit={() => router.push('/onboarding?step=4')}
+        >
           <SettingRow label="Environment" value={
-            settings.trainingEnvironment.length > 0
-              ? settings.trainingEnvironment.join(', ')
-              : 'Not set'
+            settings.trainingEnvironment.length > 0 ? settings.trainingEnvironment.join(', ') : 'Not set'
           } />
           <SettingRow label="Equipment" value={
-            settings.availableEquipment.length > 0
-              ? settings.availableEquipment.join(', ')
-              : 'Not set'
+            settings.availableEquipment.length > 0 ? settings.availableEquipment.join(', ') : 'Not set'
           } />
           <SettingRow label="Diet" value={settings.dietaryApproach || 'Not set'} />
-        </View>
+        </ProfileGroup>
 
         {/* Health */}
-        <View style={styles.profileGroup}>
-          <View style={styles.profileGroupHeader}>
-            <ThemedText variant="caption" style={styles.profileGroupTitle}>HEALTH</ThemedText>
-            <TouchableOpacity onPress={() => router.push('/onboarding?step=5')}>
-              <ThemedText variant="caption" color={COLORS.primary}>Edit</ThemedText>
-            </TouchableOpacity>
-          </View>
+        <ProfileGroup
+          title="HEALTH"
+          summary={settings.knownConditions || 'No conditions'}
+          expanded={expandedGroups.has('health')}
+          onToggle={() => toggleGroup('health')}
+          onEdit={() => router.push('/onboarding?step=5')}
+        >
           <SettingRow label="Known Conditions" value={settings.knownConditions || 'None'} />
-        </View>
+        </ProfileGroup>
 
         <Button
           title="Full Profile Editor"
@@ -292,6 +294,45 @@ const settingStyles = StyleSheet.create({
   value: { textTransform: 'capitalize' },
 });
 
+function ProfileGroup({ title, summary, expanded, onToggle, onEdit, children }: {
+  title: string;
+  summary: string;
+  expanded: boolean;
+  onToggle: () => void;
+  onEdit: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <View style={groupStyles.container}>
+      <TouchableOpacity onPress={onToggle} style={groupStyles.header} activeOpacity={0.7}>
+        <ThemedText variant="caption" style={groupStyles.chevron}>{expanded ? '▾' : '▸'}</ThemedText>
+        <View style={groupStyles.titleCol}>
+          <ThemedText variant="caption" style={groupStyles.title}>{title}</ThemedText>
+          {!expanded && (
+            <ThemedText variant="caption" color={COLORS.textSecondary} numberOfLines={1} style={groupStyles.summary}>
+              {summary}
+            </ThemedText>
+          )}
+        </View>
+        <TouchableOpacity onPress={onEdit} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+          <ThemedText variant="caption" color={COLORS.primary}>Edit</ThemedText>
+        </TouchableOpacity>
+      </TouchableOpacity>
+      {expanded && <View style={groupStyles.body}>{children}</View>}
+    </View>
+  );
+}
+
+const groupStyles = StyleSheet.create({
+  container: { marginTop: 10, paddingTop: 8, borderTopWidth: 1, borderTopColor: COLORS.border },
+  header: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  chevron: { fontSize: 12, color: COLORS.textMuted, width: 14 },
+  titleCol: { flex: 1 },
+  title: { fontSize: 9, fontWeight: '700', letterSpacing: 1, color: COLORS.textMuted, textTransform: 'uppercase' },
+  summary: { fontSize: 11, marginTop: 1 },
+  body: { marginTop: 4 },
+});
+
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
   content: { padding: 16, paddingBottom: 40 },
@@ -299,9 +340,6 @@ const styles = StyleSheet.create({
   sectionHeader: { textTransform: 'uppercase', letterSpacing: 1.2, fontSize: 10, fontWeight: '700', color: COLORS.textMuted, marginBottom: 12 },
   sport: { marginTop: 4, textTransform: 'capitalize', color: COLORS.textSecondary },
   editBtn: { marginTop: 12 },
-  profileGroup: { marginTop: 12, paddingTop: 10, borderTopWidth: 1, borderTopColor: COLORS.border },
-  profileGroupHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 },
-  profileGroupTitle: { fontSize: 9, fontWeight: '700', letterSpacing: 1, color: COLORS.textMuted, textTransform: 'uppercase' },
   modeLabel: { fontSize: 10, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 },
   modeHint: { marginTop: 6, fontStyle: 'italic', fontSize: 11 },
   toggleRow: { flexDirection: 'row', gap: 8 },
