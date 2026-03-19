@@ -25,6 +25,8 @@ interface SettingsState {
   trainingPhase: TrainingPhase;
   primaryGoal: string;
   recoveryPriorities: string[];
+  /** User's preferred recovery activities — these get weighted higher in recommendations */
+  preferredRecoveryActivities: string[];
   availableEquipment: string[];
   trainingEnvironment: string[];
   dietaryApproach: string;
@@ -48,6 +50,7 @@ const DEFAULTS = {
   trainingPhase: 'build' as TrainingPhase,
   primaryGoal: '',
   recoveryPriorities: [],
+  preferredRecoveryActivities: [],
   availableEquipment: [],
   trainingEnvironment: [],
   dietaryApproach: '',

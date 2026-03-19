@@ -67,6 +67,13 @@ const RECOVERY_PRIORITIES = [
   'Mental Recovery', 'Nutrition & Fueling', 'Injury Prevention',
 ];
 
+const PREFERRED_ACTIVITIES = [
+  'Walking', 'Running/Jogging', 'Cycling', 'Swimming', 'Rowing',
+  'Elliptical', 'Yoga', 'Foam Rolling', 'Stretching', 'Massage',
+  'Sauna', 'Cold Plunge', 'Breathing Exercises', 'Meditation',
+  'Hiking', 'Light Strength', 'Mobility Work',
+];
+
 const EQUIPMENT_OPTIONS = [
   'Foam Roller', 'Resistance Bands', 'Kettlebells', 'Sauna',
   'Cold Plunge/Ice Bath', 'Massage Gun', 'Yoga Mat', 'Pull-up Bar',
@@ -112,6 +119,9 @@ export default function OnboardingScreen() {
   const [goal, setGoal] = useState<string>((profile as any)?.primary_goal ?? '');
   const [priorities, setPriorities] = useState<Set<string>>(
     new Set((profile as any)?.recovery_priorities ?? [])
+  );
+  const [preferredActivities, setPreferredActivities] = useState<Set<string>>(
+    new Set(useSettingsStore.getState().preferredRecoveryActivities ?? [])
   );
 
   // Step 4: Environment
@@ -164,6 +174,7 @@ export default function OnboardingScreen() {
       trainingPhase: phase,
       primaryGoal: goal,
       recoveryPriorities: Array.from(priorities),
+      preferredRecoveryActivities: Array.from(preferredActivities),
       availableEquipment: Array.from(equipment),
       trainingEnvironment: Array.from(environment),
       dietaryApproach: diet,
@@ -361,6 +372,23 @@ export default function OnboardingScreen() {
             <AddCustomInput placeholder="Add other priority..." onAdd={(val) => {
               setCustomPriorities(prev => [...prev, val]);
               if (priorities.size < 3) setPriorities(prev => new Set([...prev, val]));
+            }} />
+
+            <Text style={styles.sectionTitle}>Preferred Recovery Activities <Text style={styles.selectionHint}>(select your favorites)</Text></Text>
+            <Text style={[styles.subtitle, { marginBottom: 8 }]}>These will be weighted higher in your recovery recommendations.</Text>
+            <View style={styles.chipGrid}>
+              {PREFERRED_ACTIVITIES.map(a => (
+                <TouchableOpacity
+                  key={a}
+                  style={[styles.chip, preferredActivities.has(a) && styles.chipSelected]}
+                  onPress={() => toggleSet(preferredActivities, a, setPreferredActivities)}
+                >
+                  <Text style={[styles.chipLabel, preferredActivities.has(a) && styles.chipLabelSelected]}>{a}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <AddCustomInput placeholder="Add other activity..." onAdd={(val) => {
+              setPreferredActivities(prev => new Set([...prev, val]));
             }} />
           </>
         )}

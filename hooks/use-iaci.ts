@@ -433,6 +433,7 @@ export function useIACI() {
         undefined, // athleteMode
         illnessReported, illnessSymptomCount, illnessSeverityScore,
         userEnvironment.length > 0 ? userEnvironment : undefined,
+        useSettingsStore.getState().preferredRecoveryActivities,
       );
       setIACI(result);
     } catch (err) {
