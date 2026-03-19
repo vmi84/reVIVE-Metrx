@@ -29,7 +29,7 @@ export default function Dashboard() {
   const { days, loading, loadingMore, hasMore, loadMore, refresh, carryForwardCheckin } = useFeed();
   const { computeToday, computeDemo } = useIACI();
   const { syncMorningData, syncHistorical, isConnected, syncing, syncProgress } = useWhoopSync();
-  const { checkinCompleted, deviceSynced, iaci } = useDailyStore();
+  const { checkinCompleted, deviceSynced, iaci, athleteMode } = useDailyStore();
   const hasImportedData = usePhysiologyStore((s) => s.hasData);
   const recordCount = usePhysiologyStore((s) => Object.keys(s.records).length);
   // Debug: check if recent dates exist in store
@@ -100,16 +100,16 @@ export default function Dashboard() {
     })();
   }, []);
 
-  // Auto-compute IACI after check-in or device sync
+  // Auto-compute IACI after check-in, device sync, OR athlete mode change
   useEffect(() => {
-    if (!checkinCompleted) return;
+    if (!checkinCompleted && !hasImportedData) return;
 
     if (isSupabaseConfigured && deviceSynced) {
       computeToday();
     } else {
       computeDemo();
     }
-  }, [checkinCompleted, deviceSynced]);
+  }, [checkinCompleted, deviceSynced, athleteMode]);
 
   // Auto-compute IACI from imported device data (no check-in needed)
   useEffect(() => {
