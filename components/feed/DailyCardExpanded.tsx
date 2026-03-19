@@ -56,7 +56,8 @@ export function DailyCardExpanded({ day, onMetricAccept, onMetricEdit }: Props) 
   const phys = day.physiology;
   const sourceMeta = day.deviceSource ? getSourceMeta(day.deviceSource) : null;
 
-  // Editable metrics
+  // Editable metrics — skip device-provided metrics when device data card is shown
+  const deviceMetricKeys = day.deviceSynced ? ['hrv_rmssd', 'resting_heart_rate', 'sleep_duration_ms', 'day_strain', 'recovery_score', 'respiratory_rate'] : [];
   const editableMetrics = [
     { key: 'hrv_rmssd', label: 'HRV', value: phys?.hrv_rmssd ?? null, unit: 'ms' },
     { key: 'resting_heart_rate', label: 'Resting Heart Rate', value: phys?.resting_heart_rate ?? null, unit: 'bpm' },
@@ -82,9 +83,9 @@ export function DailyCardExpanded({ day, onMetricAccept, onMetricEdit }: Props) 
         )}
       </View>
 
-      {/* Scores Row: IACI Ring + Device Recovery side by side */}
-      <View style={styles.scoresRow}>
-        {hasIACI && (
+      {/* IACI Ring only — device recovery shown in device data card below */}
+      {hasIACI && (
+        <View style={styles.scoresRow}>
           <View style={styles.scoreBlock}>
             <IACIRing score={day.iaci!.score} tier={day.iaci!.readinessTier} size={100} />
             <ThemedText variant="caption" color={COLORS.textMuted} style={styles.scoreLabel}>
@@ -94,23 +95,8 @@ export function DailyCardExpanded({ day, onMetricAccept, onMetricEdit }: Props) 
               {Math.round(day.iaci!.dataCompleteness * 100)}% data
             </ThemedText>
           </View>
-        )}
-        {phys?.recovery_score != null && (
-          <View style={styles.scoreBlock}>
-            <View style={[styles.recoveryCircle, { borderColor: recoveryColor(phys.recovery_score) }]}>
-              <ThemedText style={[styles.recoveryScoreLarge, { color: recoveryColor(phys.recovery_score) }]}>
-                {Math.round(phys.recovery_score)}
-              </ThemedText>
-              <ThemedText style={[styles.recoveryPctLabel, { color: recoveryColor(phys.recovery_score) }]}>
-                %
-              </ThemedText>
-            </View>
-            <ThemedText variant="caption" color={COLORS.textMuted} style={styles.scoreLabel}>
-              Device Recovery
-            </ThemedText>
-          </View>
-        )}
-      </View>
+        </View>
+      )}
 
       {/* Device Key Metrics Summary */}
       {day.deviceSynced && phys && sourceMeta && (
@@ -235,7 +221,7 @@ export function DailyCardExpanded({ day, onMetricAccept, onMetricEdit }: Props) 
         <Card style={styles.metricsCard}>
           <ThemedText variant="caption" style={styles.sectionHeader}>METRICS</ThemedText>
           {editableMetrics
-            .filter(m => m.value != null)
+            .filter(m => m.value != null && !deviceMetricKeys.includes(m.key))
             .map((m) => {
               const source = (day.metricSources[m.key] ?? 'manual') as MetricSource;
               const validation = day.metricValidations[m.key];
