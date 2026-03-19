@@ -133,7 +133,9 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: -40,
+    overflow: 'hidden',
+    height: 260,
   },
   logoImage: {
     width: 320,
