@@ -13,6 +13,7 @@ import { scoreSleepCircadian, SleepCircadianInputs } from '../lib/engine/subsyst
 import { scoreMetabolic, MetabolicInputs } from '../lib/engine/subsystems/metabolic';
 import { scorePsychoEmotional, PsychoEmotionalInputs } from '../lib/engine/subsystems/psycho-emotional';
 import { getWeightsForSportProfile, applySportAdjustments } from '../lib/engine/sport-stress';
+import { getAthleteModeConfig } from '../lib/engine/athlete-mode';
 import { today, daysAgo } from '../lib/utils/date';
 import { DailyPhysiologyRow, SubjectiveEntryRow } from '../lib/types/database';
 import { useSettingsStore } from '../store/settings-store';
@@ -448,7 +449,7 @@ export function useIACI() {
 
       // Get athlete mode config from daily store
       const { athleteMode: mode, trainingSchedule } = useDailyStore.getState();
-      const { getAthleteModeConfig } = await import('../lib/engine/athlete-mode');
+      // getAthleteModeConfig imported at top of file
       const athleteModeConfig = mode === 'competitive'
         ? getAthleteModeConfig('competitive', trainingSchedule)
         : undefined;
