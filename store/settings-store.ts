@@ -11,9 +11,15 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import { fileStorage } from '../lib/utils/file-storage';
 import type { AthleteMode, TrainingSchedule, TrainingPhase, ExperienceLevel } from '../lib/types/athlete-mode';
 
+export type AppTheme = 'dark' | 'light';
+
 interface SettingsState {
   // Onboarding completion
   onboardingCompleted: boolean;
+
+  // App preferences
+  /** Light or dark theme */
+  theme: AppTheme;
 
   // Athlete profile
   sports: string[];
@@ -27,6 +33,8 @@ interface SettingsState {
   recoveryPriorities: string[];
   /** User's preferred recovery activities — these get weighted higher in recommendations */
   preferredRecoveryActivities: string[];
+  /** User's preferred training modalities, ranked 1-3 (e.g., ['Running', 'Cycling', 'Swimming']) */
+  preferredTrainingModalities: string[];
   availableEquipment: string[];
   /** Backup of Whoop tokens for recovery after SecureStore wipe */
   whoopTokenBackup: { token: string; refresh: string; expiry: string } | null;
@@ -43,6 +51,7 @@ interface SettingsState {
 
 const DEFAULTS = {
   onboardingCompleted: false,
+  theme: 'dark' as AppTheme,
   sports: [],
   experienceLevel: 'intermediate' as ExperienceLevel,
   athleteMode: 'recreational' as AthleteMode,
@@ -53,6 +62,7 @@ const DEFAULTS = {
   primaryGoal: '',
   recoveryPriorities: [],
   preferredRecoveryActivities: [],
+  preferredTrainingModalities: [],
   availableEquipment: [],
   whoopTokenBackup: null,
   trainingEnvironment: [],

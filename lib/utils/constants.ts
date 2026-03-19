@@ -71,8 +71,8 @@ export const WHOOP_API_BASE = 'https://api.prod.whoop.com/developer';
 export const WHOOP_AUTH_URL = 'https://api.prod.whoop.com/oauth/oauth2/auth';
 export const WHOOP_TOKEN_URL = 'https://api.prod.whoop.com/oauth/oauth2/token';
 
-// UI Colors
-export const COLORS = {
+// UI Colors — Dark theme (default)
+export const COLORS_DARK = {
   background: '#0A1628',
   surface: '#132039',
   surfaceLight: '#1A2D4D',
@@ -91,6 +91,36 @@ export const COLORS = {
   tierRecover: '#FF9800',
   tierProtect: '#F44336',
 } as const;
+
+// UI Colors — Light theme
+export const COLORS_LIGHT = {
+  background: '#F5F7FA',
+  surface: '#FFFFFF',
+  surfaceLight: '#EEF1F5',
+  primary: '#2B7FD4',
+  success: '#00A843',
+  warning: '#E5A800',
+  error: '#D32F2F',
+  orange: '#E68900',
+  text: '#1A1A2E',
+  textSecondary: '#5A6B7D',
+  textMuted: '#8899AA',
+  border: '#D8DEE6',
+  tierPerform: '#00A843',
+  tierTrain: '#1976D2',
+  tierMaintain: '#E5A800',
+  tierRecover: '#E68900',
+  tierProtect: '#D32F2F',
+} as const;
+
+// Active colors — default to dark, overridden by theme provider
+export let COLORS = { ...COLORS_DARK };
+
+/** Switch the active COLORS object. Called by theme provider. */
+export function setActiveTheme(theme: 'dark' | 'light') {
+  const source = theme === 'light' ? COLORS_LIGHT : COLORS_DARK;
+  Object.assign(COLORS, source);
+}
 
 // Body regions for soreness mapping
 export const BODY_REGIONS = [

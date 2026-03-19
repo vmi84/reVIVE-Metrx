@@ -22,8 +22,15 @@ import { useSettingsStore } from '../../store/settings-store';
 import { Card } from '../../components/ui/Card';
 import { ThemedText } from '../../components/ui/ThemedText';
 import { Button } from '../../components/ui/Button';
-import { COLORS } from '../../lib/utils/constants';
+import { COLORS, setActiveTheme } from '../../lib/utils/constants';
 import type { AthleteMode, TrainingSchedule } from '../../lib/types/athlete-mode';
+import type { AppTheme } from '../../store/settings-store';
+
+const TRAINING_MODALITY_OPTIONS = [
+  'Running', 'Cycling', 'Swimming', 'Rowing', 'Elliptical',
+  'Walking', 'Hiking', 'Yoga', 'Strength Training', 'CrossFit',
+  'Martial Arts', 'Dance', 'Climbing', 'Skiing',
+];
 
 export default function Settings() {
   const { profile, signOut, user } = useAuth();
@@ -269,6 +276,81 @@ export default function Settings() {
         } />
       </Card>
 
+      {/* ── App Preferences ── */}
+      <Card style={styles.section}>
+        <ThemedText variant="caption" style={styles.sectionHeader}>APP PREFERENCES</ThemedText>
+
+        <ThemedText variant="caption" color={COLORS.textMuted} style={styles.modeLabel}>
+          Theme
+        </ThemedText>
+        <View style={styles.toggleRow}>
+          <TouchableOpacity
+            style={[styles.toggleBtn, settings.theme === 'dark' && styles.toggleBtnActive]}
+            onPress={() => { settings.updateProfile({ theme: 'dark' }); setActiveTheme('dark'); }}
+          >
+            <ThemedText variant="caption" style={settings.theme === 'dark' ? styles.toggleTextActive : styles.toggleText}>
+              Dark
+            </ThemedText>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.toggleBtn, settings.theme === 'light' && styles.toggleBtnActive]}
+            onPress={() => { settings.updateProfile({ theme: 'light' }); setActiveTheme('light'); }}
+          >
+            <ThemedText variant="caption" style={settings.theme === 'light' ? styles.toggleTextActive : styles.toggleText}>
+              Light
+            </ThemedText>
+          </TouchableOpacity>
+        </View>
+
+        <ThemedText variant="caption" color={COLORS.textMuted} style={[styles.modeLabel, { marginTop: 16 }]}>
+          Preferred Training Modalities (select up to 3, in priority order)
+        </ThemedText>
+        <ThemedText variant="caption" color={COLORS.textSecondary} style={{ marginBottom: 8, fontSize: 11 }}>
+          Recovery activities will be tailored to support these in order of priority.
+          {settings.preferredTrainingModalities.length > 0 && (
+            `\nCurrent: ${settings.preferredTrainingModalities.map((m, i) => `${i + 1}. ${m}`).join('  ')}`
+          )}
+        </ThemedText>
+        <View style={styles.modalityGrid}>
+          {TRAINING_MODALITY_OPTIONS.map((mod) => {
+            const idx = settings.preferredTrainingModalities.indexOf(mod);
+            const isSelected = idx >= 0;
+            const isFull = settings.preferredTrainingModalities.length >= 3 && !isSelected;
+            return (
+              <TouchableOpacity
+                key={mod}
+                style={[
+                  styles.modalityChip,
+                  isSelected && styles.modalityChipSelected,
+                  isFull && styles.modalityChipDisabled,
+                ]}
+                onPress={() => {
+                  const current = [...settings.preferredTrainingModalities];
+                  if (isSelected) {
+                    current.splice(idx, 1);
+                  } else if (current.length < 3) {
+                    current.push(mod);
+                  }
+                  settings.updateProfile({ preferredTrainingModalities: current });
+                }}
+                disabled={isFull}
+              >
+                {isSelected && (
+                  <ThemedText variant="caption" style={styles.modalityRank}>{idx + 1}</ThemedText>
+                )}
+                <ThemedText variant="caption" style={[
+                  styles.modalityLabel,
+                  isSelected && styles.modalityLabelSelected,
+                  isFull && { color: COLORS.textMuted },
+                ]}>
+                  {mod}
+                </ThemedText>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </Card>
+
       {/* ── Account ── */}
       <Button
         title="Sign Out"
@@ -354,4 +436,43 @@ const styles = StyleSheet.create({
   connectButton: { marginTop: 12 },
   linkRow: { paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: COLORS.border },
   signOut: { marginTop: 8 },
+  modalityGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  modalityChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: COLORS.surfaceLight,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  modalityChipSelected: {
+    backgroundColor: COLORS.primary + '20',
+    borderColor: COLORS.primary,
+  },
+  modalityChipDisabled: {
+    opacity: 0.4,
+  },
+  modalityRank: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: COLORS.primary,
+    backgroundColor: COLORS.primary + '30',
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    textAlign: 'center',
+    lineHeight: 16,
+  },
+  modalityLabel: {
+    fontSize: 12,
+    color: COLORS.textSecondary,
+    fontWeight: '500',
+  },
+  modalityLabelSelected: {
+    color: COLORS.primary,
+    fontWeight: '600',
+  },
 });
