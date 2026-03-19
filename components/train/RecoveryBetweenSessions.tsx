@@ -37,8 +37,11 @@ const STRATEGY_LABELS: Record<string, string> = {
 
 export function RecoveryBetweenSessions() {
   const { iaci } = useDailyStore();
-  const todaySessions = useTrainingPlanStore((s) => s.getSessionsForDate(today()));
-  const tomorrowSessions = useTrainingPlanStore((s) => s.getSessionsForDate(tomorrowStr()));
+  const plannedSessions = useTrainingPlanStore((s) => s.plannedSessions);
+  const todayStr = today();
+  const tomorrowDate = tomorrowStr();
+  const todaySessions = plannedSessions[todayStr] ?? [];
+  const tomorrowSessions = plannedSessions[tomorrowDate] ?? [];
 
   const recommendations = getRecoveryForPlan(
     todaySessions,
