@@ -15,6 +15,21 @@ import { COLORS, WHOOP_AUTH_URL, WHOOP_TOKEN_URL } from '../lib/utils/constants'
 
 WebBrowser.maybeCompleteAuthSession();
 
+type DeviceStatus = 'available' | 'beta' | 'planned';
+const WEARABLE_CATALOG: Array<{ name: string; description: string; status: DeviceStatus }> = [
+  { name: 'Whoop', description: 'HRV, recovery, sleep, strain, SpO2', status: 'available' },
+  { name: 'Garmin', description: 'HRV, sleep, training load, body battery', status: 'planned' },
+  { name: 'Apple Watch', description: 'HRV, sleep, activity, blood oxygen', status: 'planned' },
+  { name: 'Oura Ring', description: 'HRV, sleep staging, readiness, temperature', status: 'planned' },
+  { name: 'Polar', description: 'HRV, sleep, training load, orthostatic test', status: 'planned' },
+  { name: 'COROS', description: 'HRV, sleep, training load, EvoLab', status: 'planned' },
+  { name: 'Samsung Galaxy Watch', description: 'HRV, sleep, body composition, blood oxygen', status: 'planned' },
+  { name: 'Terra API', description: 'Unified API — connect 50+ wearables', status: 'planned' },
+  { name: 'Fitbit', description: 'HRV, sleep, stress management, SpO2', status: 'planned' },
+  { name: 'Suunto', description: 'HRV, sleep, training load, recovery', status: 'planned' },
+  { name: 'Amazfit', description: 'HRV, sleep, PAI, stress', status: 'planned' },
+];
+
 export default function DeviceSetup() {
   const { updateProfile, profile } = useAuth();
   const [connecting, setConnecting] = useState(false);
@@ -346,15 +361,37 @@ export default function DeviceSetup() {
         />
       </Card>
 
-      {/* Future devices */}
+      {/* Wearable Device Catalog */}
       <Card style={[styles.section, styles.futureCard]}>
         <ThemedText variant="caption" style={styles.sectionHeader}>
-          COMING SOON
+          AVAILABLE WEARABLES
         </ThemedText>
-        {['Garmin', 'Oura', 'Apple Watch', 'Polar', 'COROS'].map((device) => (
-          <View key={device} style={styles.futureRow}>
-            <ThemedText variant="body" color={COLORS.textMuted}>{device}</ThemedText>
-            <ThemedText variant="caption" color={COLORS.textMuted}>Phase 2</ThemedText>
+        <ThemedText variant="caption" color={COLORS.textSecondary} style={{ marginBottom: 10 }}>
+          Connect your wearable to sync recovery, sleep, and workout data automatically.
+        </ThemedText>
+        {WEARABLE_CATALOG.map((device) => (
+          <View key={device.name} style={styles.futureRow}>
+            <View style={{ flex: 1 }}>
+              <ThemedText variant="body" color={device.status === 'available' ? COLORS.text : COLORS.textMuted}>
+                {device.name}
+              </ThemedText>
+              <ThemedText variant="caption" color={COLORS.textMuted} style={{ fontSize: 10 }}>
+                {device.description}
+              </ThemedText>
+            </View>
+            <View style={[
+              styles.statusBadge,
+              device.status === 'available' ? styles.statusAvailable :
+              device.status === 'beta' ? styles.statusBeta : styles.statusPlanned,
+            ]}>
+              <ThemedText variant="caption" style={[
+                styles.statusText,
+                device.status === 'available' ? { color: COLORS.success } :
+                device.status === 'beta' ? { color: COLORS.warning } : { color: COLORS.textMuted },
+              ]}>
+                {device.status === 'available' ? 'Available' : device.status === 'beta' ? 'Beta' : 'Planned'}
+              </ThemedText>
+            </View>
           </View>
         ))}
       </Card>
@@ -410,8 +447,28 @@ const styles = StyleSheet.create({
   futureRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
+  },
+  statusBadge: {
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    marginLeft: 8,
+  },
+  statusAvailable: {
+    backgroundColor: COLORS.success + '15',
+  },
+  statusBeta: {
+    backgroundColor: COLORS.warning + '15',
+  },
+  statusPlanned: {
+    backgroundColor: COLORS.surfaceLight,
+  },
+  statusText: {
+    fontSize: 10,
+    fontWeight: '700',
   },
 });
