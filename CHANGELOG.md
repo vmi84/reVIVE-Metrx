@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [3.4.0] - 2026-03-18
+
+### Added
+- **Weighted illness severity in IACI engine** — Symptoms now severity-weighted:
+  - Severe (fever, body aches, chills, chest tightness, dizziness) = 3× weight → full 12pt penalty + "DO NOT TRAIN" warning
+  - Moderate (nausea, fatigue, headache, cough, diarrhea) = 2× weight → ~75% penalty
+  - Mild (sore throat, congestion, sneezing, loss of appetite) = 1× weight → ~50% penalty
+- **Illness subsystem suppression** — When ill, autonomic and cardiometabolic scores reduced 5-20pts based on symptom count; psychological reduced by half
+- **"Still feeling ill?" prompt** — If yesterday's check-in had illness, today's check-in shows follow-up prompt with "Yes, still ill" / "Feeling better" buttons. Auto-expands detail section.
+- **Additional symptoms free text** — Unlisted symptoms can be typed in
+- **Severe symptom warning banner** — Red warning when severe symptoms selected
+- **Severity-colored symptom chips** — Red (severe), yellow (moderate), gray (mild)
+- **Tab bar icons** — Ionicons for all tabs: home, fitness, bicycle, analytics, settings. Replaces default triangle indicators.
+- **Selection hints on all onboarding sections** — "(select one)" or "(select all that apply)" next to every section title for consistent guidance
+
+### Changed
+- **Tab order** — Recovery promoted to position 2 (next to Home), Train moved to position 3. Recovery is more important for daily use.
+- **Settings screen** — Shows user's login ID (email) instead of generic "Athlete" label. Falls back: full_name → email → 'Athlete'.
+
+### Fixed
+- **Illness not wired to IACI** — `computePenalties()` and `computeIACI()` now accept illness parameters. Penalty logic triggers from user-reported symptoms, not just low cardiometabolic scores.
+
 ## [3.3.2] - 2026-03-18
 
 ### Added
