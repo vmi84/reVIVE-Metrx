@@ -3,8 +3,8 @@
  *
  * Organized sections:
  *   1. Athlete Profile (links to onboarding questionnaire)
- *   2. Training Mode (quick toggle for athlete mode)
- *   3. Connected Devices (Whoop, future Garmin/Oura)
+ *   2. Connected Devices (Whoop, future Garmin/Oura)
+ *   3. Training Mode (quick toggle for athlete mode)
  *   4. Data (import/export, lab results)
  *   5. Account (sign out)
  */
@@ -81,67 +81,6 @@ export default function Settings() {
         />
       </Card>
 
-      {/* ── Training Mode ── */}
-      <Card style={styles.section}>
-        <ThemedText variant="caption" style={styles.sectionHeader}>TRAINING MODE</ThemedText>
-
-        <ThemedText variant="caption" color={COLORS.textMuted} style={styles.modeLabel}>
-          Athlete Mode
-        </ThemedText>
-        <View style={styles.toggleRow}>
-          <TouchableOpacity
-            style={[styles.toggleBtn, athleteMode === 'recreational' && styles.toggleBtnActive]}
-            onPress={() => { setAthleteMode('recreational'); settings.updateProfile({ athleteMode: 'recreational' }); }}
-          >
-            <ThemedText variant="caption" style={athleteMode === 'recreational' ? styles.toggleTextActive : styles.toggleText}>
-              Self-Directed
-            </ThemedText>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.toggleBtn, athleteMode === 'competitive' && styles.toggleBtnActive]}
-            onPress={() => { setAthleteMode('competitive'); settings.updateProfile({ athleteMode: 'competitive' }); }}
-          >
-            <ThemedText variant="caption" style={athleteMode === 'competitive' ? styles.toggleTextActive : styles.toggleText}>
-              Coach-Led
-            </ThemedText>
-          </TouchableOpacity>
-        </View>
-        {athleteMode === 'competitive' && (
-          <ThemedText variant="caption" color={COLORS.textSecondary} style={styles.modeHint}>
-            Relaxed thresholds, reduced penalties, recovery-focused Train tab
-          </ThemedText>
-        )}
-
-        <ThemedText variant="caption" color={COLORS.textMuted} style={[styles.modeLabel, { marginTop: 12 }]}>
-          Daily Schedule
-        </ThemedText>
-        <View style={styles.toggleRow}>
-          <TouchableOpacity
-            style={[styles.toggleBtn, trainingSchedule === 'single' && styles.toggleBtnActive]}
-            onPress={() => { setTrainingSchedule('single'); settings.updateProfile({ trainingSchedule: 'single' }); }}
-          >
-            <ThemedText variant="caption" style={trainingSchedule === 'single' ? styles.toggleTextActive : styles.toggleText}>
-              Single
-            </ThemedText>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.toggleBtn, trainingSchedule === 'double' && styles.toggleBtnActive]}
-            onPress={() => { setTrainingSchedule('double'); settings.updateProfile({ trainingSchedule: 'double' }); }}
-          >
-            <ThemedText variant="caption" style={trainingSchedule === 'double' ? styles.toggleTextActive : styles.toggleText}>
-              Two-a-day
-            </ThemedText>
-          </TouchableOpacity>
-        </View>
-
-        <SettingRow label="Phase" value={settings.trainingPhase || 'Not set'} />
-        <SettingRow label="Frequency" value={
-          settings.trainingFrequency
-            ? `${settings.trainingFrequency} days/week`
-            : 'Not set'
-        } />
-      </Card>
-
       {/* ── Connected Devices ── */}
       <Card style={styles.section}>
         <ThemedText variant="caption" style={styles.sectionHeader}>CONNECTED DEVICES</ThemedText>
@@ -206,6 +145,67 @@ export default function Settings() {
           onPress={() => router.push('/device-setup')}
           style={styles.connectButton}
         />
+      </Card>
+
+      {/* ── Training Mode ── */}
+      <Card style={styles.section}>
+        <ThemedText variant="caption" style={styles.sectionHeader}>TRAINING MODE</ThemedText>
+
+        <ThemedText variant="caption" color={COLORS.textMuted} style={styles.modeLabel}>
+          Athlete Mode
+        </ThemedText>
+        <View style={styles.toggleRow}>
+          <TouchableOpacity
+            style={[styles.toggleBtn, athleteMode === 'recreational' && styles.toggleBtnActive]}
+            onPress={() => { setAthleteMode('recreational'); settings.updateProfile({ athleteMode: 'recreational' }); }}
+          >
+            <ThemedText variant="caption" style={athleteMode === 'recreational' ? styles.toggleTextActive : styles.toggleText}>
+              Self-Directed
+            </ThemedText>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.toggleBtn, athleteMode === 'competitive' && styles.toggleBtnActive]}
+            onPress={() => { setAthleteMode('competitive'); settings.updateProfile({ athleteMode: 'competitive' }); }}
+          >
+            <ThemedText variant="caption" style={athleteMode === 'competitive' ? styles.toggleTextActive : styles.toggleText}>
+              Coach-Led
+            </ThemedText>
+          </TouchableOpacity>
+        </View>
+        {athleteMode === 'competitive' && (
+          <ThemedText variant="caption" color={COLORS.textSecondary} style={styles.modeHint}>
+            Relaxed thresholds, reduced penalties, recovery-focused Effort Guide
+          </ThemedText>
+        )}
+
+        <ThemedText variant="caption" color={COLORS.textMuted} style={[styles.modeLabel, { marginTop: 12 }]}>
+          Daily Schedule
+        </ThemedText>
+        <View style={styles.toggleRow}>
+          <TouchableOpacity
+            style={[styles.toggleBtn, trainingSchedule === 'single' && styles.toggleBtnActive]}
+            onPress={() => { setTrainingSchedule('single'); settings.updateProfile({ trainingSchedule: 'single' }); }}
+          >
+            <ThemedText variant="caption" style={trainingSchedule === 'single' ? styles.toggleTextActive : styles.toggleText}>
+              Single
+            </ThemedText>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.toggleBtn, trainingSchedule === 'double' && styles.toggleBtnActive]}
+            onPress={() => { setTrainingSchedule('double'); settings.updateProfile({ trainingSchedule: 'double' }); }}
+          >
+            <ThemedText variant="caption" style={trainingSchedule === 'double' ? styles.toggleTextActive : styles.toggleText}>
+              Two-a-day
+            </ThemedText>
+          </TouchableOpacity>
+        </View>
+
+        <SettingRow label="Phase" value={settings.trainingPhase || 'Not set'} />
+        <SettingRow label="Frequency" value={
+          settings.trainingFrequency
+            ? `${settings.trainingFrequency} days/week`
+            : 'Not set'
+        } />
       </Card>
 
       {/* ── Data ── */}
