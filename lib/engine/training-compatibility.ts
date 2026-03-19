@@ -435,32 +435,48 @@ export function getRecoveryTrainingRecommendations(
     // Mind-body demotion — meditation/breathwork should support, not lead (unless very low IACI)
     const mindBodyPenalty = (profile.category === 'mind_body' && iaciScore > 30) ? -10 : 0;
 
-    // User preference bonus — match preferred activities to modality labels
-    const prefBonus = (preferredActivities && preferredActivities.length > 0)
-      ? (preferredActivities.some(pref => {
-          const p = pref.toLowerCase();
-          const label = profile.label.toLowerCase();
-          return label.includes(p) || p.includes(label) ||
-            // Common mappings
-            (p.includes('walk') && key === 'walkingRecovery') ||
-            (p.includes('run') && (key === 'zone1' || key === 'agtAerobic')) ||
-            (p.includes('cycling') && key === 'easyCycling') ||
-            (p.includes('swim') && (key === 'swimEasy' || key === 'aquaticRecovery')) ||
-            (p.includes('yoga') && key === 'yoga') ||
-            (p.includes('foam') && key === 'massage') ||
-            (p.includes('stretch') && key === 'mobilityFlow') ||
-            (p.includes('sauna') && key === 'sauna') ||
-            (p.includes('cold') && key === 'coldExposure') ||
-            (p.includes('breath') && key === 'breathworkActive') ||
-            (p.includes('meditat') && key === 'meditation') ||
-            (p.includes('row') && key === 'agtAerobic') ||
-            (p.includes('ellip') && key === 'easyCycling') ||
-            (p.includes('hik') && key === 'hiking') ||
-            (p.includes('mobility') && key === 'mobilityFlow') ||
-            (p.includes('strength') && key === 'strengthLight') ||
-            (p.includes('massage') && key === 'massage');
-        }) ? 15 : 0)
-      : 0;
+    // User preference matching — maps user-friendly names to modality keys
+    const matchesPreference = (pref: string, modalityKey: TrainingModalityKey, modalityLabel: string): boolean => {
+      const p = pref.toLowerCase();
+      const label = modalityLabel.toLowerCase();
+      if (label.includes(p) || p.includes(label)) return true;
+      // Explicit mappings for common activity names
+      if (p.includes('walk') && modalityKey === 'walkingRecovery') return true;
+      if (p.includes('run') && (modalityKey === 'zone1' || modalityKey === 'zone2' || modalityKey === 'agtAerobic' || modalityKey === 'mitoZone2')) return true;
+      if ((p.includes('cycling') || p.includes('bike')) && modalityKey === 'easyCycling') return true;
+      if (p.includes('swim') && (modalityKey === 'swimEasy' || modalityKey === 'aquaticRecovery')) return true;
+      if (p.includes('yoga') && modalityKey === 'yoga') return true;
+      if (p.includes('foam') && modalityKey === 'massage') return true;
+      if (p.includes('stretch') && modalityKey === 'mobilityFlow') return true;
+      if (p.includes('sauna') && modalityKey === 'sauna') return true;
+      if (p.includes('cold') && modalityKey === 'coldExposure') return true;
+      if (p.includes('breath') && modalityKey === 'breathworkActive') return true;
+      if (p.includes('meditat') && modalityKey === 'meditation') return true;
+      if ((p.includes('row') || p.includes('erg')) && modalityKey === 'agtAerobic') return true;
+      if ((p.includes('ellip') || p.includes('cross train')) && modalityKey === 'easyCycling') return true;
+      if (p.includes('hik') && modalityKey === 'hiking') return true;
+      if (p.includes('mobility') && modalityKey === 'mobilityFlow') return true;
+      if (p.includes('strength') && modalityKey === 'strengthLight') return true;
+      if (p.includes('massage') && modalityKey === 'massage') return true;
+      return false;
+    };
+
+    const hasPrefs = preferredActivities && preferredActivities.length > 0;
+    const isPreferred = hasPrefs && preferredActivities!.some(pref => matchesPreference(pref, key, profile.label));
+
+    // Preferred activities get a large boost; non-preferred aerobic get demoted
+    // This ensures the user's chosen activities dominate the recommendation list
+    let prefBonus = 0;
+    if (hasPrefs) {
+      if (isPreferred) {
+        // Ranked bonus: 1st preference = +25, 2nd = +20, 3rd = +15
+        const prefIndex = preferredActivities!.findIndex(pref => matchesPreference(pref, key, profile.label));
+        prefBonus = prefIndex === 0 ? 25 : prefIndex === 1 ? 20 : 15;
+      } else if (isActiveAerobic) {
+        // Non-preferred aerobic activities get demoted (but not removed)
+        prefBonus = -15;
+      }
+    }
 
     const relevanceScore = primaryDeficit + 0.3 * secondaryDeficit
       + sportBonus + permissionBonus + activeBonus + enduranceBonus + mindBodyPenalty + prefBonus;
@@ -469,9 +485,33 @@ export function getRecoveryTrainingRecommendations(
     const effectivePermission = (isActiveAerobic && permission === 'avoid') ? 'caution' as TrainingPermission : permission;
     const rpe = computeRecommendedRPE(iaciScore, profile.isPerformanceModality, profile.category, effectivePermission);
 
+    // Sport-aware label override — if user prefers running and this is an aerobic modality,
+    // show "Easy Run" instead of "Walking Recovery", "Z2 Run" instead of "Zone 2" etc.
+    let displayLabel = profile.label;
+    if (isPreferred && hasPrefs) {
+      const matchedPref = preferredActivities!.find(pref => matchesPreference(pref, key, profile.label));
+      if (matchedPref) {
+        const mp = matchedPref.toLowerCase();
+        if (mp.includes('run')) {
+          if (key === 'zone1') displayLabel = 'Easy Run (Z1)';
+          else if (key === 'zone2') displayLabel = 'Z2 Run (Aerobic)';
+          else if (key === 'mitoZone2') displayLabel = 'Long Easy Run (Mito)';
+          else if (key === 'agtAerobic') displayLabel = 'Aerobic Run Repeats';
+        } else if (mp.includes('cycling') || mp.includes('bike')) {
+          if (key === 'easyCycling') displayLabel = 'Easy Spin';
+        } else if (mp.includes('swim')) {
+          if (key === 'swimEasy') displayLabel = 'Easy Swim';
+        } else if (mp.includes('ellip')) {
+          if (key === 'easyCycling') displayLabel = 'Elliptical (Easy)';
+        } else if (mp.includes('row')) {
+          if (key === 'agtAerobic') displayLabel = 'Easy Row';
+        }
+      }
+    }
+
     results.push({
       key,
-      label: profile.label,
+      label: displayLabel,
       permission: effectivePermission,
       relevanceScore: Math.round(relevanceScore * 10) / 10,
       primarySubsystems: profile.primarySubsystems,
