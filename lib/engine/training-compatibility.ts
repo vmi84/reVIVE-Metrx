@@ -355,13 +355,20 @@ function applyPhenotypeOverrides(
  * 3. Sort descending by relevance
  * 4. Return top N (default 8)
  */
+/**
+ * @param userEnvironment - User's available training environments (e.g., ['home', 'gym', 'outdoors']). Filters out incompatible modalities.
+ */
 export function getRecoveryTrainingRecommendations(
   compatibility: TrainingCompatibility,
   subsystemScores: SubsystemScores,
   sportRecoveryNeeds: SubsystemKey[] = [],
   maxResults: number = 8,
+  userEnvironment?: string[],
 ): RankedTrainingModality[] {
   const results: RankedTrainingModality[] = [];
+  const envSet = userEnvironment && userEnvironment.length > 0
+    ? new Set(userEnvironment.map(e => e.toLowerCase()))
+    : null;
 
   const allKeys = Object.keys(TRAINING_RECOVERY_MAP) as TrainingModalityKey[];
 
@@ -374,6 +381,14 @@ export function getRecoveryTrainingRecommendations(
 
     // Skip performance modalities from recovery recommendations
     if (profile.isPerformanceModality) continue;
+
+    // Filter by user's available environment (pool, gym, home, etc.)
+    if (envSet && profile.environment.length > 0) {
+      const hasAccess = profile.environment.some(
+        e => envSet.has(e.toLowerCase()) || e.toLowerCase() === 'anywhere',
+      );
+      if (!hasAccess) continue;
+    }
 
     // Check IACI floor
     const iaciScore = computeIACIFromScores(subsystemScores);
@@ -388,7 +403,7 @@ export function getRecoveryTrainingRecommendations(
     const relevanceScore = primaryDeficit + 0.3 * secondaryDeficit + sportBonus + permissionBonus;
 
     // Compute recommended RPE based on IACI score + modality
-    const rpe = computeRecommendedRPE(iaciScore, profile.isPerformanceModality, profile.category);
+    const rpe = computeRecommendedRPE(iaciScore, profile.isPerformanceModality, profile.category, permission);
 
     results.push({
       key,
@@ -433,19 +448,30 @@ function avgDeficit(subsystems: SubsystemKey[], scores: SubsystemScores): number
  * Compute recommended RPE (1-10) based on IACI score and modality type.
  * Higher IACI → higher RPE allowed. Recovery modalities cap lower.
  */
+/**
+ * Compute recommended RPE (1-10) based on IACI score, modality type, AND permission level.
+ * Caution activities are always capped at RPE 1-2.
+ * Avoided activities should never appear, but if they do, RPE 1.
+ */
 function computeRecommendedRPE(
   iaciScore: number,
   isPerformance: boolean,
   category: string,
+  permission?: TrainingPermission,
 ): string {
   // Mind-body and lifestyle categories always low RPE
   if (category === 'mind_body' || category === 'lifestyle') return 'RPE 1-3';
 
+  // Permission overrides: caution = very easy, avoid = don't do it
+  if (permission === 'avoid') return 'RPE 1';
+  if (permission === 'caution') return 'RPE 1-2';
+
+  // Recommended/allowed: scale by IACI tier
   if (iaciScore >= 85) return isPerformance ? 'RPE 7-9' : 'RPE 3-5';
   if (iaciScore >= 70) return isPerformance ? 'RPE 6-8' : 'RPE 3-5';
   if (iaciScore >= 55) return isPerformance ? 'RPE 5-7' : 'RPE 2-4';
-  if (iaciScore >= 35) return 'RPE 2-4';
-  return 'RPE 1-3';
+  if (iaciScore >= 35) return 'RPE 2-3';
+  return 'RPE 1-2';
 }
 
 /** Quick IACI estimate from subsystem scores (unweighted average) */

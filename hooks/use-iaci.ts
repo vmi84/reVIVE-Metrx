@@ -15,6 +15,7 @@ import { scorePsychoEmotional, PsychoEmotionalInputs } from '../lib/engine/subsy
 import { getWeightsForSportProfile, applySportAdjustments } from '../lib/engine/sport-stress';
 import { today, daysAgo } from '../lib/utils/date';
 import { DailyPhysiologyRow, SubjectiveEntryRow } from '../lib/types/database';
+import { useSettingsStore } from '../store/settings-store';
 
 export function useIACI() {
   const { user, profile } = useAuthStore();
@@ -424,10 +425,14 @@ export function useIACI() {
       const illnessSymptomCount = checkinData?.illnessSymptoms?.length ?? 0;
       const illnessSeverityScore = checkinData?.illnessSeverityScore ?? 0;
 
+      // Get user's environment for filtering recovery recommendations
+      const userEnvironment = useSettingsStore.getState().trainingEnvironment;
+
       const result = computeIACI(
         dateStr, adjustedScores, weights, dataCompleteness, sportKeys,
         undefined, // athleteMode
         illnessReported, illnessSymptomCount, illnessSeverityScore,
+        userEnvironment.length > 0 ? userEnvironment : undefined,
       );
       setIACI(result);
     } catch (err) {
