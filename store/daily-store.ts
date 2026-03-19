@@ -21,6 +21,8 @@ export interface CheckinData {
   lateAlcohol: boolean;
   isTraveling: boolean;
   giIssues: number;            // 1-5
+  readiness: number;           // 1-5 (Tier 1 quick input)
+  quickCheckInOnly: boolean;   // true if only Tier 1 was submitted
 }
 
 interface DailyState {

@@ -453,6 +453,8 @@ export function useFeed() {
         lateAlcohol: false,
         isTraveling: false,
         giIssues: 1,
+        readiness: 3,
+        quickCheckInOnly: true,
       };
 
       store.setCheckinData(defaultData);
