@@ -8,7 +8,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, Switch, TouchableOpacity, LayoutAnimation } from 'react-native';
+import { View, ScrollView, StyleSheet, Switch, TouchableOpacity, LayoutAnimation, TextInput } from 'react-native';
 import { router } from 'expo-router';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useAuthStore } from '../store/auth-store';
@@ -30,6 +30,7 @@ export default function MorningCheckin() {
   const [submitting, setSubmitting] = useState(false);
   const [preFilled, setPreFilled] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
+  const [yesterdayWasIll, setYesterdayWasIll] = useState(false);
 
   // ── Tier 1: Quick Core ──
   const [energy, setEnergy] = useState(3);
@@ -90,6 +91,14 @@ export default function MorningCheckin() {
         setLateAlcohol(data.late_alcohol ?? false);
         setIsTraveling(data.is_traveling ?? false);
         setGiIssues(data.gi_disruption ?? 1);
+
+        // If yesterday had illness, prompt "still feeling ill?"
+        const yesterdayIll = data.illness_symptoms && Array.isArray(data.illness_symptoms) && data.illness_symptoms.length > 0;
+        if (yesterdayIll) {
+          setYesterdayWasIll(true);
+          setShowDetail(true); // auto-expand detail so they see the illness section
+        }
+
         setPreFilled(true);
       } catch {
         // No yesterday data
@@ -138,13 +147,46 @@ export default function MorningCheckin() {
     return parts.length > 0 ? parts.join(' · ') : '—';
   }
 
-  const ILLNESS_OPTIONS = ['Sore throat', 'Congestion', 'Sneezing', 'Cough', 'Fever', 'Body aches', 'Headache', 'Fatigue/malaise'];
+  // Symptoms ordered by severity — severe symptoms shown first with red styling
+  const ILLNESS_OPTIONS: Array<{ label: string; severity: 'severe' | 'moderate' | 'mild' }> = [
+    // Severe — should NOT train
+    { label: 'Fever', severity: 'severe' },
+    { label: 'Body aches', severity: 'severe' },
+    { label: 'Chills', severity: 'severe' },
+    { label: 'Chest tightness', severity: 'severe' },
+    { label: 'Dizziness', severity: 'severe' },
+    // Moderate — train with caution
+    { label: 'Nausea/vomiting', severity: 'moderate' },
+    { label: 'Diarrhea', severity: 'moderate' },
+    { label: 'Fatigue/malaise', severity: 'moderate' },
+    { label: 'Headache', severity: 'moderate' },
+    { label: 'Cough', severity: 'moderate' },
+    // Mild — light training OK
+    { label: 'Sore throat', severity: 'mild' },
+    { label: 'Congestion', severity: 'mild' },
+    { label: 'Sneezing', severity: 'mild' },
+    { label: 'Loss of appetite', severity: 'mild' },
+  ];
+
+  const [additionalSymptoms, setAdditionalSymptoms] = useState('');
 
   function toggleSymptom(symptom: string) {
     setDetailTouched(true);
     setIllnessSymptoms(prev =>
       prev.includes(symptom) ? prev.filter(s => s !== symptom) : [...prev, symptom],
     );
+  }
+
+  /** Compute weighted illness severity for IACI engine */
+  function getIllnessSeverityScore(): number {
+    const weights = { severe: 3, moderate: 2, mild: 1 };
+    let score = 0;
+    for (const symptom of illnessSymptoms) {
+      const opt = ILLNESS_OPTIONS.find(o => o.label === symptom);
+      score += opt ? weights[opt.severity] : 1; // custom symptoms = mild
+    }
+    if (additionalSymptoms.trim()) score += 1; // extra symptoms add mild weight
+    return score;
   }
 
   // ── Submit ──
@@ -209,6 +251,8 @@ export default function MorningCheckin() {
         quickCheckInOnly: quickOnly,
         feelingIll,
         illnessSymptoms: feelingIll ? illnessSymptoms : [],
+        illnessSeverityScore: feelingIll ? getIllnessSeverityScore() : 0,
+        additionalSymptoms: feelingIll ? additionalSymptoms : '',
       });
 
       setCheckinCompleted(true);
@@ -244,6 +288,37 @@ export default function MorningCheckin() {
             Pre-filled from yesterday. Adjust what changed.
           </ThemedText>
         </View>
+      )}
+
+      {/* Illness follow-up prompt */}
+      {yesterdayWasIll && !feelingIll && (
+        <TouchableOpacity
+          onPress={() => { setFeelingIll(true); setDetailTouched(true); }}
+          style={styles.illnessPrompt}
+          activeOpacity={0.7}
+        >
+          <ThemedText variant="body" style={styles.illnessPromptText}>
+            You reported illness yesterday. Still feeling ill?
+          </ThemedText>
+          <View style={styles.illnessPromptButtons}>
+            <TouchableOpacity
+              onPress={() => { setFeelingIll(true); setDetailTouched(true); }}
+              style={styles.illnessYesBtn}
+            >
+              <ThemedText variant="caption" style={{ color: '#FF4444', fontWeight: '700' }}>
+                Yes, still ill
+              </ThemedText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => { setYesterdayWasIll(false); }}
+              style={styles.illnessNoBtn}
+            >
+              <ThemedText variant="caption" style={{ color: COLORS.success, fontWeight: '700' }}>
+                Feeling better
+              </ThemedText>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
       )}
 
       {/* ═══ Tier 1: Quick Core ═══ */}
@@ -324,23 +399,52 @@ export default function MorningCheckin() {
                   Select symptoms:
                 </ThemedText>
                 <View style={styles.chipRow}>
-                  {ILLNESS_OPTIONS.map((s) => {
-                    const active = illnessSymptoms.includes(s);
+                  {ILLNESS_OPTIONS.map((opt) => {
+                    const active = illnessSymptoms.includes(opt.label);
+                    const sevColor = opt.severity === 'severe' ? '#FF4444' : opt.severity === 'moderate' ? '#FFB800' : COLORS.textSecondary;
                     return (
                       <TouchableOpacity
-                        key={s}
-                        onPress={() => toggleSymptom(s)}
-                        style={[styles.symptomChip, active && styles.symptomChipActive]}
+                        key={opt.label}
+                        onPress={() => toggleSymptom(opt.label)}
+                        style={[
+                          styles.symptomChip,
+                          active && { backgroundColor: sevColor + '20', borderColor: sevColor },
+                        ]}
                       >
                         <ThemedText
                           variant="caption"
-                          style={[styles.symptomText, active && styles.symptomTextActive]}
+                          style={[
+                            styles.symptomText,
+                            active && { color: sevColor, fontWeight: '600' },
+                          ]}
                         >
-                          {s}
+                          {opt.label}
                         </ThemedText>
                       </TouchableOpacity>
                     );
                   })}
+                </View>
+                {/* Severe symptom warning */}
+                {illnessSymptoms.some(s => ILLNESS_OPTIONS.find(o => o.label === s)?.severity === 'severe') && (
+                  <View style={styles.warningBanner}>
+                    <ThemedText variant="caption" style={styles.warningText}>
+                      Severe symptoms detected — training is not recommended today. Focus on rest and recovery.
+                    </ThemedText>
+                  </View>
+                )}
+                {/* Additional symptoms free text */}
+                <View style={{ marginTop: 8 }}>
+                  <ThemedText variant="caption" color={COLORS.textMuted} style={{ marginBottom: 4 }}>
+                    Additional symptoms:
+                  </ThemedText>
+                  <TextInput
+                    style={styles.freeTextInput}
+                    value={additionalSymptoms}
+                    onChangeText={(t) => { setAdditionalSymptoms(t); setDetailTouched(true); }}
+                    placeholder="e.g., rash, joint pain..."
+                    placeholderTextColor={COLORS.textMuted}
+                    multiline
+                  />
                 </View>
               </View>
             )}
@@ -438,6 +542,64 @@ const styles = StyleSheet.create({
   symptomTextActive: {
     color: COLORS.error,
     fontWeight: '600',
+  },
+  illnessPrompt: {
+    backgroundColor: '#FFB80015',
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#FFB800',
+  },
+  illnessPromptText: {
+    fontWeight: '600',
+    marginBottom: 10,
+  },
+  illnessPromptButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  illnessYesBtn: {
+    flex: 1,
+    backgroundColor: '#FF444420',
+    borderRadius: 8,
+    padding: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#FF4444',
+  },
+  illnessNoBtn: {
+    flex: 1,
+    backgroundColor: '#00C48C20',
+    borderRadius: 8,
+    padding: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#00C48C',
+  },
+  warningBanner: {
+    backgroundColor: '#FF444420',
+    borderRadius: 8,
+    padding: 10,
+    marginTop: 8,
+    borderLeftWidth: 3,
+    borderLeftColor: '#FF4444',
+  },
+  warningText: {
+    color: '#FF4444',
+    fontSize: 12,
+    fontWeight: '600',
+    lineHeight: 16,
+  },
+  freeTextInput: {
+    backgroundColor: COLORS.surfaceLight,
+    borderRadius: 8,
+    padding: 10,
+    color: COLORS.text,
+    fontSize: 14,
+    minHeight: 40,
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   bottomSpacer: {
     height: 40,

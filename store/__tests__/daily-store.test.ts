@@ -63,6 +63,7 @@ describe('useDailyStore', () => {
       isTraveling: false, giIssues: 1,
       readiness: 3, quickCheckInOnly: false,
       feelingIll: false, illnessSymptoms: [],
+      illnessSeverityScore: 0, additionalSymptoms: '',
     };
     useDailyStore.getState().setCheckinData(data);
     expect(useDailyStore.getState().checkinData).toEqual(data);
