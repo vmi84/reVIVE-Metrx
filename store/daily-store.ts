@@ -13,11 +13,16 @@ export interface CheckinData {
   soreness: Record<string, number>;
   stiffness: number;           // 1-5
   heavyLegs: boolean;
+  cramping: boolean;
+  crampingLocation: string;
+  heatIllness: boolean;
+  heatSymptoms: string[];      // dizziness, nausea, confusion, excessive_sweating, stopped_sweating, headache, rapid_pulse, skin_hot_dry
   motivation: number;          // 1-5
   stress: number;              // 1-5
   mentalFatigue: number;       // 1-5
   hydrationLiters: number;
   electrolytes: boolean;
+  electrolyteServings: string;
   proteinAdequate: boolean;
   lateCaffeine: boolean;
   lateAlcohol: boolean;

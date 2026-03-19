@@ -80,9 +80,9 @@ describe('PENALTIES', () => {
     });
   });
 
-  it('illness_caution is the highest penalty', () => {
+  it('heat_injury is the highest penalty', () => {
     const max = Math.max(...Object.values(PENALTIES));
-    expect(PENALTIES.illness_caution).toBe(max);
+    expect(PENALTIES.heat_injury).toBe(max);
   });
 });
 

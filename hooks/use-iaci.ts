@@ -108,6 +108,8 @@ export function useIACI() {
         soreness: subj?.soreness ?? null,
         stiffness: subj?.stiffness ?? null,
         heavyLegs: subj?.heavy_legs ?? null,
+        cramping: (subj as any)?.cramping ?? null,
+        crampingLocation: (subj as any)?.cramping_location ?? null,
         painLocations: subj?.pain_locations ?? null,
         priorWorkoutType: recentWorkouts[0]?.workout_type ?? null,
         priorDayStrain: recentWorkouts[0]?.strain_score ?? null,
@@ -316,6 +318,8 @@ export function useIACI() {
         soreness: checkinData?.soreness ?? null,
         stiffness: checkinData?.stiffness ?? null,
         heavyLegs: checkinData?.heavyLegs ?? null,
+        cramping: checkinData?.cramping ?? null,
+        crampingLocation: checkinData?.crampingLocation ?? null,
         painLocations: null,
         priorWorkoutType: phys?.workouts[0]?.workoutType ?? null,
         priorDayStrain,
@@ -435,12 +439,21 @@ export function useIACI() {
         ...settingsState.preferredTrainingModalities,
       ];
 
+      // Heat illness and cramping from check-in
+      const heatIllnessReported = checkinData?.heatIllness ?? false;
+      const heatSymptomCount = checkinData?.heatSymptoms?.length ?? 0;
+      const HEAT_EMERGENCY_SYMPTOMS = ['Stopped sweating', 'Confusion/disorientation', 'Skin hot & dry', 'Loss of consciousness'];
+      const heatHasEmergency = (checkinData?.heatSymptoms ?? []).some(s => HEAT_EMERGENCY_SYMPTOMS.includes(s));
+      const crampingReported = checkinData?.cramping ?? false;
+
       const result = computeIACI(
         dateStr, adjustedScores, weights, dataCompleteness, sportKeys,
         undefined, // athleteMode
         illnessReported, illnessSymptomCount, illnessSeverityScore,
         userEnvironment.length > 0 ? userEnvironment : undefined,
         allPreferred.length > 0 ? allPreferred : undefined,
+        heatIllnessReported, heatSymptomCount, heatHasEmergency,
+        crampingReported,
       );
       setIACI(result);
     } catch (err) {
