@@ -55,26 +55,81 @@ export default function Settings() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {/* ── Athlete Profile ── */}
+      {/* ── Athlete Profile (read-only view with edit per section) ── */}
       <Card style={styles.section}>
         <ThemedText variant="caption" style={styles.sectionHeader}>ATHLETE PROFILE</ThemedText>
         <ThemedText variant="subtitle">{profile?.full_name ?? user?.email ?? 'Athlete'}</ThemedText>
         <ThemedText variant="caption" color={COLORS.textSecondary}>{user?.email}</ThemedText>
-        {profile?.sport && (
-          <ThemedText variant="caption" style={styles.sport}>
-            {Array.isArray(profile.sport) ? profile.sport.join(', ') : profile.sport}
-          </ThemedText>
-        )}
-        <SettingRow label="Experience" value={settings.experienceLevel || 'Not set'} />
-        <SettingRow label="Goal" value={settings.primaryGoal || 'Not set'} />
-        <SettingRow label="Diet" value={settings.dietaryApproach || 'Not set'} />
-        <SettingRow label="Equipment" value={
-          settings.availableEquipment.length > 0
-            ? `${settings.availableEquipment.length} items`
-            : 'Not set'
-        } />
+
+        {/* About */}
+        <View style={styles.profileGroup}>
+          <View style={styles.profileGroupHeader}>
+            <ThemedText variant="caption" style={styles.profileGroupTitle}>ABOUT</ThemedText>
+            <TouchableOpacity onPress={() => router.push('/onboarding?step=1')}>
+              <ThemedText variant="caption" color={COLORS.primary}>Edit</ThemedText>
+            </TouchableOpacity>
+          </View>
+          <SettingRow label="Sports" value={
+            settings.sports.length > 0 ? settings.sports.join(', ') : 'Not set'
+          } />
+          <SettingRow label="Experience" value={settings.experienceLevel || 'Not set'} />
+        </View>
+
+        {/* Goals & Recovery */}
+        <View style={styles.profileGroup}>
+          <View style={styles.profileGroupHeader}>
+            <ThemedText variant="caption" style={styles.profileGroupTitle}>GOALS & RECOVERY</ThemedText>
+            <TouchableOpacity onPress={() => router.push('/onboarding?step=3')}>
+              <ThemedText variant="caption" color={COLORS.primary}>Edit</ThemedText>
+            </TouchableOpacity>
+          </View>
+          <SettingRow label="Primary Goal" value={settings.primaryGoal || 'Not set'} />
+          <SettingRow label="Recovery Priorities" value={
+            settings.recoveryPriorities.length > 0
+              ? settings.recoveryPriorities.join(', ')
+              : 'Not set'
+          } />
+          <SettingRow label="Preferred Activities" value={
+            settings.preferredRecoveryActivities.length > 0
+              ? settings.preferredRecoveryActivities.join(', ')
+              : 'Not set'
+          } />
+        </View>
+
+        {/* Environment & Equipment */}
+        <View style={styles.profileGroup}>
+          <View style={styles.profileGroupHeader}>
+            <ThemedText variant="caption" style={styles.profileGroupTitle}>ENVIRONMENT & EQUIPMENT</ThemedText>
+            <TouchableOpacity onPress={() => router.push('/onboarding?step=4')}>
+              <ThemedText variant="caption" color={COLORS.primary}>Edit</ThemedText>
+            </TouchableOpacity>
+          </View>
+          <SettingRow label="Environment" value={
+            settings.trainingEnvironment.length > 0
+              ? settings.trainingEnvironment.join(', ')
+              : 'Not set'
+          } />
+          <SettingRow label="Equipment" value={
+            settings.availableEquipment.length > 0
+              ? settings.availableEquipment.join(', ')
+              : 'Not set'
+          } />
+          <SettingRow label="Diet" value={settings.dietaryApproach || 'Not set'} />
+        </View>
+
+        {/* Health */}
+        <View style={styles.profileGroup}>
+          <View style={styles.profileGroupHeader}>
+            <ThemedText variant="caption" style={styles.profileGroupTitle}>HEALTH</ThemedText>
+            <TouchableOpacity onPress={() => router.push('/onboarding?step=5')}>
+              <ThemedText variant="caption" color={COLORS.primary}>Edit</ThemedText>
+            </TouchableOpacity>
+          </View>
+          <SettingRow label="Known Conditions" value={settings.knownConditions || 'None'} />
+        </View>
+
         <Button
-          title="Edit Athlete Profile"
+          title="Full Profile Editor"
           variant="secondary"
           onPress={() => router.push('/onboarding')}
           style={styles.editBtn}
@@ -244,6 +299,9 @@ const styles = StyleSheet.create({
   sectionHeader: { textTransform: 'uppercase', letterSpacing: 1.2, fontSize: 10, fontWeight: '700', color: COLORS.textMuted, marginBottom: 12 },
   sport: { marginTop: 4, textTransform: 'capitalize', color: COLORS.textSecondary },
   editBtn: { marginTop: 12 },
+  profileGroup: { marginTop: 12, paddingTop: 10, borderTopWidth: 1, borderTopColor: COLORS.border },
+  profileGroupHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 },
+  profileGroupTitle: { fontSize: 9, fontWeight: '700', letterSpacing: 1, color: COLORS.textMuted, textTransform: 'uppercase' },
   modeLabel: { fontSize: 10, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 },
   modeHint: { marginTop: 6, fontStyle: 'italic', fontSize: 11 },
   toggleRow: { flexDirection: 'row', gap: 8 },

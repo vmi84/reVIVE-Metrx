@@ -17,7 +17,7 @@ import {
   View, Text, ScrollView, TouchableOpacity, TextInput,
   StyleSheet, SafeAreaView, Dimensions,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { COLORS } from '../lib/utils/constants';
 import { SPORT_PROFILES, SportCategory } from '../data/sport-profiles';
 import { useAuthStore } from '../store/auth-store';
@@ -86,10 +86,11 @@ const DIETARY_OPTIONS = ['Omnivore', 'Vegetarian', 'Vegan', 'Keto', 'Paleo', 'Me
 
 export default function OnboardingScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ step?: string }>();
   const { profile, updateProfile } = useAuthStore();
   const { setAthleteMode, setTrainingSchedule } = useDailyStore();
   const scrollRef = useRef<ScrollView>(null);
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(params.step ? parseInt(params.step, 10) : 1);
 
   // Step 1: About You
   const [sports, setSports] = useState<Set<string>>(() => {
