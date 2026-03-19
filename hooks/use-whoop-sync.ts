@@ -29,39 +29,111 @@ const TOKEN_KEY = 'whoop_access_token';
 const REFRESH_KEY = 'whoop_refresh_token';
 const EXPIRY_KEY = 'whoop_token_expires_at';
 
-// Refresh 5 minutes before expiry
-const REFRESH_BUFFER_MS = 5 * 60 * 1000;
+// Refresh 10 minutes before expiry (aggressive to avoid edge cases)
+const REFRESH_BUFFER_MS = 10 * 60 * 1000;
+
+// Retry config
+const MAX_RETRIES = 3;
+const BASE_DELAY_MS = 1000; // 1s, 2s, 4s exponential backoff
+
+// ─── Retry Helper ─────────────────────────────────────────────────────────────
+
+/**
+ * Retry a fetch-based operation with exponential backoff.
+ * Only retries on transient errors (5xx, network). 4xx errors fail immediately.
+ */
+async function fetchWithRetry(
+  url: string,
+  opts: RequestInit,
+  retries: number = MAX_RETRIES,
+): Promise<Response> {
+  let lastError: Error | null = null;
+
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(url, opts);
+
+      // Don't retry client errors (400, 401, 403, 404) — they won't change
+      if (res.status >= 400 && res.status < 500) return res;
+
+      // Retry server errors (500, 502, 503, 504)
+      if (res.status >= 500 && attempt < retries) {
+        console.warn(`[Whoop] Server error ${res.status}, retrying (${attempt + 1}/${retries})…`);
+        await sleep(BASE_DELAY_MS * Math.pow(2, attempt));
+        continue;
+      }
+
+      return res;
+    } catch (err) {
+      // Network error (offline, DNS, timeout)
+      lastError = err instanceof Error ? err : new Error(String(err));
+      if (attempt < retries) {
+        console.warn(`[Whoop] Network error, retrying (${attempt + 1}/${retries}):`, lastError.message);
+        await sleep(BASE_DELAY_MS * Math.pow(2, attempt));
+      }
+    }
+  }
+
+  throw lastError ?? new Error('Fetch failed after retries');
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 // ─── Token Management ─────────────────────────────────────────────────────────
 
+/** Track whether a refresh is already in progress to avoid duplicate refreshes. */
+let refreshInProgress: Promise<string | null> | null = null;
+
+/**
+ * Get a valid access token, refreshing if needed.
+ * Deduplicates concurrent refresh attempts.
+ */
 async function getValidToken(): Promise<string | null> {
   const token = await SecureStore.getItemAsync(TOKEN_KEY);
-  if (!token) return null;
+  if (!token) {
+    console.log('[Whoop] No token found');
+    return null;
+  }
 
   // Check if token needs refresh
   const expiryStr = await SecureStore.getItemAsync(EXPIRY_KEY);
   if (expiryStr) {
     const expiresAt = Number(expiryStr);
-    if (Date.now() > expiresAt - REFRESH_BUFFER_MS) {
-      // Token expired or expiring soon — try to refresh
-      const refreshed = await refreshToken();
-      return refreshed;
+    const timeUntilExpiry = expiresAt - Date.now();
+
+    if (timeUntilExpiry < REFRESH_BUFFER_MS) {
+      console.log(`[Whoop] Token expires in ${Math.round(timeUntilExpiry / 1000)}s, refreshing…`);
+      // Deduplicate concurrent refresh calls
+      if (!refreshInProgress) {
+        refreshInProgress = refreshToken().finally(() => { refreshInProgress = null; });
+      }
+      return refreshInProgress;
     }
   }
 
   return token;
 }
 
+/**
+ * Refresh the access token using the refresh token.
+ * Returns new access token or null if refresh fails.
+ * Only clears stored tokens on definitive auth failure (401/403), not transient errors.
+ */
 async function refreshToken(): Promise<string | null> {
   const refreshTok = await SecureStore.getItemAsync(REFRESH_KEY);
-  if (!refreshTok) return null;
+  if (!refreshTok) {
+    console.warn('[Whoop] No refresh token available');
+    return null;
+  }
 
   const extra = Constants.expoConfig?.extra ?? {};
   const clientId = extra.whoopClientId ?? '';
   const clientSecret = extra.whoopClientSecret ?? '';
 
   try {
-    const res = await fetch(WHOOP_TOKEN_URL, {
+    const res = await fetchWithRetry(WHOOP_TOKEN_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
@@ -73,11 +145,14 @@ async function refreshToken(): Promise<string | null> {
     });
 
     if (!res.ok) {
-      console.warn('Token refresh failed:', res.status);
-      // Clear invalid tokens
-      await SecureStore.deleteItemAsync(TOKEN_KEY);
-      await SecureStore.deleteItemAsync(REFRESH_KEY);
-      await SecureStore.deleteItemAsync(EXPIRY_KEY);
+      const status = res.status;
+      console.warn(`[Whoop] Token refresh failed: ${status}`);
+
+      // Only clear tokens on definitive auth failures — not transient errors
+      if (status === 401 || status === 403) {
+        console.warn('[Whoop] Auth definitively revoked, clearing tokens');
+        await clearTokens();
+      }
       return null;
     }
 
@@ -95,10 +170,63 @@ async function refreshToken(): Promise<string | null> {
     const expiresAt = Date.now() + data.expires_in * 1000;
     await SecureStore.setItemAsync(EXPIRY_KEY, String(expiresAt));
 
+    console.log(`[Whoop] Token refreshed, expires in ${data.expires_in}s`);
     return data.access_token;
   } catch (err) {
-    console.warn('Token refresh error:', err);
-    return null;
+    // Network error after all retries — don't clear tokens (transient)
+    console.warn('[Whoop] Token refresh network error:', err);
+    // Fall back to existing token if it might still work
+    const existing = await SecureStore.getItemAsync(TOKEN_KEY);
+    return existing;
+  }
+}
+
+/** Clear all stored tokens (only on definitive auth revocation). */
+async function clearTokens(): Promise<void> {
+  await SecureStore.deleteItemAsync(TOKEN_KEY);
+  await SecureStore.deleteItemAsync(REFRESH_KEY);
+  await SecureStore.deleteItemAsync(EXPIRY_KEY);
+}
+
+/**
+ * Validate token health by making a lightweight API call.
+ * Returns true if token is valid, false if needs re-auth.
+ * Attempts refresh first if token appears expired.
+ */
+export async function checkTokenHealth(): Promise<'valid' | 'refreshed' | 'expired' | 'disconnected'> {
+  const token = await SecureStore.getItemAsync(TOKEN_KEY);
+  if (!token) return 'disconnected';
+
+  // Check expiry
+  const expiryStr = await SecureStore.getItemAsync(EXPIRY_KEY);
+  if (expiryStr) {
+    const expiresAt = Number(expiryStr);
+    if (Date.now() > expiresAt - REFRESH_BUFFER_MS) {
+      // Try to refresh
+      const refreshed = await refreshToken();
+      if (refreshed) return 'refreshed';
+      return 'expired';
+    }
+  }
+
+  // Token looks good locally — optionally validate with a lightweight API call
+  try {
+    const { WHOOP_API_BASE } = await import('../lib/utils/constants');
+    const res = await fetch(`${WHOOP_API_BASE}/v2/user/profile/basic`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok) return 'valid';
+    if (res.status === 401 || res.status === 403) {
+      // Token invalid — try refresh
+      const refreshed = await refreshToken();
+      if (refreshed) return 'refreshed';
+      return 'expired';
+    }
+    // Server error — assume token is fine, transient issue
+    return 'valid';
+  } catch {
+    // Network error — assume token is fine
+    return 'valid';
   }
 }
 
@@ -248,13 +376,18 @@ export function useWhoopSync() {
       lastSyncDate.current = dateStr;
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Whoop sync failed';
-      // Check for auth errors
+      // Categorize errors — only prompt re-auth for definitive auth failures
       if (msg.includes('401') || msg.includes('403')) {
-        setSyncError('Whoop session expired. Please reconnect in Profile > Connect Device.');
-        // Clear invalid tokens
-        await SecureStore.deleteItemAsync(TOKEN_KEY);
-        await SecureStore.deleteItemAsync(REFRESH_KEY);
-        await SecureStore.deleteItemAsync(EXPIRY_KEY);
+        // Try refresh one more time before giving up
+        const refreshed = await refreshToken();
+        if (refreshed) {
+          setSyncError('Token refreshed — please try syncing again.');
+        } else {
+          setSyncError('Whoop session expired. Reconnect in Settings > Connect Device.');
+          await clearTokens();
+        }
+      } else if (msg.includes('Network') || msg.includes('fetch') || msg.includes('timeout')) {
+        setSyncError('Network error — check your connection and try again.');
       } else {
         setSyncError(msg);
       }

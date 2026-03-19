@@ -10,7 +10,7 @@ import { FlatList, View, StyleSheet, ActivityIndicator, RefreshControl, Touchabl
 import { router } from 'expo-router';
 import { useFeed } from '../../hooks/use-feed';
 import { useIACI } from '../../hooks/use-iaci';
-import { useWhoopSync } from '../../hooks/use-whoop-sync';
+import { useWhoopSync, checkTokenHealth } from '../../hooks/use-whoop-sync';
 import { useLoadCapacity } from '../../hooks/use-load-capacity';
 import { useDailyStore } from '../../store/daily-store';
 import { usePhysiologyStore } from '../../store/physiology-store';
@@ -44,6 +44,7 @@ export default function Dashboard() {
   });
   const { expandedCardDate, setExpandedCard } = useFeedStore();
   const syncError = useSyncStore((s) => s.syncError);
+  const setSyncError = useSyncStore((s) => s.setSyncError);
   const [syncStatus, setSyncStatus] = useState<string>('idle');
 
   // Hydrate daily store from persisted settings on mount
@@ -59,23 +60,35 @@ export default function Dashboard() {
   useLoadCapacity();
 
   // Auto-sync device data on mount — works in both online and offline mode
-  // If no data exists yet, trigger historical backfill (fetches all available data)
+  // 1. Check token health (refresh if needed)
+  // 2. If no data exists, full backfill; otherwise sync last 7 days
   useEffect(() => {
     (async () => {
       setSyncStatus('checking connection…');
       const connected = await isConnected();
-      setSyncStatus(connected ? 'connected' : 'not connected');
-      if (!connected) return;
+      if (!connected) {
+        setSyncStatus('not connected');
+        return;
+      }
+
+      // Validate token health — refresh proactively if nearing expiry
+      const health = await checkTokenHealth();
+      console.log('[Dashboard] Token health:', health);
+      if (health === 'expired' || health === 'disconnected') {
+        setSyncStatus('session expired — reconnect in Settings');
+        setSyncError('Whoop session expired. Reconnect in Settings > Connect Device.');
+        return;
+      }
+      if (health === 'refreshed') {
+        setSyncStatus('token refreshed');
+      }
 
       try {
         if (!hasImportedData) {
-          // First sync — backfill all available data
           setSyncStatus('backfilling historical data…');
           await syncHistorical();
           setSyncStatus(`done — ${usePhysiologyStore.getState().lastImport?.recordCount ?? 0} records`);
         } else {
-          // Regular sync — always fetch last 7 days to catch gaps
-          // (handles reconnections, missed days, and token refreshes)
           setSyncStatus('syncing recent data…');
           await syncHistorical(7);
           setSyncStatus('synced');
