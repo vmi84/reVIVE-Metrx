@@ -13,15 +13,22 @@ interface Props {
   label: string;
   value: number;
   onChange: (value: number) => void;
+  /** Invert colors: 1=green, 5=red (use for Soreness where low=good) */
+  inverted?: boolean;
 }
 
-function getColor(n: number): string {
+function getColor(n: number, inverted?: boolean): string {
+  if (inverted) {
+    if (n <= 2) return '#00C48C';   // green — not sore
+    if (n === 3) return '#FFB800';  // yellow — moderate
+    return '#FF4444';               // red — very sore
+  }
   if (n <= 2) return '#FF4444';   // red — bad/poor
   if (n === 3) return '#FFB800';  // yellow — okay
   return '#00C48C';               // green — good/great
 }
 
-export function SegmentedRating({ label, value, onChange }: Props) {
+export function SegmentedRating({ label, value, onChange, inverted }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.row}>
@@ -29,7 +36,7 @@ export function SegmentedRating({ label, value, onChange }: Props) {
         <View style={styles.buttons}>
           {[1, 2, 3, 4, 5].map((n) => {
             const selected = n === value;
-            const color = getColor(n);
+            const color = getColor(n, inverted);
             return (
               <View key={n} style={styles.btnCol}>
                 {n === 1 && (
