@@ -6,6 +6,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [3.3.2] - 2026-03-18
+
+### Added
+- **Equipment-filtered recovery** — Recovery protocols now filtered by athlete's equipment & environment profile. No pool in profile = no pool-based recommendations.
+- **RPE badge on training recommendations** — Every training recommendation card and Train tab top pick shows recommended RPE (e.g., "RPE 3-5") based on IACI tier and modality type.
+
+## [3.3.1] - 2026-03-18
+
+### Added
+- **Illness symptoms in check-in** — "Feeling ill" toggle + 8 symptom chips (sore throat, congestion, fever, body aches, headache, cough, sneezing, fatigue/malaise) in Flags detail section. Feeds IACI illness_caution penalty (12 points).
+- **Recommended RPE engine** — `computeRecommendedRPE()` function in training-compatibility engine. Computes RPE 1-10 from IACI tier + modality type (mind/body always RPE 1-3, performance scales up to RPE 7-9).
+
+### Changed
+- **Sleep display** — Expanded daily card shows sleep performance percentage as hero value, hours below (was reversed).
+
+## [3.3.0] - 2026-03-18
+
+### Changed
+- **Morning check-in redesigned** — Smart 2-tier flow replaces 19-input long scroll:
+  - **Tier 1**: 4 color-coded inline ratings (Energy, Sleep, Soreness, Readiness) with 1-5 number buttons. Red (1-2), Yellow (3), Green (4-5). ~10 second check-in with "Done" button.
+  - **Tier 2**: Optional "More detail" expander with collapsible sections (Body, Mind, Nutrition, Flags). Each section shows inline summary when collapsed. Full body map, sliders, and toggles when expanded.
+- Quick-only mode infers missing detail from Tier 1 inputs + yesterday's data + device data.
+
+### Added
+- `SegmentedRating` component — Color-coded 1-5 number button row for compact rating inputs.
+- `DetailSection` component — Collapsible section with title + inline summary + chevron.
+- `readiness` and `quickCheckInOnly` fields on CheckinData.
+
+## [3.2.1] - 2026-03-18
+
+### Added
+- **Connection resilience** — Auto token refresh (10min before expiry, deduplicated), retry with exponential backoff (3 retries, 1s→2s→4s for 5xx/network errors), token health check on app launch.
+- **Smart error categorization** — Auth errors try refresh before clearing tokens. Network errors suggest checking connection. Only definitive 401/403 clears stored tokens. Falls back to existing token on network errors during refresh.
+
 ## [3.2.0] - 2026-03-18
 
 ### Changed
