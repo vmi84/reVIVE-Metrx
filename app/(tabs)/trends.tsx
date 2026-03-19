@@ -1,18 +1,25 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTrends } from '../../hooks/use-trends';
 import { useProgress } from '../../hooks/use-progress';
+import { usePhysiologyStore } from '../../store/physiology-store';
+import { useFeedStore } from '../../store/feed-store';
+import { TrendChart, ChartDataPoint } from '../../components/trends/TrendChart';
 import { Card } from '../../components/ui/Card';
 import { ThemedText } from '../../components/ui/ThemedText';
 import { SubsystemBars } from '../../components/dashboard/SubsystemBars';
 import { COLORS } from '../../lib/utils/constants';
 import { SubsystemKey } from '../../lib/types/iaci';
+import { daysAgo, formatDate } from '../../lib/utils/date';
 
 type Period = '7d' | '21d' | '28d' | '90d';
+const PERIOD_DAYS: Record<Period, number> = { '7d': 7, '21d': 21, '28d': 28, '90d': 90 };
 
 export default function Trends() {
   const { trends, loading, fetchTrends } = useTrends();
   const { progress, assessProgress } = useProgress();
+  const physRecords = usePhysiologyStore((s) => s.records);
+  const feedDays = useFeedStore((s) => s.days);
   const [period, setPeriod] = useState<Period>('7d');
 
   useEffect(() => {
@@ -21,6 +28,27 @@ export default function Trends() {
   }, []);
 
   const currentTrend = trends[period];
+
+  // Build chart data from physiology store + feed store
+  const chartData = useMemo((): ChartDataPoint[] => {
+    const numDays = PERIOD_DAYS[period];
+    const points: ChartDataPoint[] = [];
+
+    for (let i = numDays - 1; i >= 0; i--) {
+      const dateStr = daysAgo(i);
+      const physRec = physRecords[dateStr];
+      const feedDay = feedDays.find(d => d.date === dateStr);
+
+      points.push({
+        date: dateStr,
+        label: formatDate(dateStr, 'MMM d'),
+        iaciScore: feedDay?.iaci?.score ?? null,
+        deviceRecovery: physRec?.recovery?.recoveryScore ?? null,
+      });
+    }
+
+    return points;
+  }, [period, physRecords, feedDays]);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -41,6 +69,14 @@ export default function Trends() {
           </TouchableOpacity>
         ))}
       </View>
+
+      {/* Recovery Trend Chart — IACI vs Device Recovery */}
+      <Card style={styles.section}>
+        <ThemedText variant="caption" style={styles.sectionHeader}>
+          RECOVERY TREND
+        </ThemedText>
+        <TrendChart data={chartData} height={220} />
+      </Card>
 
       {/* IACI Trend */}
       {currentTrend && (
