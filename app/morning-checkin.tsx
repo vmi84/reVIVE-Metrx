@@ -29,7 +29,7 @@ export default function MorningCheckin() {
   const { setCheckinCompleted, setCheckinData } = useDailyStore();
   const [submitting, setSubmitting] = useState(false);
   const [preFilled, setPreFilled] = useState(false);
-  const [showDetail, setShowDetail] = useState(false);
+  const [showDetail, setShowDetail] = useState(true); // Start expanded
   const [yesterdayWasIll, setYesterdayWasIll] = useState(false);
 
   // ── Tier 1: Quick Core ──
@@ -48,6 +48,7 @@ export default function MorningCheckin() {
   const [hydrationLiters, setHydrationLiters] = useState(1.0);
   const [electrolytes, setElectrolytes] = useState(false);
   const [proteinAdequate, setProteinAdequate] = useState(true);
+  const [proteinGrams, setProteinGrams] = useState('');
   const [lateCaffeine, setLateCaffeine] = useState(false);
   const [lateAlcohol, setLateAlcohol] = useState(false);
   const [isTraveling, setIsTraveling] = useState(false);
@@ -375,9 +376,23 @@ export default function MorningCheckin() {
               <Switch value={electrolytes} onValueChange={(v) => { setElectrolytes(v); setDetailTouched(true); }} trackColor={{ true: COLORS.primary }} />
             </View>
             <View style={styles.toggleRow}>
-              <ThemedText variant="body">Adequate Protein</ThemedText>
+              <ThemedText variant="body">Adequate Protein (1g/kg)</ThemedText>
               <Switch value={proteinAdequate} onValueChange={(v) => { setProteinAdequate(v); setDetailTouched(true); }} trackColor={{ true: COLORS.primary }} />
             </View>
+            {proteinAdequate && (
+              <View style={styles.gramsRow}>
+                <ThemedText variant="caption" color={COLORS.textSecondary}>Grams consumed:</ThemedText>
+                <TextInput
+                  style={styles.gramsInput}
+                  value={proteinGrams}
+                  onChangeText={(t) => { setProteinGrams(t); setDetailTouched(true); }}
+                  keyboardType="numeric"
+                  placeholder="e.g., 120"
+                  placeholderTextColor={COLORS.textMuted}
+                />
+                <ThemedText variant="caption" color={COLORS.textMuted}>g</ThemedText>
+              </View>
+            )}
             <View style={styles.toggleRow}>
               <ThemedText variant="body">Late Caffeine</ThemedText>
               <Switch value={lateCaffeine} onValueChange={(v) => { setLateCaffeine(v); setDetailTouched(true); }} trackColor={{ true: COLORS.primary }} />
@@ -514,6 +529,23 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
+  },
+  gramsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 6,
+    paddingLeft: 8,
+  },
+  gramsInput: {
+    backgroundColor: COLORS.surfaceLight,
+    borderRadius: 8,
+    height: 32,
+    width: 70,
+    paddingHorizontal: 10,
+    color: COLORS.text,
+    fontSize: 14,
+    textAlign: 'center',
   },
   symptomGrid: {
     paddingVertical: 8,

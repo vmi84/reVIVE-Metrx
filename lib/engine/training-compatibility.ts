@@ -356,7 +356,14 @@ function applyPhenotypeOverrides(
  * 4. Return top N (default 8)
  */
 /**
- * @param userEnvironment - User's available training environments (e.g., ['home', 'gym', 'outdoors']). Filters out incompatible modalities.
+ * @param userEnvironment - User's available training environments (e.g., ['home', 'gym', 'outdoors']).
+ * @param athleteSportKeys - Athlete's sport keys for sport-aware weighting (e.g., ['running', 'cycling']).
+ *
+ * Key design rules:
+ *   1. ALWAYS include at least one active aerobic option (walking, cycling, swimming) — even at low IACI
+ *   2. Weight recommendations by athlete's sport (runners get aerobic options weighted higher)
+ *   3. Active movement always ranks above passive/mind-body (meditation never #1 for IACI > 30)
+ *   4. Include Zone 1 low-intensity modalities even though they're technically "performance"
  */
 export function getRecoveryTrainingRecommendations(
   compatibility: TrainingCompatibility,
@@ -364,11 +371,24 @@ export function getRecoveryTrainingRecommendations(
   sportRecoveryNeeds: SubsystemKey[] = [],
   maxResults: number = 8,
   userEnvironment?: string[],
+  athleteSportKeys?: string[],
 ): RankedTrainingModality[] {
   const results: RankedTrainingModality[] = [];
   const envSet = userEnvironment && userEnvironment.length > 0
     ? new Set(userEnvironment.map(e => e.toLowerCase()))
     : null;
+
+  const iaciScore = computeIACIFromScores(subsystemScores);
+
+  // Determine athlete's sport category for weighting
+  const isEnduranceAthlete = athleteSportKeys?.some(k =>
+    ['running', 'cycling', 'swimming', 'triathlon', 'rowing', 'ultramarathon', 'biathlon', 'xc_skiing'].includes(k),
+  ) ?? false;
+
+  // Active aerobic modality keys — always eligible for recovery
+  const ACTIVE_AEROBIC_KEYS: TrainingModalityKey[] = [
+    'walkingRecovery', 'easyCycling', 'swimEasy', 'zone1', 'agtAerobic', 'mitoZone2', 'hiking',
+  ];
 
   const allKeys = Object.keys(TRAINING_RECOVERY_MAP) as TrainingModalityKey[];
 
@@ -376,13 +396,18 @@ export function getRecoveryTrainingRecommendations(
     const profile = TRAINING_RECOVERY_MAP[key];
     const permission = compatibility[key];
 
-    // Skip avoided modalities
-    if (permission === 'avoid') continue;
+    // Skip avoided modalities (unless it's a basic aerobic that's always safe)
+    const isActiveAerobic = ACTIVE_AEROBIC_KEYS.includes(key);
+    if (permission === 'avoid' && !isActiveAerobic) continue;
 
-    // Skip performance modalities from recovery recommendations
-    if (profile.isPerformanceModality) continue;
+    // Allow low-intensity "performance" modalities (Zone 1, easy cycling, etc.) for recovery
+    // Only skip high-intensity performance modalities (intervals, tempo, heavy strength, plyo)
+    const HIGH_INTENSITY_KEYS: TrainingModalityKey[] = [
+      'intervals', 'tempo', 'strengthHeavy', 'plyometrics',
+    ];
+    if (profile.isPerformanceModality && HIGH_INTENSITY_KEYS.includes(key)) continue;
 
-    // Filter by user's available environment (pool, gym, home, etc.)
+    // Filter by user's available environment
     if (envSet && profile.environment.length > 0) {
       const hasAccess = profile.environment.some(
         e => envSet.has(e.toLowerCase()) || e.toLowerCase() === 'anywhere',
@@ -390,9 +415,8 @@ export function getRecoveryTrainingRecommendations(
       if (!hasAccess) continue;
     }
 
-    // Check IACI floor
-    const iaciScore = computeIACIFromScores(subsystemScores);
-    if (iaciScore < profile.iaciFloor) continue;
+    // Relaxed IACI floor — active aerobic always allowed (Zone 0-1 for blood flow)
+    if (!isActiveAerobic && iaciScore < profile.iaciFloor) continue;
 
     // Compute relevance score
     const primaryDeficit = avgDeficit(profile.primarySubsystems, subsystemScores);
@@ -400,15 +424,26 @@ export function getRecoveryTrainingRecommendations(
     const sportBonus = profile.primarySubsystems.some(s => sportRecoveryNeeds.includes(s)) ? 10 : 0;
     const permissionBonus = permission === 'recommended' ? 5 : 0;
 
-    const relevanceScore = primaryDeficit + 0.3 * secondaryDeficit + sportBonus + permissionBonus;
+    // Active movement bonus — prioritize active recovery over passive/mind-body
+    const activeBonus = isActiveAerobic ? 15 : 0;
 
-    // Compute recommended RPE based on IACI score + modality
-    const rpe = computeRecommendedRPE(iaciScore, profile.isPerformanceModality, profile.category, permission);
+    // Sport-aware bonus — endurance athletes get extra weight on aerobic modalities
+    const enduranceBonus = (isEnduranceAthlete && isActiveAerobic) ? 12 : 0;
+
+    // Mind-body demotion — meditation/breathwork should support, not lead (unless very low IACI)
+    const mindBodyPenalty = (profile.category === 'mind_body' && iaciScore > 30) ? -10 : 0;
+
+    const relevanceScore = primaryDeficit + 0.3 * secondaryDeficit
+      + sportBonus + permissionBonus + activeBonus + enduranceBonus + mindBodyPenalty;
+
+    // RPE — for aerobic at avoided permission, force to Zone 0-1
+    const effectivePermission = (isActiveAerobic && permission === 'avoid') ? 'caution' as TrainingPermission : permission;
+    const rpe = computeRecommendedRPE(iaciScore, profile.isPerformanceModality, profile.category, effectivePermission);
 
     results.push({
       key,
       label: profile.label,
-      permission,
+      permission: effectivePermission,
       relevanceScore: Math.round(relevanceScore * 10) / 10,
       primarySubsystems: profile.primarySubsystems,
       secondarySubsystems: profile.secondarySubsystems,
@@ -429,7 +464,19 @@ export function getRecoveryTrainingRecommendations(
     return evidenceOrder[b.evidenceLevel] - evidenceOrder[a.evidenceLevel];
   });
 
-  return results.slice(0, maxResults);
+  // Guarantee: at least one active aerobic option in top 3
+  const top = results.slice(0, maxResults);
+  const hasAerobicInTop3 = top.slice(0, 3).some(r => ACTIVE_AEROBIC_KEYS.includes(r.key as TrainingModalityKey));
+  if (!hasAerobicInTop3) {
+    // Find the highest-ranked aerobic option and swap it into position 2
+    const aerobicIdx = top.findIndex(r => ACTIVE_AEROBIC_KEYS.includes(r.key as TrainingModalityKey));
+    if (aerobicIdx > 2) {
+      const [aerobic] = top.splice(aerobicIdx, 1);
+      top.splice(1, 0, aerobic); // Insert at position 2 (after #1 pick)
+    }
+  }
+
+  return top;
 }
 
 // ---------------------------------------------------------------------------
