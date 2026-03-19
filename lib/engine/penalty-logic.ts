@@ -25,6 +25,10 @@ export function computePenalties(
   illnessReported: boolean = false,
   illnessSymptomCount: number = 0,
   illnessSeverityScore: number = 0,
+  heatIllnessReported: boolean = false,
+  heatSymptomCount: number = 0,
+  heatHasEmergency: boolean = false,
+  crampingReported: boolean = false,
 ): PenaltyResult[] {
   const penalties: PenaltyResult[] = [];
 
@@ -124,9 +128,45 @@ export function computePenalties(
     }
   }
 
+  // Heat-related illness — cross-cuts autonomic, cardiometabolic, metabolic, psychological
+  // Heat stroke (emergency) = maximum penalty, NO scaling (even competitive athletes must stop)
+  // Heat exhaustion = significant penalty
+  if (heatIllnessReported && heatSymptomCount > 0) {
+    if (heatHasEmergency) {
+      penalties.push({
+        name: 'heat_injury',
+        points: PENALTIES.heat_injury, // NOT scaled — this is life-threatening
+        reason: 'EMERGENCY: Heat stroke symptoms detected (stopped sweating, confusion, or hot/dry skin). Do NOT train. Seek immediate medical attention.',
+        triggeredBy: ['autonomic', 'cardiometabolic', 'metabolic', 'psychological'],
+      });
+    } else {
+      const ratio = Math.min(heatSymptomCount / 5, 1);
+      const points = Math.max(Math.round(PENALTIES.heat_injury * (0.5 + ratio * 0.5)), 6);
+      penalties.push({
+        name: 'heat_injury',
+        points,
+        reason: `Heat exhaustion symptoms (${heatSymptomCount}) — stop training, cool down, rehydrate aggressively. Resume only when fully recovered.`,
+        triggeredBy: ['autonomic', 'cardiometabolic', 'metabolic'],
+      });
+    }
+  }
+
+  // Cramping — signals electrolyte/hydration failure, neuromuscular stress
+  if (crampingReported) {
+    penalties.push({
+      name: 'cramping_dehydration',
+      points: PENALTIES.cramping_dehydration,
+      reason: 'Muscle cramping reported — indicates electrolyte imbalance or dehydration. Hydrate and supplement before training.',
+      triggeredBy: ['musculoskeletal', 'metabolic'],
+    });
+  }
+
   // Apply scaling (competitive athletes get reduced penalties)
+  // EXCEPTION: heat_injury emergency is NEVER scaled
   if (penaltyScaling !== 1.0) {
     for (const p of penalties) {
+      // Heat stroke emergency is NEVER reduced — it's life-threatening
+      if (p.name === 'heat_injury' && heatHasEmergency) continue;
       p.points = Math.round(p.points * penaltyScaling);
     }
   }

@@ -14,6 +14,8 @@ export interface MusculoskeletalInputs {
   soreness: Record<string, number> | null; // region → 0-4
   stiffness: number | null;               // 1-5
   heavyLegs: boolean | null;
+  cramping?: boolean | null;
+  crampingLocation?: string | null;
   painLocations: string[] | null;
   priorWorkoutType: string | null;
   priorDayStrain: number | null;
@@ -59,6 +61,16 @@ export function scoreMusculoskeletal(
     components.push(inputs.heavyLegs ? 30 : 85);
     weights.push(0.10);
     if (inputs.heavyLegs) limitingFactors.push('Heavy legs reported');
+  }
+
+  // Cramping — strong signal of neuromuscular/electrolyte issues
+  if (inputs.cramping != null) {
+    components.push(inputs.cramping ? 20 : 90);
+    weights.push(0.12);
+    if (inputs.cramping) {
+      const loc = inputs.crampingLocation ? ` (${inputs.crampingLocation})` : '';
+      limitingFactors.push(`Muscle cramping reported${loc} — check hydration and electrolytes`);
+    }
   }
 
   // Pain locations
@@ -114,6 +126,7 @@ export function scoreMusculoskeletal(
       sorenessAvg: inputs.soreness ? Object.values(inputs.soreness).reduce((a, b) => a + b, 0) / Math.max(Object.values(inputs.soreness).length, 1) : null,
       stiffness: inputs.stiffness,
       heavyLegs: inputs.heavyLegs,
+      cramping: inputs.cramping ?? null,
       painLocations: inputs.painLocations ? inputs.painLocations.length : 0,
       priorDayStrain: inputs.priorDayStrain,
     },

@@ -38,6 +38,10 @@ export function computeIACI(
   illnessSeverityScore: number = 0,
   userEnvironment?: string[],
   preferredActivities?: string[],
+  heatIllnessReported: boolean = false,
+  heatSymptomCount: number = 0,
+  heatHasEmergency: boolean = false,
+  crampingReported: boolean = false,
 ): IACIResult {
   // Level 3: Weighted composite
   const baseScore = Math.round(
@@ -51,7 +55,12 @@ export function computeIACI(
 
   // Level 3.5: Penalties (scaled for competitive athletes)
   const penaltyScaling = athleteMode?.penaltyScaling ?? 1.0;
-  const penalties = computePenalties(subsystemScores, penaltyScaling, illnessReported, illnessSymptomCount, illnessSeverityScore);
+  const penalties = computePenalties(
+    subsystemScores, penaltyScaling,
+    illnessReported, illnessSymptomCount, illnessSeverityScore,
+    heatIllnessReported, heatSymptomCount, heatHasEmergency,
+    crampingReported,
+  );
   const penaltyTotal = totalPenaltyPoints(penalties);
   const finalScore = clamp(baseScore - penaltyTotal, 0, 100);
 

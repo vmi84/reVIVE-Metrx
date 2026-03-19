@@ -52,6 +52,8 @@ export const PENALTIES = {
   fueling_risk: 5,
   illness_caution: 12,
   multi_system_impairment: 8,
+  heat_injury: 15,            // Highest penalty — heat stroke is life-threatening
+  cramping_dehydration: 6,    // Cramping signals electrolyte/hydration failure
 } as const;
 
 // Competitive athlete overrides

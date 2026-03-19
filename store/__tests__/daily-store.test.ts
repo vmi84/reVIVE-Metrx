@@ -57,8 +57,12 @@ describe('useDailyStore', () => {
   it('setCheckinData stores check-in data', () => {
     const data = {
       overallEnergy: 4, sleepQuality: 4, soreness: { quads: 2 },
-      stiffness: 2, heavyLegs: false, motivation: 4, stress: 2,
-      mentalFatigue: 2, hydrationLiters: 2.5, electrolytes: true,
+      stiffness: 2, heavyLegs: false,
+      cramping: false, crampingLocation: '',
+      heatIllness: false, heatSymptoms: [],
+      motivation: 4, stress: 2,
+      mentalFatigue: 2, hydrationLiters: 2.5,
+      electrolytes: true, electrolyteServings: '2',
       proteinAdequate: true, lateCaffeine: false, lateAlcohol: false,
       isTraveling: false, giIssues: 1,
       readiness: 3, quickCheckInOnly: false,

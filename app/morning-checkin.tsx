@@ -47,6 +47,9 @@ export default function MorningCheckin() {
   const [mentalFatigue, setMentalFatigue] = useState(2);
   const [hydrationLiters, setHydrationLiters] = useState(1.0);
   const [electrolytes, setElectrolytes] = useState(false);
+  const [electrolyteServings, setElectrolyteServings] = useState('');
+  const [cramping, setCramping] = useState(false);
+  const [crampingLocation, setCrampingLocation] = useState('');
   const [proteinAdequate, setProteinAdequate] = useState(true);
   const [proteinGrams, setProteinGrams] = useState('');
   const [lateCaffeine, setLateCaffeine] = useState(false);
@@ -57,6 +60,10 @@ export default function MorningCheckin() {
   // Illness
   const [feelingIll, setFeelingIll] = useState(false);
   const [illnessSymptoms, setIllnessSymptoms] = useState<string[]>([]);
+
+  // Heat-related illness
+  const [heatIllness, setHeatIllness] = useState(false);
+  const [heatSymptoms, setHeatSymptoms] = useState<string[]>([]);
 
   // Track if user opened any detail section
   const [detailTouched, setDetailTouched] = useState(false);
@@ -169,6 +176,26 @@ export default function MorningCheckin() {
     { label: 'Loss of appetite', severity: 'mild' },
   ];
 
+  const HEAT_SYMPTOM_OPTIONS: Array<{ label: string; severity: 'emergency' | 'severe' | 'moderate' }> = [
+    // Emergency — heat stroke signs, seek medical help immediately
+    { label: 'Stopped sweating', severity: 'emergency' },
+    { label: 'Confusion/disorientation', severity: 'emergency' },
+    { label: 'Skin hot & dry', severity: 'emergency' },
+    { label: 'Loss of consciousness', severity: 'emergency' },
+    // Severe — heat exhaustion, stop all activity
+    { label: 'Rapid pulse', severity: 'severe' },
+    { label: 'Heavy sweating', severity: 'severe' },
+    { label: 'Nausea', severity: 'severe' },
+    { label: 'Vomiting', severity: 'severe' },
+    { label: 'Muscle cramps', severity: 'severe' },
+    // Moderate — early warning, reduce intensity
+    { label: 'Dizziness/lightheaded', severity: 'moderate' },
+    { label: 'Headache', severity: 'moderate' },
+    { label: 'Fatigue/weakness', severity: 'moderate' },
+    { label: 'Thirst', severity: 'moderate' },
+    { label: 'Cool/clammy skin', severity: 'moderate' },
+  ];
+
   const [additionalSymptoms, setAdditionalSymptoms] = useState('');
 
   function toggleSymptom(symptom: string) {
@@ -193,30 +220,23 @@ export default function MorningCheckin() {
   // ── Submit ──
   async function handleSubmit() {
     setSubmitting(true);
-    const quickOnly = !detailTouched && !showDetail;
-
     try {
-      // Map quick inputs to full data when detail not provided
-      const finalEnergy = quickOnly ? energy : energy;
-      const finalMotivation = detailTouched ? motivation : energy; // energy proxies motivation
-      const finalStress = detailTouched ? stress : (6 - readiness); // readiness inverse → stress
-      const finalMentalFatigue = detailTouched ? mentalFatigue : (6 - readiness);
-      const finalStiffness = detailTouched ? stiffness : soreness;
-      const finalSoreness = detailTouched ? sorenessMap : {};
+      // All 10 core inputs are always provided directly (no proxying needed)
+      const finalSoreness = Object.keys(sorenessMap).length > 0 ? sorenessMap : {};
 
       if (isSupabaseConfigured && user?.id) {
         await supabase.from('subjective_entries').upsert({
           user_id: user.id,
           date: today(),
           entry_type: 'morning',
-          overall_energy: finalEnergy,
+          overall_energy: energy,
           subjective_sleep_quality: sleep,
           soreness: finalSoreness,
-          stiffness: finalStiffness,
+          stiffness,
           heavy_legs: heavyLegs,
-          motivation: finalMotivation,
-          subjective_stress: finalStress,
-          mental_fatigue: finalMentalFatigue,
+          motivation,
+          subjective_stress: stress,
+          mental_fatigue: mentalFatigue,
           hydration_liters: hydrationLiters,
           hydration_glasses: Math.round(hydrationLiters / 0.25),
           electrolytes_taken: electrolytes,
@@ -226,30 +246,35 @@ export default function MorningCheckin() {
           is_traveling: isTraveling,
           gi_disruption: giIssues,
           illness_symptoms: feelingIll ? illnessSymptoms : [],
-          willingness_to_train: finalMotivation,
-          mood: finalEnergy,
-          concentration: 5 - finalMentalFatigue + 1,
+          willingness_to_train: motivation,
+          mood: energy,
+          concentration: 5 - mentalFatigue + 1,
         });
       }
 
       setCheckinData({
-        overallEnergy: finalEnergy,
+        overallEnergy: energy,
         sleepQuality: sleep,
         soreness: finalSoreness,
-        stiffness: finalStiffness,
+        stiffness,
         heavyLegs,
-        motivation: finalMotivation,
-        stress: finalStress,
-        mentalFatigue: finalMentalFatigue,
+        cramping,
+        crampingLocation,
+        heatIllness,
+        heatSymptoms: heatIllness ? heatSymptoms : [],
+        motivation,
+        stress,
+        mentalFatigue: mentalFatigue,
         hydrationLiters,
         electrolytes,
+        electrolyteServings,
         proteinAdequate,
         lateCaffeine,
         lateAlcohol,
         isTraveling,
         giIssues,
         readiness,
-        quickCheckInOnly: quickOnly,
+        quickCheckInOnly: false, // All 10 inputs always provided
         feelingIll,
         illnessSymptoms: feelingIll ? illnessSymptoms : [],
         illnessSeverityScore: feelingIll ? getIllnessSeverityScore() : 0,
@@ -322,15 +347,88 @@ export default function MorningCheckin() {
         </TouchableOpacity>
       )}
 
-      {/* ═══ Tier 1: Quick Core ═══ */}
+      {/* ═══ Tier 1: Core Check-In (10 inputs, ~20 seconds) ═══ */}
       <Card style={styles.quickCard}>
         <ThemedText variant="subtitle" style={styles.quickTitle}>
           How are you today?
         </ThemedText>
 
+        {/* Physical */}
+        <ThemedText variant="caption" color={COLORS.textMuted} style={styles.groupLabel}>PHYSICAL</ThemedText>
         <SegmentedRating label="Energy" value={energy} onChange={setEnergy} />
-        <SegmentedRating label="Sleep" value={sleep} onChange={setSleep} />
+        <SegmentedRating label="Sleep Quality" value={sleep} onChange={setSleep} />
         <SegmentedRating label="Soreness" value={soreness} onChange={setSorenessQuick} inverted />
+        <SegmentedRating label="Stiffness" value={stiffness} onChange={(v) => { setStiffness(v); setDetailTouched(true); }} inverted />
+        <View style={styles.heavyLegsRow}>
+          <ThemedText variant="body" style={styles.heavyLegsLabel}>Heavy Legs</ThemedText>
+          <View style={styles.heavyLegsToggle}>
+            <TouchableOpacity
+              style={[styles.ynBtn, !heavyLegs && styles.ynBtnActive]}
+              onPress={() => { setHeavyLegs(false); setDetailTouched(true); }}
+            >
+              <ThemedText variant="caption" style={!heavyLegs ? styles.ynTextActive : styles.ynText}>No</ThemedText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.ynBtn, heavyLegs && styles.ynBtnActiveRed]}
+              onPress={() => { setHeavyLegs(true); setDetailTouched(true); }}
+            >
+              <ThemedText variant="caption" style={heavyLegs ? styles.ynTextActive : styles.ynText}>Yes</ThemedText>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Cramping */}
+        <View style={styles.heavyLegsRow}>
+          <ThemedText variant="body" style={styles.heavyLegsLabel}>Cramping</ThemedText>
+          <View style={styles.heavyLegsToggle}>
+            <TouchableOpacity
+              style={[styles.ynBtn, !cramping && styles.ynBtnActive]}
+              onPress={() => { setCramping(false); setCrampingLocation(''); setDetailTouched(true); }}
+            >
+              <ThemedText variant="caption" style={!cramping ? styles.ynTextActive : styles.ynText}>No</ThemedText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.ynBtn, cramping && styles.ynBtnActiveRed]}
+              onPress={() => { setCramping(true); setDetailTouched(true); }}
+            >
+              <ThemedText variant="caption" style={cramping ? styles.ynTextActive : styles.ynText}>Yes</ThemedText>
+            </TouchableOpacity>
+          </View>
+        </View>
+        {cramping && (
+          <TextInput
+            style={styles.crampingInput}
+            value={crampingLocation}
+            onChangeText={(t) => { setCrampingLocation(t); setDetailTouched(true); }}
+            placeholder="Where? (e.g., calves, hamstrings)"
+            placeholderTextColor={COLORS.textMuted}
+          />
+        )}
+
+        {/* Mental & Nutrition */}
+        <ThemedText variant="caption" color={COLORS.textMuted} style={[styles.groupLabel, { marginTop: 8 }]}>MENTAL & NUTRITION</ThemedText>
+        <SegmentedRating label="Motivation" value={motivation} onChange={(v) => { setMotivation(v); setDetailTouched(true); }} />
+        <SegmentedRating label="Stress" value={stress} onChange={(v) => { setStress(v); setDetailTouched(true); }} inverted />
+        <SegmentedRating label="Mental Fatigue" value={mentalFatigue} onChange={(v) => { setMentalFatigue(v); setDetailTouched(true); }} inverted />
+        <View style={styles.heavyLegsRow}>
+          <ThemedText variant="body" style={styles.heavyLegsLabel}>Hydration</ThemedText>
+          <View style={styles.hydrationQuick}>
+            {[0.5, 1.0, 1.5, 2.0, 2.5].map((val) => (
+              <TouchableOpacity
+                key={val}
+                style={[styles.hydrationBtn, hydrationLiters === val && styles.hydrationBtnActive]}
+                onPress={() => { setHydrationLiters(val); setDetailTouched(true); }}
+              >
+                <ThemedText variant="caption" style={hydrationLiters === val ? styles.ynTextActive : styles.ynText}>
+                  {val}L
+                </ThemedText>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* Readiness (validation) */}
+        <ThemedText variant="caption" color={COLORS.textMuted} style={[styles.groupLabel, { marginTop: 8 }]}>OVERALL</ThemedText>
         <SegmentedRating label="Readiness" value={readiness} onChange={setReadiness} />
 
         <ThemedText variant="caption" color={COLORS.textMuted} style={styles.legend}>
@@ -354,27 +452,28 @@ export default function MorningCheckin() {
       {/* ═══ Tier 2: Detail Sections ═══ */}
       {showDetail && (
         <Card style={styles.detailCard}>
-          <DetailSection title="Body" summary={bodySummary()}>
+          <DetailSection title="Body Map" summary={bodySummary()}>
             <BodyMap soreness={sorenessMap} onRegionPress={handleRegionPress} />
-            <Slider label="Stiffness" value={stiffness} onChange={(v) => { setStiffness(v); setDetailTouched(true); }} labels={['None', 'Very Stiff']} />
-            <View style={styles.toggleRow}>
-              <ThemedText variant="body">Heavy Legs</ThemedText>
-              <Switch value={heavyLegs} onValueChange={(v) => { setHeavyLegs(v); setDetailTouched(true); }} trackColor={{ true: COLORS.primary }} />
-            </View>
           </DetailSection>
 
-          <DetailSection title="Mind" summary={mindSummary()}>
-            <Slider label="Motivation" value={motivation} onChange={(v) => { setMotivation(v); setDetailTouched(true); }} labels={['None', 'Very High']} />
-            <Slider label="Life Stress" value={stress} onChange={(v) => { setStress(v); setDetailTouched(true); }} labels={['Low', 'Extreme']} />
-            <Slider label="Mental Fatigue" value={mentalFatigue} onChange={(v) => { setMentalFatigue(v); setDetailTouched(true); }} labels={['Clear', 'Foggy']} />
-          </DetailSection>
-
-          <DetailSection title="Nutrition" summary={nutritionSummary()}>
-            <HydrationSlider value={hydrationLiters} onChange={(v) => { setHydrationLiters(v); setDetailTouched(true); }} />
+          <DetailSection title="Nutrition Detail" summary={nutritionSummary()}>
             <View style={styles.toggleRow}>
               <ThemedText variant="body">Electrolytes</ThemedText>
-              <Switch value={electrolytes} onValueChange={(v) => { setElectrolytes(v); setDetailTouched(true); }} trackColor={{ true: COLORS.primary }} />
+              <Switch value={electrolytes} onValueChange={(v) => { setElectrolytes(v); if (!v) setElectrolyteServings(''); setDetailTouched(true); }} trackColor={{ true: COLORS.primary }} />
             </View>
+            {electrolytes && (
+              <View style={styles.gramsRow}>
+                <ThemedText variant="caption" color={COLORS.textSecondary}>Servings/tablets:</ThemedText>
+                <TextInput
+                  style={styles.gramsInput}
+                  value={electrolyteServings}
+                  onChangeText={(t) => { setElectrolyteServings(t); setDetailTouched(true); }}
+                  keyboardType="numeric"
+                  placeholder="e.g., 2"
+                  placeholderTextColor={COLORS.textMuted}
+                />
+              </View>
+            )}
             <View style={styles.toggleRow}>
               <ThemedText variant="body">Adequate Protein (1g/kg)</ThemedText>
               <Switch value={proteinAdequate} onValueChange={(v) => { setProteinAdequate(v); setDetailTouched(true); }} trackColor={{ true: COLORS.primary }} />
@@ -463,6 +562,65 @@ export default function MorningCheckin() {
                 </View>
               </View>
             )}
+            {/* Heat-Related Illness */}
+            <View style={styles.toggleRow}>
+              <ThemedText variant="body">Heat-related symptoms</ThemedText>
+              <Switch value={heatIllness} onValueChange={(v) => { setHeatIllness(v); setDetailTouched(true); if (!v) setHeatSymptoms([]); }} trackColor={{ true: COLORS.error }} />
+            </View>
+            {heatIllness && (
+              <View style={styles.symptomGrid}>
+                <ThemedText variant="caption" color={COLORS.textMuted} style={{ marginBottom: 6 }}>
+                  Select heat symptoms:
+                </ThemedText>
+                <View style={styles.chipRow}>
+                  {HEAT_SYMPTOM_OPTIONS.map((opt) => {
+                    const active = heatSymptoms.includes(opt.label);
+                    const sevColor = opt.severity === 'emergency' ? '#FF0000' : opt.severity === 'severe' ? '#FF4444' : '#FFB800';
+                    return (
+                      <TouchableOpacity
+                        key={opt.label}
+                        onPress={() => {
+                          setHeatSymptoms(prev => prev.includes(opt.label)
+                            ? prev.filter(s => s !== opt.label)
+                            : [...prev, opt.label]);
+                          setDetailTouched(true);
+                        }}
+                        style={[
+                          styles.symptomChip,
+                          active && { backgroundColor: sevColor + '20', borderColor: sevColor },
+                        ]}
+                      >
+                        <ThemedText
+                          variant="caption"
+                          style={[
+                            styles.symptomText,
+                            active && { color: sevColor, fontWeight: '600' },
+                          ]}
+                        >
+                          {opt.label}
+                        </ThemedText>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+                {/* Emergency warning for heat stroke symptoms */}
+                {heatSymptoms.some(s => HEAT_SYMPTOM_OPTIONS.find(o => o.label === s)?.severity === 'emergency') && (
+                  <View style={[styles.warningBanner, { borderLeftColor: '#FF0000' }]}>
+                    <ThemedText variant="caption" style={[styles.warningText, { color: '#FF0000' }]}>
+                      EMERGENCY: Stopped sweating, confusion, or skin hot/dry are signs of heat stroke. Seek immediate medical attention. Do NOT train.
+                    </ThemedText>
+                  </View>
+                )}
+                {heatSymptoms.length > 0 && !heatSymptoms.some(s => HEAT_SYMPTOM_OPTIONS.find(o => o.label === s)?.severity === 'emergency') && (
+                  <View style={styles.warningBanner}>
+                    <ThemedText variant="caption" style={styles.warningText}>
+                      Heat exhaustion detected — rehydrate aggressively, cool down, and avoid training until symptoms resolve.
+                    </ThemedText>
+                  </View>
+                )}
+              </View>
+            )}
+
             <View style={styles.toggleRow}>
               <ThemedText variant="body">Traveling</ThemedText>
               <Switch value={isTraveling} onValueChange={(v) => { setIsTraveling(v); setDetailTouched(true); }} trackColor={{ true: COLORS.primary }} />
@@ -546,6 +704,16 @@ const styles = StyleSheet.create({
     color: COLORS.text,
     fontSize: 14,
     textAlign: 'center',
+  },
+  crampingInput: {
+    backgroundColor: COLORS.surfaceLight,
+    borderRadius: 8,
+    height: 36,
+    paddingHorizontal: 12,
+    color: COLORS.text,
+    fontSize: 13,
+    marginTop: 4,
+    marginBottom: 4,
   },
   symptomGrid: {
     paddingVertical: 8,
@@ -635,5 +803,68 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 40,
+  },
+  groupLabel: {
+    textTransform: 'uppercase' as const,
+    letterSpacing: 1.2,
+    fontSize: 10,
+    fontWeight: '700' as const,
+    marginBottom: 4,
+    marginTop: 4,
+  },
+  heavyLegsRow: {
+    flexDirection: 'row' as const,
+    justifyContent: 'space-between' as const,
+    alignItems: 'center' as const,
+    paddingVertical: 6,
+  },
+  heavyLegsLabel: {
+    fontSize: 14,
+    fontWeight: '500' as const,
+  },
+  heavyLegsToggle: {
+    flexDirection: 'row' as const,
+    gap: 6,
+  },
+  ynBtn: {
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: COLORS.surfaceLight,
+  },
+  ynBtnActive: {
+    backgroundColor: COLORS.success + '30',
+    borderWidth: 1,
+    borderColor: COLORS.success,
+  },
+  ynBtnActiveRed: {
+    backgroundColor: COLORS.error + '30',
+    borderWidth: 1,
+    borderColor: COLORS.error,
+  },
+  ynText: {
+    color: COLORS.textMuted,
+    fontSize: 13,
+    fontWeight: '500' as const,
+  },
+  ynTextActive: {
+    color: COLORS.text,
+    fontSize: 13,
+    fontWeight: '700' as const,
+  },
+  hydrationQuick: {
+    flexDirection: 'row' as const,
+    gap: 4,
+  },
+  hydrationBtn: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: COLORS.surfaceLight,
+  },
+  hydrationBtnActive: {
+    backgroundColor: COLORS.primary + '30',
+    borderWidth: 1,
+    borderColor: COLORS.primary,
   },
 });
