@@ -1,4 +1,6 @@
 import { Tabs } from 'expo-router';
+// @ts-ignore — bundled with expo, types resolved at runtime
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../lib/utils/constants';
 
 export default function TabLayout() {
@@ -28,13 +30,9 @@ export default function TabLayout() {
         options={{
           title: 'Dashboard',
           tabBarLabel: 'Home',
-        }}
-      />
-      <Tabs.Screen
-        name="train"
-        options={{
-          title: 'Training',
-          tabBarLabel: 'Train',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home-outline" size={size} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
@@ -42,6 +40,19 @@ export default function TabLayout() {
         options={{
           title: 'Recovery',
           tabBarLabel: 'Recover',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="fitness-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="train"
+        options={{
+          title: 'Training',
+          tabBarLabel: 'Train',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="bicycle-outline" size={size} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
@@ -49,6 +60,9 @@ export default function TabLayout() {
         options={{
           title: 'Trends',
           tabBarLabel: 'Trends',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="analytics-outline" size={size} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
@@ -56,6 +70,9 @@ export default function TabLayout() {
         options={{
           title: 'Settings',
           tabBarLabel: 'Settings',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="settings-outline" size={size} color={color} />
+          ),
         }}
       />
     </Tabs>
