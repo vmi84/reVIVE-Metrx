@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Stack, useLocalSearchParams, router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ui/ThemedText';
 import { Card } from '@/components/ui/Card';
 import { ProtocolVideoPlayer } from '@/components/recovery/ProtocolVideoPlayer';
 import { COLORS } from '@/lib/utils/constants';
 import { RecoveryProtocol } from '@/lib/types/protocols';
+import { getExercisesForProtocol } from '@/data/exercise-library';
 import localProtocols from '@/data/recovery-protocols.json';
 
 function formatLabel(value: string): string {
@@ -137,6 +138,42 @@ export default function ProtocolDetail() {
             </ThemedText>
           </Card>
         )}
+
+        {/* Related Exercises — links to Exercise Library */}
+        {(() => {
+          const exercises = getExercisesForProtocol(protocol.slug);
+          if (exercises.length === 0) return null;
+          return (
+            <Card style={styles.section}>
+              <ThemedText variant="subtitle" style={styles.sectionTitle}>
+                Exercise Demos
+              </ThemedText>
+              {exercises.map((ex) => (
+                <TouchableOpacity
+                  key={ex.id}
+                  style={styles.exerciseLink}
+                  onPress={() => router.push(`/exercise-library?id=${ex.id}`)}
+                >
+                  <View style={styles.exerciseDot} />
+                  <ThemedText variant="body" color={COLORS.primary} style={styles.exerciseName}>
+                    {ex.name}
+                  </ThemedText>
+                  <ThemedText variant="caption" color={COLORS.textMuted}>
+                    {ex.difficulty}
+                  </ThemedText>
+                </TouchableOpacity>
+              ))}
+              <TouchableOpacity
+                style={styles.seeAllLink}
+                onPress={() => router.push('/exercise-library')}
+              >
+                <ThemedText variant="caption" color={COLORS.primary}>
+                  Browse all exercises
+                </ThemedText>
+              </TouchableOpacity>
+            </Card>
+          );
+        })()}
 
         {/* Dosage */}
         {(protocol.doseMin || protocol.doseSweetSpot || protocol.doseUpperLimit) && (
@@ -453,5 +490,28 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 20,
+  },
+  exerciseLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+  },
+  exerciseDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: COLORS.primary,
+  },
+  exerciseName: {
+    flex: 1,
+    fontWeight: '500',
+    fontSize: 14,
+  },
+  seeAllLink: {
+    paddingTop: 10,
+    alignItems: 'center',
   },
 });

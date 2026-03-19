@@ -7,8 +7,10 @@
 
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { router } from 'expo-router';
 import { COLORS } from '../../lib/utils/constants';
 import { RankedTrainingModality, TrainingPermission } from '../../lib/types/iaci';
+import { getExercisesForModality } from '../../data/exercise-library';
 
 interface Props {
   modality: RankedTrainingModality;
@@ -107,6 +109,16 @@ export function TrainingRecommendationCard({ modality, isTopPick }: Props) {
               (sweet spot: {modality.durationRange.sweet} min)
             </Text>
           </View>
+
+          {/* See Demos link */}
+          {getExercisesForModality(modality.key).length > 0 && (
+            <TouchableOpacity
+              style={styles.seeDemosBtn}
+              onPress={() => router.push(`/exercise-library?category=${modality.category}`)}
+            >
+              <Text style={styles.seeDemosText}>See Exercise Demos</Text>
+            </TouchableOpacity>
+          )}
         </View>
       )}
 
@@ -246,5 +258,17 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
     textAlign: 'center',
     marginTop: 4,
+  },
+  seeDemosBtn: {
+    backgroundColor: COLORS.primary + '15',
+    borderRadius: 8,
+    paddingVertical: 8,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  seeDemosText: {
+    color: COLORS.primary,
+    fontWeight: '600',
+    fontSize: 13,
   },
 });
