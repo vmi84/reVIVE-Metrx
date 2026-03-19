@@ -28,6 +28,8 @@ interface SettingsState {
   /** User's preferred recovery activities — these get weighted higher in recommendations */
   preferredRecoveryActivities: string[];
   availableEquipment: string[];
+  /** Backup of Whoop tokens for recovery after SecureStore wipe */
+  whoopTokenBackup: { token: string; refresh: string; expiry: string } | null;
   trainingEnvironment: string[];
   dietaryApproach: string;
   knownConditions: string;
@@ -52,6 +54,7 @@ const DEFAULTS = {
   recoveryPriorities: [],
   preferredRecoveryActivities: [],
   availableEquipment: [],
+  whoopTokenBackup: null,
   trainingEnvironment: [],
   dietaryApproach: '',
   knownConditions: '',
