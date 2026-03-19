@@ -23,44 +23,57 @@ function getColor(n: number): string {
 
 export function SegmentedRating({ label, value, onChange }: Props) {
   return (
-    <View style={styles.row}>
-      <ThemedText variant="body" style={styles.label}>{label}</ThemedText>
-      <View style={styles.buttons}>
-        {[1, 2, 3, 4, 5].map((n) => {
-          const selected = n === value;
-          const color = getColor(n);
-          return (
-            <TouchableOpacity
-              key={n}
-              onPress={() => onChange(n)}
-              style={[
-                styles.btn,
-                selected && { backgroundColor: color, borderColor: color },
-              ]}
-              activeOpacity={0.7}
-            >
-              <ThemedText
-                variant="body"
-                style={[
-                  styles.btnText,
-                  selected && styles.btnTextSelected,
-                ]}
-              >
-                {n}
-              </ThemedText>
-            </TouchableOpacity>
-          );
-        })}
+    <View style={styles.container}>
+      <View style={styles.row}>
+        <ThemedText variant="body" style={styles.label}>{label}</ThemedText>
+        <View style={styles.buttons}>
+          {[1, 2, 3, 4, 5].map((n) => {
+            const selected = n === value;
+            const color = getColor(n);
+            return (
+              <View key={n} style={styles.btnCol}>
+                {n === 1 && (
+                  <ThemedText variant="caption" style={styles.endLabel}>Lowest</ThemedText>
+                )}
+                {n === 5 && (
+                  <ThemedText variant="caption" style={styles.endLabel}>Highest</ThemedText>
+                )}
+                {n !== 1 && n !== 5 && <View style={styles.endLabelSpacer} />}
+                <TouchableOpacity
+                  onPress={() => onChange(n)}
+                  style={[
+                    styles.btn,
+                    selected && { backgroundColor: color, borderColor: color },
+                  ]}
+                  activeOpacity={0.7}
+                >
+                  <ThemedText
+                    variant="body"
+                    style={[
+                      styles.btnText,
+                      selected && styles.btnTextSelected,
+                    ]}
+                  >
+                    {n}
+                  </ThemedText>
+                </TouchableOpacity>
+              </View>
+            );
+          })}
+        </View>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    marginBottom: 2,
+  },
   row: {
     flexDirection: 'row',
-    alignItems: 'center',
-    height: 48,
+    alignItems: 'flex-end',
+    minHeight: 48,
     paddingHorizontal: 4,
   },
   label: {
@@ -73,6 +86,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     gap: 6,
+  },
+  btnCol: {
+    alignItems: 'center',
+  },
+  endLabel: {
+    fontSize: 8,
+    color: COLORS.textMuted,
+    marginBottom: 2,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  endLabelSpacer: {
+    height: 12,
   },
   btn: {
     width: 40,

@@ -102,12 +102,16 @@ export function prescribeProtocol(
   const phenotypeMap = PHENOTYPE_PROTOCOLS[phenotype.key];
   const trainingCompat = getTrainingCompatibility(iaciScore, phenotype.key, subsystemScores, athleteMode);
   const sportNeeds = getSportRecoveryNeeds(sportKeys);
+  const sportKeyArray = sportKeys
+    ? (Array.isArray(sportKeys) ? sportKeys : [sportKeys])
+    : undefined;
   const recommendedTraining = getRecoveryTrainingRecommendations(
     trainingCompat,
     subsystemScores,
     sportNeeds,
     8,
     userEnvironment,
+    sportKeyArray,
   );
 
   return {

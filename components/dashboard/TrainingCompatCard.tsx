@@ -12,8 +12,8 @@ interface TrainingCompatCardProps {
 const DASHBOARD_MODALITIES: { key: TrainingModalityKey; label: string }[] = [
   { key: 'zone1', label: 'Zone 1 (Easy)' },
   { key: 'zone2', label: 'Zone 2 (Aerobic)' },
-  { key: 'intervals', label: 'Intervals' },
-  { key: 'tempo', label: 'Tempo/Threshold' },
+  { key: 'intervals', label: 'Zone 3-4 (Intervals)' },
+  { key: 'tempo', label: 'Zone 4-5 (Tempo/Threshold)' },
   { key: 'strengthHeavy', label: 'Heavy Strength' },
   { key: 'strengthLight', label: 'Light Strength' },
   { key: 'techniqueDrill', label: 'Technique Drills' },
