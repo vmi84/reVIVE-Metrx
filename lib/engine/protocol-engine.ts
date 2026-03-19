@@ -95,6 +95,7 @@ export function prescribeProtocol(
   subsystemScores: SubsystemScores,
   sportKeys?: string | string[] | null,
   athleteMode?: AthleteModeConfig | null,
+  userEnvironment?: string[],
 ): ProtocolPrescription {
   const protocolClass = getProtocolClass(iaciScore);
   const readinessTier = getReadinessTier(iaciScore);
@@ -105,6 +106,8 @@ export function prescribeProtocol(
     trainingCompat,
     subsystemScores,
     sportNeeds,
+    8,
+    userEnvironment,
   );
 
   return {
