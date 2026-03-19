@@ -452,8 +452,6 @@ export function useIACI() {
       const athleteModeConfig = mode === 'competitive'
         ? getAthleteModeConfig('competitive', trainingSchedule)
         : undefined;
-      console.log('[IACI] computeDemo: athleteMode=', mode, 'config=', athleteModeConfig ? 'COMPETITIVE' : 'RECREATIONAL');
-
       const result = computeIACI(
         dateStr, adjustedScores, weights, dataCompleteness, sportKeys,
         athleteModeConfig,
