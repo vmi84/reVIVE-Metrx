@@ -3,9 +3,9 @@
  *
  * Organized sections:
  *   1. Athlete Profile (links to onboarding questionnaire)
- *   2. Connected Devices (Whoop, future Garmin/Oura)
- *   3. Training Mode (quick toggle for athlete mode)
- *   4. Data (import/export, lab results)
+ *   2. Connected Devices (only shows integrated devices; Manage Devices for onboarding new ones)
+ *   3. Data (import/export, lab results)
+ *   4. Training Mode (quick toggle for athlete mode)
  *   5. Account (sign out)
  */
 
@@ -81,14 +81,16 @@ export default function Settings() {
         />
       </Card>
 
-      {/* ── Connected Devices ── */}
+      {/* ── Connected Devices (only shows integrated/connected devices) ── */}
       <Card style={styles.section}>
         <ThemedText variant="caption" style={styles.sectionHeader}>CONNECTED DEVICES</ThemedText>
         {whoopConnected ? (
           <View>
             <View style={styles.deviceRow}>
-              <ThemedText variant="body">WHOOP</ThemedText>
-              <ThemedText variant="caption" color={COLORS.success}>Connected</ThemedText>
+              <ThemedText variant="body" style={styles.deviceName}>WHOOP</ThemedText>
+              <View style={styles.connectedBadge}>
+                <ThemedText variant="caption" style={styles.connectedText}>Connected</ThemedText>
+              </View>
             </View>
             {lastSync && (
               <ThemedText variant="caption" color={COLORS.textMuted} style={{ marginTop: 4 }}>
@@ -125,26 +127,28 @@ export default function Settings() {
             )}
           </View>
         ) : (
-          <ThemedText variant="body" color={COLORS.textSecondary}>No devices connected.</ThemedText>
+          <ThemedText variant="body" color={COLORS.textSecondary}>
+            No devices connected. Tap below to add a wearable.
+          </ThemedText>
         )}
 
-        {/* Coming Soon */}
-        <View style={styles.comingSoon}>
-          <ThemedText variant="caption" color={COLORS.textMuted} style={styles.comingSoonLabel}>COMING SOON</ThemedText>
-          {['Garmin', 'Oura', 'Apple Watch', 'Polar', 'COROS'].map(d => (
-            <View key={d} style={styles.comingSoonRow}>
-              <ThemedText variant="caption" color={COLORS.textMuted}>{d}</ThemedText>
-              <ThemedText variant="caption" color={COLORS.textMuted}>Phase 2</ThemedText>
-            </View>
-          ))}
-        </View>
-
         <Button
-          title={whoopConnected ? 'Manage Devices' : 'Connect Device'}
+          title="Manage Devices"
           variant="secondary"
           onPress={() => router.push('/device-setup')}
           style={styles.connectButton}
         />
+      </Card>
+
+      {/* ── Data ── */}
+      <Card style={styles.section}>
+        <ThemedText variant="caption" style={styles.sectionHeader}>DATA</ThemedText>
+        <TouchableOpacity style={styles.linkRow} onPress={() => router.push('/lab-results')}>
+          <ThemedText variant="body" color={COLORS.primary}>Enter Lab Results</ThemedText>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.linkRow} onPress={() => router.push('/import-data')}>
+          <ThemedText variant="body" color={COLORS.primary}>Import Wearable Data (ZIP/CSV)</ThemedText>
+        </TouchableOpacity>
       </Card>
 
       {/* ── Training Mode ── */}
@@ -208,17 +212,6 @@ export default function Settings() {
         } />
       </Card>
 
-      {/* ── Data ── */}
-      <Card style={styles.section}>
-        <ThemedText variant="caption" style={styles.sectionHeader}>DATA</ThemedText>
-        <TouchableOpacity style={styles.linkRow} onPress={() => router.push('/lab-results')}>
-          <ThemedText variant="body" color={COLORS.primary}>Enter Lab Results</ThemedText>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.linkRow} onPress={() => router.push('/import-data')}>
-          <ThemedText variant="body" color={COLORS.primary}>Import Wearable Data (ZIP/CSV)</ThemedText>
-        </TouchableOpacity>
-      </Card>
-
       {/* ── Account ── */}
       <Button
         title="Sign Out"
@@ -259,10 +252,10 @@ const styles = StyleSheet.create({
   toggleText: { fontSize: 13, color: COLORS.textSecondary, fontWeight: '600' },
   toggleTextActive: { fontSize: 13, color: '#fff', fontWeight: '700' },
   deviceRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: COLORS.border },
+  deviceName: { fontWeight: '600', fontSize: 15 },
+  connectedBadge: { backgroundColor: COLORS.success + '15', borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 },
+  connectedText: { color: COLORS.success, fontWeight: '700', fontSize: 11 },
   connectButton: { marginTop: 12 },
-  comingSoon: { marginTop: 16 },
-  comingSoonLabel: { fontSize: 9, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 },
-  comingSoonRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: COLORS.border + '40' },
   linkRow: { paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: COLORS.border },
   signOut: { marginTop: 8 },
 });
