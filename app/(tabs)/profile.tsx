@@ -58,7 +58,7 @@ export default function Settings() {
       {/* ── Athlete Profile ── */}
       <Card style={styles.section}>
         <ThemedText variant="caption" style={styles.sectionHeader}>ATHLETE PROFILE</ThemedText>
-        <ThemedText variant="subtitle">{profile?.full_name ?? 'Athlete'}</ThemedText>
+        <ThemedText variant="subtitle">{profile?.full_name ?? user?.email ?? 'Athlete'}</ThemedText>
         <ThemedText variant="caption" color={COLORS.textSecondary}>{user?.email}</ThemedText>
         {profile?.sport && (
           <ThemedText variant="caption" style={styles.sport}>
