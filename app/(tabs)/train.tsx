@@ -79,30 +79,29 @@ export default function Train() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {/* Competitive mode: plan-aware recovery between sessions */}
-      {isCompetitive && (
-        <>
-          <RecoveryBetweenSessions />
-          <PlanInput />
-        </>
-      )}
-
-      {/* Training compatibility from IACI */}
+      {/* ═══ STEP 1: Training Compatibility — What can you do today? ═══ */}
       {iaci && (
         <View style={styles.section}>
           <TrainingCompatCard compatibility={iaci.protocol.trainingCompatibility} />
         </View>
       )}
 
-      {!iaci && !isCompetitive && (
+      {!iaci && (
         <Card style={styles.section}>
           <ThemedText variant="body" color={COLORS.textSecondary}>
-            Complete your morning check-in to see training recommendations.
+            Complete your morning check-in to see what training is compatible today.
           </ThemedText>
         </Card>
       )}
 
-      {/* IACI-recommended training */}
+      {/* ═══ STEP 2: Log Training — What are you doing / did you do? ═══ */}
+      {isCompetitive && <PlanInput />}
+
+      {/* ═══ STEP 3: Recovery Recommendations — Based on your training ═══ */}
+      {/* Competitive mode: plan-aware recovery between sessions */}
+      {isCompetitive && iaci && <RecoveryBetweenSessions />}
+
+      {/* IACI-recommended recovery/training */}
       {trainingRecs.hasData && trainingRecs.topPick && (
         <Card style={styles.section}>
           <ThemedText variant="caption" style={styles.sectionHeader}>
