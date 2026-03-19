@@ -83,9 +83,9 @@ export function DailyCardExpanded({ day, onMetricAccept, onMetricEdit }: Props) 
         )}
       </View>
 
-      {/* IACI Ring only — device recovery shown in device data card below */}
-      {hasIACI && (
-        <View style={styles.scoresRow}>
+      {/* Scores Row: IACI Ring + Device Recovery side by side */}
+      <View style={styles.scoresRow}>
+        {hasIACI && (
           <View style={styles.scoreBlock}>
             <IACIRing score={day.iaci!.score} tier={day.iaci!.readinessTier} size={100} />
             <ThemedText variant="caption" color={COLORS.textMuted} style={styles.scoreLabel}>
@@ -95,8 +95,23 @@ export function DailyCardExpanded({ day, onMetricAccept, onMetricEdit }: Props) 
               {Math.round(day.iaci!.dataCompleteness * 100)}% data
             </ThemedText>
           </View>
-        </View>
-      )}
+        )}
+        {phys?.recovery_score != null && (
+          <View style={styles.scoreBlock}>
+            <View style={[styles.recoveryCircle, { borderColor: recoveryColor(phys.recovery_score) }]}>
+              <ThemedText style={[styles.recoveryScoreLarge, { color: recoveryColor(phys.recovery_score) }]}>
+                {Math.round(phys.recovery_score)}
+              </ThemedText>
+              <ThemedText style={[styles.recoveryPctLabel, { color: recoveryColor(phys.recovery_score) }]}>
+                %
+              </ThemedText>
+            </View>
+            <ThemedText variant="caption" color={COLORS.textMuted} style={styles.scoreLabel}>
+              Device Recovery
+            </ThemedText>
+          </View>
+        )}
+      </View>
 
       {/* Device Key Metrics Summary */}
       {day.deviceSynced && phys && sourceMeta && (
