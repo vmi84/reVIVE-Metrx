@@ -446,9 +446,16 @@ export function useIACI() {
       const heatHasEmergency = (checkinData?.heatSymptoms ?? []).some(s => HEAT_EMERGENCY_SYMPTOMS.includes(s));
       const crampingReported = checkinData?.cramping ?? false;
 
+      // Get athlete mode config from daily store
+      const { athleteMode: mode, trainingSchedule } = useDailyStore.getState();
+      const { getAthleteModeConfig } = await import('../lib/engine/athlete-mode');
+      const athleteModeConfig = mode === 'competitive'
+        ? getAthleteModeConfig('competitive', trainingSchedule)
+        : undefined;
+
       const result = computeIACI(
         dateStr, adjustedScores, weights, dataCompleteness, sportKeys,
-        undefined, // athleteMode
+        athleteModeConfig,
         illnessReported, illnessSymptomCount, illnessSeverityScore,
         userEnvironment.length > 0 ? userEnvironment : undefined,
         allPreferred.length > 0 ? allPreferred : undefined,
