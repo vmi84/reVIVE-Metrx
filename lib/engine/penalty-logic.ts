@@ -12,7 +12,18 @@ import { PENALTIES } from '../utils/constants';
  * @param scores - Subsystem scores
  * @param penaltyScaling - Multiplier for penalty points (1.0 = full, 0.6 = competitive reduction)
  */
-export function computePenalties(scores: SubsystemScores, penaltyScaling: number = 1.0): PenaltyResult[] {
+/**
+ * @param scores - Subsystem scores
+ * @param penaltyScaling - Multiplier for penalty points (1.0 = full, 0.6 = competitive reduction)
+ * @param illnessReported - Whether the user reported illness symptoms in check-in
+ * @param illnessSymptomCount - Number of illness symptoms reported (0-8)
+ */
+export function computePenalties(
+  scores: SubsystemScores,
+  penaltyScaling: number = 1.0,
+  illnessReported: boolean = false,
+  illnessSymptomCount: number = 0,
+): PenaltyResult[] {
   const penalties: PenaltyResult[] = [];
 
   const a = scores.autonomic.score;
@@ -83,6 +94,22 @@ export function computePenalties(scores: SubsystemScores, penaltyScaling: number
       triggeredBy: ['autonomic', 'musculoskeletal', 'cardiometabolic', 'sleep', 'metabolic', 'psychological']
         .filter((_, i) => [a, b, c, d, e, f][i] < 40) as any,
     });
+  }
+
+  // User-reported illness — applies regardless of subsystem scores
+  // This catches cases where the user feels ill but HRV/RHR haven't tanked yet
+  if (illnessReported && illnessSymptomCount > 0) {
+    // Scale penalty by symptom count: 1 symptom = 6pts, 4+ symptoms = full 12pts
+    const illnessPoints = Math.min(Math.round(PENALTIES.illness_caution * (0.5 + illnessSymptomCount * 0.125)), PENALTIES.illness_caution);
+    // Only add if we haven't already triggered illness_caution from cardiometabolic
+    if (!penalties.some(p => p.name === 'illness_caution')) {
+      penalties.push({
+        name: 'illness_caution',
+        points: illnessPoints,
+        reason: `User reports illness (${illnessSymptomCount} symptom${illnessSymptomCount > 1 ? 's' : ''}) — training load should be reduced, prioritize rest and recovery`,
+        triggeredBy: ['cardiometabolic', 'autonomic'],
+      });
+    }
   }
 
   // Apply scaling (competitive athletes get reduced penalties)

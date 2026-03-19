@@ -22,6 +22,10 @@ import type { AthleteModeConfig } from '../types/athlete-mode';
 /**
  * @param athleteMode - Optional config for competitive athlete threshold/penalty adjustments
  */
+/**
+ * @param illnessReported - Whether the user reported illness symptoms
+ * @param illnessSymptomCount - Number of illness symptoms (0-8)
+ */
 export function computeIACI(
   date: string,
   subsystemScores: SubsystemScores,
@@ -29,6 +33,8 @@ export function computeIACI(
   dataCompleteness: number = 1.0,
   sportKeys?: string | string[] | null,
   athleteMode?: AthleteModeConfig | null,
+  illnessReported: boolean = false,
+  illnessSymptomCount: number = 0,
 ): IACIResult {
   // Level 3: Weighted composite
   const baseScore = Math.round(
@@ -42,7 +48,7 @@ export function computeIACI(
 
   // Level 3.5: Penalties (scaled for competitive athletes)
   const penaltyScaling = athleteMode?.penaltyScaling ?? 1.0;
-  const penalties = computePenalties(subsystemScores, penaltyScaling);
+  const penalties = computePenalties(subsystemScores, penaltyScaling, illnessReported, illnessSymptomCount);
   const penaltyTotal = totalPenaltyPoints(penalties);
   const finalScore = clamp(baseScore - penaltyTotal, 0, 100);
 
