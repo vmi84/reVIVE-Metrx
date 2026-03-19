@@ -422,11 +422,12 @@ export function useIACI() {
       // Pass illness data from check-in into penalty computation
       const illnessReported = checkinData?.feelingIll ?? false;
       const illnessSymptomCount = checkinData?.illnessSymptoms?.length ?? 0;
+      const illnessSeverityScore = checkinData?.illnessSeverityScore ?? 0;
 
       const result = computeIACI(
         dateStr, adjustedScores, weights, dataCompleteness, sportKeys,
         undefined, // athleteMode
-        illnessReported, illnessSymptomCount,
+        illnessReported, illnessSymptomCount, illnessSeverityScore,
       );
       setIACI(result);
     } catch (err) {

@@ -25,6 +25,8 @@ export interface CheckinData {
   quickCheckInOnly: boolean;   // true if only Tier 1 was submitted
   feelingIll: boolean;
   illnessSymptoms: string[];   // e.g. ['Sore throat', 'Fever', 'Congestion']
+  illnessSeverityScore: number; // weighted: severe=3, moderate=2, mild=1 per symptom
+  additionalSymptoms: string;  // free text
 }
 
 interface DailyState {

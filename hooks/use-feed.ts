@@ -457,6 +457,8 @@ export function useFeed() {
         quickCheckInOnly: true,
         feelingIll: false,
         illnessSymptoms: [],
+        illnessSeverityScore: 0,
+        additionalSymptoms: '',
       };
 
       store.setCheckinData(defaultData);

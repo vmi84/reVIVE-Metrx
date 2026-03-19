@@ -16,13 +16,15 @@ import { PENALTIES } from '../utils/constants';
  * @param scores - Subsystem scores
  * @param penaltyScaling - Multiplier for penalty points (1.0 = full, 0.6 = competitive reduction)
  * @param illnessReported - Whether the user reported illness symptoms in check-in
- * @param illnessSymptomCount - Number of illness symptoms reported (0-8)
+ * @param illnessSymptomCount - Number of illness symptoms reported (0-14)
+ * @param illnessSeverityScore - Weighted severity (severe=3, moderate=2, mild=1 per symptom)
  */
 export function computePenalties(
   scores: SubsystemScores,
   penaltyScaling: number = 1.0,
   illnessReported: boolean = false,
   illnessSymptomCount: number = 0,
+  illnessSeverityScore: number = 0,
 ): PenaltyResult[] {
   const penalties: PenaltyResult[] = [];
 
@@ -97,16 +99,26 @@ export function computePenalties(
   }
 
   // User-reported illness — applies regardless of subsystem scores
-  // This catches cases where the user feels ill but HRV/RHR haven't tanked yet
+  // Uses weighted severity: severe symptoms (fever, body aches) = 3, moderate = 2, mild = 1
   if (illnessReported && illnessSymptomCount > 0) {
-    // Scale penalty by symptom count: 1 symptom = 6pts, 4+ symptoms = full 12pts
-    const illnessPoints = Math.min(Math.round(PENALTIES.illness_caution * (0.5 + illnessSymptomCount * 0.125)), PENALTIES.illness_caution);
+    const severity = illnessSeverityScore > 0 ? illnessSeverityScore : illnessSymptomCount;
+    // Severe symptoms (score ≥ 6, e.g., fever + body aches) = full penalty
+    // Moderate (score 3-5) = ~75% penalty
+    // Mild (score 1-2) = ~50% penalty
+    const ratio = Math.min(severity / 8, 1); // normalize to 0-1
+    const illnessPoints = Math.max(Math.round(PENALTIES.illness_caution * (0.5 + ratio * 0.5)), 4);
+
+    const hasSevere = severity >= 6;
+    const reason = hasSevere
+      ? `Severe illness symptoms reported — do NOT train. Focus on rest, hydration, and recovery.`
+      : `User reports illness (${illnessSymptomCount} symptom${illnessSymptomCount > 1 ? 's' : ''}) — reduce training load, prioritize recovery.`;
+
     // Only add if we haven't already triggered illness_caution from cardiometabolic
     if (!penalties.some(p => p.name === 'illness_caution')) {
       penalties.push({
         name: 'illness_caution',
         points: illnessPoints,
-        reason: `User reports illness (${illnessSymptomCount} symptom${illnessSymptomCount > 1 ? 's' : ''}) — training load should be reduced, prioritize rest and recovery`,
+        reason,
         triggeredBy: ['cardiometabolic', 'autonomic'],
       });
     }
