@@ -351,7 +351,21 @@ export default function Settings() {
         </View>
       </Card>
 
-      {/* ── Account ── */}
+      {/* ── Help & Account ── */}
+      <Card style={styles.section}>
+        <TouchableOpacity
+          style={styles.linkRow}
+          onPress={() => router.push('/help-guide')}
+        >
+          <ThemedText variant="body" color={COLORS.primary} style={{ fontWeight: '600' }}>
+            Help Guide
+          </ThemedText>
+          <ThemedText variant="caption" color={COLORS.textMuted}>
+            Learn about every feature and metric
+          </ThemedText>
+        </TouchableOpacity>
+      </Card>
+
       <Button
         title="Sign Out"
         variant="ghost"
