@@ -69,11 +69,28 @@ export default function Settings() {
   const modeLabel = athleteMode === 'competitive' ? 'Coach-Led (Competitive)' : 'Self-Directed (Recreational)';
   const scheduleLabel = trainingSchedule === 'double' ? 'Two-a-day' : 'Single session';
 
+  // Top-level section collapse state (separate from profile sub-groups)
+  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
+  const toggleSection = (key: string) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setCollapsedSections(prev => {
+      const next = new Set(prev);
+      next.has(key) ? next.delete(key) : next.add(key);
+      return next;
+    });
+  };
+  const isSectionOpen = (key: string) => !collapsedSections.has(key);
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {/* ── Athlete Profile (read-only view with edit per section) ── */}
+      {/* ── Athlete Profile ── */}
       <Card style={styles.section}>
-        <ThemedText variant="caption" style={styles.sectionHeader}>ATHLETE PROFILE</ThemedText>
+        <TouchableOpacity onPress={() => toggleSection('profile')} style={styles.sectionToggle}>
+          <ThemedText variant="caption" style={styles.sectionHeader}>ATHLETE PROFILE</ThemedText>
+          <ThemedText variant="caption" style={styles.chevronTop}>{isSectionOpen('profile') ? '▾' : '▸'}</ThemedText>
+        </TouchableOpacity>
+        {isSectionOpen('profile') && <>
+        <ThemedText variant="subtitle">{profile?.full_name ?? user?.email ?? 'Athlete'}</ThemedText>
         <ThemedText variant="subtitle">{profile?.full_name ?? user?.email ?? 'Athlete'}</ThemedText>
         <ThemedText variant="caption" color={COLORS.textSecondary}>{user?.email}</ThemedText>
 
@@ -143,11 +160,16 @@ export default function Settings() {
           onPress={() => router.push('/onboarding')}
           style={styles.editBtn}
         />
+        </>}
       </Card>
 
-      {/* ── Connected Devices (only shows integrated/connected devices) ── */}
+      {/* ── Connected Devices ── */}
       <Card style={styles.section}>
-        <ThemedText variant="caption" style={styles.sectionHeader}>CONNECTED DEVICES</ThemedText>
+        <TouchableOpacity onPress={() => toggleSection('devices')} style={styles.sectionToggle}>
+          <ThemedText variant="caption" style={styles.sectionHeader}>CONNECTED DEVICES</ThemedText>
+          <ThemedText variant="caption" style={styles.chevronTop}>{isSectionOpen('devices') ? '▾' : '▸'}</ThemedText>
+        </TouchableOpacity>
+        {isSectionOpen('devices') && <>
         {whoopConnected ? (
           <View>
             <View style={styles.deviceRow}>
@@ -202,22 +224,32 @@ export default function Settings() {
           onPress={() => router.push('/device-setup')}
           style={styles.connectButton}
         />
+        </>}
       </Card>
 
       {/* ── Data ── */}
       <Card style={styles.section}>
-        <ThemedText variant="caption" style={styles.sectionHeader}>DATA</ThemedText>
+        <TouchableOpacity onPress={() => toggleSection('data')} style={styles.sectionToggle}>
+          <ThemedText variant="caption" style={styles.sectionHeader}>DATA</ThemedText>
+          <ThemedText variant="caption" style={styles.chevronTop}>{isSectionOpen('data') ? '▾' : '▸'}</ThemedText>
+        </TouchableOpacity>
+        {isSectionOpen('data') && <>
         <TouchableOpacity style={styles.linkRow} onPress={() => router.push('/lab-results')}>
           <ThemedText variant="body" color={COLORS.primary}>Enter Lab Results</ThemedText>
         </TouchableOpacity>
         <TouchableOpacity style={styles.linkRow} onPress={() => router.push('/import-data')}>
           <ThemedText variant="body" color={COLORS.primary}>Import Wearable Data (ZIP/CSV)</ThemedText>
         </TouchableOpacity>
+        </>}
       </Card>
 
       {/* ── Training Mode ── */}
       <Card style={styles.section}>
-        <ThemedText variant="caption" style={styles.sectionHeader}>TRAINING MODE</ThemedText>
+        <TouchableOpacity onPress={() => toggleSection('training')} style={styles.sectionToggle}>
+          <ThemedText variant="caption" style={styles.sectionHeader}>TRAINING MODE</ThemedText>
+          <ThemedText variant="caption" style={styles.chevronTop}>{isSectionOpen('training') ? '▾' : '▸'}</ThemedText>
+        </TouchableOpacity>
+        {isSectionOpen('training') && <>
 
         <ThemedText variant="caption" color={COLORS.textMuted} style={styles.modeLabel}>
           Athlete Mode
@@ -274,11 +306,16 @@ export default function Settings() {
             ? `${settings.trainingFrequency} days/week`
             : 'Not set'
         } />
+        </>}
       </Card>
 
       {/* ── App Preferences ── */}
       <Card style={styles.section}>
-        <ThemedText variant="caption" style={styles.sectionHeader}>APP PREFERENCES</ThemedText>
+        <TouchableOpacity onPress={() => toggleSection('prefs')} style={styles.sectionToggle}>
+          <ThemedText variant="caption" style={styles.sectionHeader}>APP PREFERENCES</ThemedText>
+          <ThemedText variant="caption" style={styles.chevronTop}>{isSectionOpen('prefs') ? '▾' : '▸'}</ThemedText>
+        </TouchableOpacity>
+        {isSectionOpen('prefs') && <>
 
         <ThemedText variant="caption" color={COLORS.textMuted} style={styles.modeLabel}>
           Theme
@@ -349,6 +386,7 @@ export default function Settings() {
             );
           })}
         </View>
+        </>}
       </Card>
 
       {/* ── Help & Account ── */}
@@ -433,7 +471,9 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
   content: { padding: 16, paddingBottom: 40 },
   section: { marginBottom: 16 },
-  sectionHeader: { textTransform: 'uppercase', letterSpacing: 1.2, fontSize: 10, fontWeight: '700', color: COLORS.textMuted, marginBottom: 12 },
+  sectionHeader: { textTransform: 'uppercase', letterSpacing: 1.2, fontSize: 10, fontWeight: '700', color: COLORS.textMuted, marginBottom: 0 },
+  sectionToggle: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 4, marginBottom: 8 },
+  chevronTop: { fontSize: 12, color: COLORS.textMuted },
   sport: { marginTop: 4, textTransform: 'capitalize', color: COLORS.textSecondary },
   editBtn: { marginTop: 12 },
   modeLabel: { fontSize: 10, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 },
