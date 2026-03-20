@@ -4,7 +4,9 @@ import { useTrends } from '../../hooks/use-trends';
 import { useProgress } from '../../hooks/use-progress';
 import { usePhysiologyStore } from '../../store/physiology-store';
 import { useFeedStore } from '../../store/feed-store';
-import { TrendChart, ChartDataPoint } from '../../components/trends/TrendChart';
+import { TrendChart, type ChartDataPoint, type ChartSeries } from '../../components/trends/TrendChart';
+import { ACWRChart, type ACWRDataPoint } from '../../components/trends/ACWRChart';
+import { useDailyStore } from '../../store/daily-store';
 import { Card } from '../../components/ui/Card';
 import { ThemedText } from '../../components/ui/ThemedText';
 import { SubsystemBars } from '../../components/dashboard/SubsystemBars';
@@ -18,6 +20,7 @@ const PERIOD_DAYS: Record<Period, number> = { '7d': 7, '21d': 21, '28d': 28, '90
 export default function Trends() {
   const { trends, loading, fetchTrends } = useTrends();
   const { progress, assessProgress } = useProgress();
+  const { athleteMode } = useDailyStore();
   const physRecords = usePhysiologyStore((s) => s.records);
   const feedDays = useFeedStore((s) => s.days);
   const [period, setPeriod] = useState<Period>('7d');
@@ -29,6 +32,17 @@ export default function Trends() {
 
   const currentTrend = trends[period];
 
+  // Chart series definitions
+  const recoverySeries: ChartSeries[] = useMemo(() => [
+    { key: 'iaciScore', label: 'IACI Score', color: COLORS.primary },
+    { key: 'deviceRecovery', label: 'Device Recovery', color: '#00C48C', dashed: true },
+    { key: 'hrv', label: 'HRV (normalized)', color: '#FF9800' },
+    { key: 'sleepHrs', label: 'Sleep (hrs→%)', color: '#9C27B0', dashed: true },
+    { key: 'rhr', label: 'RHR (inverted)', color: '#F44336' },
+    { key: 'physical', label: 'Physical Feel', color: '#4CAF50' },
+    { key: 'mental', label: 'Mental Feel', color: '#2196F3', dashed: true },
+  ], []);
+
   // Build chart data from physiology store + feed store
   const chartData = useMemo((): ChartDataPoint[] => {
     const numDays = PERIOD_DAYS[period];
@@ -38,12 +52,42 @@ export default function Trends() {
       const dateStr = daysAgo(i);
       const physRec = physRecords[dateStr];
       const feedDay = feedDays.find(d => d.date === dateStr);
+      const subj = feedDay?.subjective;
+
+      // Normalize HRV to 0-100 scale (typical range 20-120ms)
+      const rawHrv = physRec?.cardiovascular?.hrvRmssd;
+      const hrvNorm = rawHrv != null ? Math.min(100, Math.max(0, (rawHrv / 120) * 100)) : null;
+
+      // Normalize sleep hours to 0-100 (8h = 100%)
+      const sleepMs = physRec?.sleep?.totalSleepMs;
+      const sleepNorm = sleepMs != null ? Math.min(100, (sleepMs / (8 * 3600000)) * 100) : null;
+
+      // Invert RHR (lower is better): 40bpm=100, 80bpm=0
+      const rawRhr = physRec?.cardiovascular?.restingHeartRate;
+      const rhrInverted = rawRhr != null ? Math.max(0, Math.min(100, (80 - rawRhr) * 2.5)) : null;
+
+      // Composite physical feel from check-in (energy, soreness inverted, stiffness inverted)
+      const energy = (subj as any)?.overall_energy ?? null;
+      const soreness = (subj as any)?.stiffness ?? null; // Using quick soreness
+      const physical = energy != null ? (energy / 5) * 100 : null;
+
+      // Composite mental feel from check-in (motivation, stress inverted, mental fatigue inverted)
+      const motivation = (subj as any)?.motivation ?? null;
+      const stressRaw = (subj as any)?.subjective_stress ?? null;
+      const mental = motivation != null && stressRaw != null
+        ? ((motivation + (6 - stressRaw)) / 10) * 100
+        : motivation != null ? (motivation / 5) * 100 : null;
 
       points.push({
         date: dateStr,
         label: formatDate(dateStr, 'MMM d'),
         iaciScore: feedDay?.iaci?.score ?? null,
         deviceRecovery: physRec?.recovery?.recoveryScore ?? null,
+        hrv: hrvNorm,
+        sleepHrs: sleepNorm,
+        rhr: rhrInverted,
+        physical,
+        mental,
       });
     }
 
@@ -75,7 +119,7 @@ export default function Trends() {
         <ThemedText variant="caption" style={styles.sectionHeader}>
           RECOVERY TREND
         </ThemedText>
-        <TrendChart data={chartData} height={220} />
+        <TrendChart data={chartData} series={recoverySeries} height={240} />
       </Card>
 
       {/* IACI Trend */}
@@ -122,7 +166,27 @@ export default function Trends() {
         </Card>
       )}
 
-      {/* ACWR */}
+      {/* ACWR Visual Chart */}
+      {progress && (
+        <Card style={styles.section}>
+          <ThemedText variant="caption" style={styles.sectionHeader}>
+            WORKLOAD RATIO (ACWR) TREND
+          </ThemedText>
+          <ThemedText variant="caption" color={COLORS.textSecondary} style={styles.acwrExplainer}>
+            The Acute:Chronic Workload Ratio compares your recent training load (7 days) to your
+            longer-term average (28 days). Staying in the green zone (0.8-{athleteMode === 'competitive' ? '1.5' : '1.3'}) means
+            you're building fitness safely. Yellow/red means injury or overtraining risk is elevated.
+          </ThemedText>
+          <ACWRChart
+            data={[{ date: '', label: 'Now', acwr: progress.acwr.ratio }]}
+            height={160}
+            sweetSpotMax={athleteMode === 'competitive' ? 1.5 : 1.3}
+            dangerMin={athleteMode === 'competitive' ? 1.8 : 1.5}
+          />
+        </Card>
+      )}
+
+      {/* ACWR Current Value */}
       {progress && (
         <Card style={styles.section}>
           <ThemedText variant="caption" style={styles.sectionHeader}>
@@ -244,6 +308,11 @@ const styles = StyleSheet.create({
   },
   loadItem: {
     alignItems: 'center',
+  },
+  acwrExplainer: {
+    fontSize: 11,
+    lineHeight: 16,
+    marginBottom: 10,
   },
   acwrRow: {
     flexDirection: 'row',

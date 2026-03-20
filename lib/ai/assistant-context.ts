@@ -6,6 +6,7 @@
 import { useDailyStore } from '../../store/daily-store';
 import { usePhysiologyStore } from '../../store/physiology-store';
 import { useWorkoutStore } from '../../store/workout-store';
+import { getHelpGuideAsContext } from '../../data/help-guide';
 
 export interface AssistantContext {
   iaciScore: number | null;
@@ -25,6 +26,8 @@ export interface AssistantContext {
   sleepHours: number | null;
   sportProfiles: string[];
   recentWorkoutCount: number;
+  /** Full help guide content for AI training */
+  helpGuide: string;
 }
 
 export function gatherAssistantContext(): AssistantContext {
@@ -78,5 +81,6 @@ export function gatherAssistantContext(): AssistantContext {
     sleepHours,
     sportProfiles: [], // TODO: read from profile store when available
     recentWorkoutCount: workout.recentWorkouts?.length ?? 0,
+    helpGuide: getHelpGuideAsContext(),
   };
 }
