@@ -4,554 +4,159 @@ All notable changes to reVIVE Metrx will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+Versioning: **Major.Significant.Minor** — Major = new features/architecture, Significant = engine updates/UI redesigns, Minor = bug fixes/cosmetic.
+
 ## [Unreleased]
 
-## [4.7.0] - 2026-03-19
+## [5.0.0] - 2026-03-19
 
-### Added
-- **Tabbed Trends charts** — 3 chart tabs on Trends screen:
-  - Recovery: IACI Score, Device Recovery, HRV (normalized), Sleep Quality, RHR (inverted) — all toggleable
-  - Check-In: Energy, Sleep Quality, Soreness, Motivation, Stress, Mental Fatigue, Physical/Mental composites — all check-in data normalized to 0-100 and plottable
-  - Training Load: Day Strain chart + ACWR with colored zone shading (green/yellow/red), zones adapt for competitive athletes
-- **Help Guide screen** — 16 comprehensive entries covering every card, metric, and concept
-  - Filterable by screen (Home, Recovery, Effort, Trends, Settings, Check-In)
-  - Collapsible entries with Summary, Detail, Why It Matters, How To Use
-  - Color-coded screen badges
+### Added — Trends Visualization + Help System
+- **Tabbed Trends charts** — 3 chart tabs: Recovery, Check-In, Training Load
+  - Recovery: IACI Score, Device Recovery, HRV, Sleep, RHR — all toggleable via interactive legend
+  - Check-In: Energy, Sleep Quality, Soreness, Motivation, Stress, Mental Fatigue, Physical/Mental composites (1-5 scale normalized to 0-100)
+  - Training Load: Day Strain + ACWR with colored zone shading (green/yellow/red), zones adapt for competitive athletes
+- **Interactive chart legend** — Tap any series to show/hide it on the chart
+- **ACWR visualization** — Zone-shaded chart with explainer text describing injury risk zones
+- **Help Guide** — 16 comprehensive entries covering every card, metric, and concept
+  - Filterable by screen, collapsible entries with Summary, Detail, Why It Matters, How To Use
   - Accessible from Settings > Help Guide
-- **AI assistant trained on Help Guide** — Full guide content injected into assistant context so the AI can explain any feature
-
-### Changed
-- Trends tab restructured from single scrolling list to tabbed chart interface
-- Check-in data now quantified and graphable (1-5 scale normalized to 0-100)
-
-## [4.6.0] - 2026-03-19
-
-### Added
-- **Interactive chart legend** — Tap any legend item to show/hide that data series
-- **ACWR visualization** — Colored zone shading chart (green sweet spot, yellow caution, red danger) with explainer text
-- **7 data series on recovery chart** — IACI, Device Recovery, HRV, Sleep, RHR, Physical Feel, Mental Feel
-- **Help Guide data layer** — 16 entries with getHelpForScreen(), getHelpEntry(), getHelpGuideAsContext() utilities
-
-## [4.5.0] - 2026-03-19
-
-### Changed
-- **Effort tab completely redesigned** — New 3-step flow: Training Compatibility → Log Workout → Recovery Options
-  - Removed dead category browse cards (Performance, Recovery Training, Mind & Body, Active Recovery)
-  - Recovery options ONLY shown after a workout is entered
-  - Each recovery option links to Exercise Library for demos and details
-  - Time filter (All / ≤10min / ≤20min / ≤30min) for recovery options
-  - Recovery options filtered by user's equipment and environment
-
-### Added
-- **Trends chart** — IACI score (blue) + device recovery (green dashed) plotted over time using react-native-svg
-  - Period selector: 7d / 21d / 28d / 90d
-  - Y-axis 0-100, date labels on X-axis
-  - Reads from physiology store + feed store for real data
-
-## [4.4.0] - 2026-03-19
-
-### Added
-- **Light/dark theme toggle** in Settings → App Preferences
-- **Preferred training modalities** — Athletes select top 3 ranked recovery activities in Settings
-  - Recommendations weighted by preference order (1st > 2nd > 3rd)
-  - Filters recovery options to preferred activities first
-
-## [4.3.0] - 2026-03-19
-
-### Fixed
-- **Check-in data persistence** — Check-in values now persist and are viewable/editable after submission
-- **Connection resilience** — Aggressive background token refresh (30min before expiry), retry with backoff, token health check on app launch
-- **Pull-to-refresh no longer wipes IACI** — Feed refresh preserves today's computed IACI score
-
-## [4.2.0] - 2026-03-19
-
-### Added
-- **User-preferred recovery activities** — Recovery recommendations weighted by athlete's sport and preferred modalities
-- **Sport-aware activity labels** — Runners see "Easy Run" instead of "Walking Recovery" as Z1 option
-- **Exhaustive training compatibility tests** — 827 tests covering every IACI value 0-99 for both recreational and competitive modes
-
-### Fixed
-- **Competitive training compatibility** — Athlete mode config now correctly threads through entire IACI → protocol → training compatibility pipeline
-- **IACI recomputes on athlete mode change** — Toggling competitive in Settings immediately recomputes scores
-
-## [4.1.0] - 2026-03-19
-
-### Added
-- **10-input morning check-in** — Expanded from 4 to 10 core inputs organized in Physical + Mental/Nutrition groups
-  - Physical: Energy, Sleep Quality, Soreness, Stiffness, Heavy Legs, Cramping
-  - Mental/Nutrition: Motivation, Stress, Mental Fatigue, Hydration, Readiness
-- **Cramping tracking** — New musculoskeletal input with location text entry, wired into IACI engine (score of 20 when cramping, weight 0.12)
-- **Heat-related illness** — Added to illness symptoms with severity weighting
-- **Electrolyte quantity tracking** — Servings/tablets entry when electrolytes = Yes
-
-### Changed
-- All 10 inputs always provided directly (no proxy mapping from 4-input quick check)
-- Each subsystem now has 2+ direct inputs for better fidelity
+- **AI assistant trained on Help Guide** — Full guide content injected into assistant context
 
 ## [4.0.0] - 2026-03-19
 
-### Added
-- **Exercise Video Library** — Dedicated browsable/searchable exercise demo library
-  - 56 exercises across 11 categories: Foam Rolling, Mobility, Stretching, Breathing, Yoga, Corrective/Balance, Bodyweight, Lymphatic Flush, Aquatic, Thermal, Walking/Cycling
-  - 2-column compact grid with search and category chip filters
-  - Exercise detail view with video player (placeholder until AI demos generated), form cues, target areas, equipment, difficulty rating
-  - Accessible as modal from protocol detail pages and training recommendation cards
-- **Lymphatic System Integration** — New "Lymphatic Flush" exercise category
-  - Happy Baby pose, Legs Up the Wall, Diaphragmatic Breathing, Gentle Bouncing/Rebounding
-  - `supportsLymphatic` tag on exercises and `lymphatic_drainage` benefit on 26 recovery protocols
-  - Foam rolling, compression (Normatec), cold immersion, aquatic, and walking protocols tagged
-- **Pull-ups/Chin-ups** added to bodyweight recovery exercises
-- **Stretching category** covering all major muscle groups: hips, glutes, hamstrings, quads, calves, back, shoulders, neck
-- **Corrective/Balance** category (renamed from Corrective) with single-leg balance, clamshells, bird-dog, glute bridge
-- **Happy Baby Pose** cross-listed in both Yoga and Lymphatic Flush categories
-- **Thermal protocols** (sauna, cold plunge, contrast) as description-only entries (no video needed)
+### Added — Effort Tab Redesign + Exercise Library
+- **Exercise Video Library** — 56 exercises across 11 categories with search, category filters, video player placeholders
+- **Lymphatic System integration** — New exercise category + lymphatic_drainage benefit tags on 26 protocols
+- **Effort tab redesigned** — Clean 3-step flow: Training Compatibility → Log Workout → Recovery Options
+  - Recovery options ONLY shown after workout is entered
+  - Time filter (≤10/20/30 min), filtered by equipment and environment
+  - Each option links to Exercise Library
 
-### Changed
-- Exercise library route registered in app layout as modal screen
-- Recovery protocols JSON updated with lymphatic_drainage benefit tags
+### Removed
+- Dead category browse cards from Effort tab (Performance, Recovery Training, Mind & Body, Active Recovery)
+
+## [3.5.0] - 2026-03-19
+
+### Added — Competitive Athlete Enhancements
+- **Light/dark theme toggle** in Settings
+- **Preferred training modalities** — Top 3 ranked recovery activities prioritized in recommendations
+- **User-preferred recovery activities** with sport-aware labels (runners see "Easy Run" not "Walking")
+- **Exhaustive training compatibility tests** — 827 tests covering IACI 0-99 for recreational + competitive
+- **10-input morning check-in** — Expanded from 4 to 10 core inputs (Physical + Mental/Nutrition groups)
+- **Cramping tracking** with location text entry, wired into musculoskeletal subsystem
+- **Heat-related illness** added to illness symptoms with severity weighting
+- **Electrolyte quantity tracking** (servings/tablets)
+- **Competitive mode IACI recompute** — Toggling athlete mode immediately recalculates scores
+
+### Fixed
+- Check-in data persistence — values persist and are viewable/editable after submission
+- Competitive training compatibility correctly applied through full pipeline
+- Pull-to-refresh no longer wipes IACI score
+- Connection resilience — aggressive token refresh, retry with backoff, health check on launch
+- Soreness colors inverted correctly (1=green, 5=red)
+- RecoveryBetweenSessions infinite render loop
+- RPE annotations now show /10 scale (e.g., RPE 2-4/10)
 
 ## [3.4.0] - 2026-03-18
 
 ### Added
-- **Weighted illness severity in IACI engine** — Symptoms now severity-weighted:
-  - Severe (fever, body aches, chills, chest tightness, dizziness) = 3× weight → full 12pt penalty + "DO NOT TRAIN" warning
-  - Moderate (nausea, fatigue, headache, cough, diarrhea) = 2× weight → ~75% penalty
-  - Mild (sore throat, congestion, sneezing, loss of appetite) = 1× weight → ~50% penalty
-- **Illness subsystem suppression** — When ill, autonomic and cardiometabolic scores reduced 5-20pts based on symptom count; psychological reduced by half
-- **"Still feeling ill?" prompt** — If yesterday's check-in had illness, today's check-in shows follow-up prompt with "Yes, still ill" / "Feeling better" buttons. Auto-expands detail section.
-- **Additional symptoms free text** — Unlisted symptoms can be typed in
-- **Severe symptom warning banner** — Red warning when severe symptoms selected
-- **Severity-colored symptom chips** — Red (severe), yellow (moderate), gray (mild)
-- **Tab bar icons** — Ionicons for all tabs: home, fitness, bicycle, analytics, settings. Replaces default triangle indicators.
-- **Selection hints on all onboarding sections** — "(select one)" or "(select all that apply)" next to every section title for consistent guidance
+- **Weighted illness severity** — Severe symptoms (fever, body aches) = 3× weight, moderate = 2×, mild = 1×
+- **Illness subsystem suppression** — Autonomic/cardiometabolic reduced 5-20pts when ill
+- **"Still feeling ill?" prompt** — Follow-up from yesterday's illness data
+- **Tab bar icons** — Ionicons for all tabs, Recovery promoted to position 2
+- **Selection hints** on all onboarding sections
 
 ### Changed
-- **Tab order** — Recovery promoted to position 2 (next to Home), Train moved to position 3. Recovery is more important for daily use.
-- **Settings screen** — Shows user's login ID (email) instead of generic "Athlete" label. Falls back: full_name → email → 'Athlete'.
-
-### Fixed
-- **Illness not wired to IACI** — `computePenalties()` and `computeIACI()` now accept illness parameters. Penalty logic triggers from user-reported symptoms, not just low cardiometabolic scores.
-
-## [3.3.2] - 2026-03-18
-
-### Added
-- **Equipment-filtered recovery** — Recovery protocols now filtered by athlete's equipment & environment profile. No pool in profile = no pool-based recommendations.
-- **RPE badge on training recommendations** — Every training recommendation card and Train tab top pick shows recommended RPE (e.g., "RPE 3-5") based on IACI tier and modality type.
-
-## [3.3.1] - 2026-03-18
-
-### Added
-- **Illness symptoms in check-in** — "Feeling ill" toggle + 8 symptom chips (sore throat, congestion, fever, body aches, headache, cough, sneezing, fatigue/malaise) in Flags detail section. Feeds IACI illness_caution penalty (12 points).
-- **Recommended RPE engine** — `computeRecommendedRPE()` function in training-compatibility engine. Computes RPE 1-10 from IACI tier + modality type (mind/body always RPE 1-3, performance scales up to RPE 7-9).
-
-### Changed
-- **Sleep display** — Expanded daily card shows sleep performance percentage as hero value, hours below (was reversed).
+- Settings screen shows user's login ID instead of generic "Athlete"
+- Tab order: Home, Recovery, Effort, Trends, Settings
 
 ## [3.3.0] - 2026-03-18
 
-### Changed
-- **Morning check-in redesigned** — Smart 2-tier flow replaces 19-input long scroll:
-  - **Tier 1**: 4 color-coded inline ratings (Energy, Sleep, Soreness, Readiness) with 1-5 number buttons. Red (1-2), Yellow (3), Green (4-5). ~10 second check-in with "Done" button.
-  - **Tier 2**: Optional "More detail" expander with collapsible sections (Body, Mind, Nutrition, Flags). Each section shows inline summary when collapsed. Full body map, sliders, and toggles when expanded.
-- Quick-only mode infers missing detail from Tier 1 inputs + yesterday's data + device data.
-
 ### Added
-- `SegmentedRating` component — Color-coded 1-5 number button row for compact rating inputs.
-- `DetailSection` component — Collapsible section with title + inline summary + chevron.
-- `readiness` and `quickCheckInOnly` fields on CheckinData.
+- **Morning check-in redesign** — Smart 2-tier flow with expandable detail sections
+- **Illness tracking** in check-in with symptom chips and severity weighting
+- **RPE guidance** on all training recommendations
+- **Equipment-filtered recovery** — No pool = no aquatic recommendations
+- **Illness wired to IACI engine** — User-reported symptoms trigger penalties
 
-## [3.2.1] - 2026-03-18
-
-### Added
-- **Connection resilience** — Auto token refresh (10min before expiry, deduplicated), retry with exponential backoff (3 retries, 1s→2s→4s for 5xx/network errors), token health check on app launch.
-- **Smart error categorization** — Auth errors try refresh before clearing tokens. Network errors suggest checking connection. Only definitive 401/403 clears stored tokens. Falls back to existing token on network errors during refresh.
+### Fixed
+- Sleep display: percentage over hours (not reversed)
 
 ## [3.2.0] - 2026-03-18
 
-### Changed
-- **Whoop API migrated to v2** — All endpoints updated from deprecated v1 to v2 (`/v2/recovery`, `/v2/activity/sleep`, `/v2/activity/workout`, `/v2/cycle`, `/v2/user/profile/basic`). v1 endpoints were returning 404.
-- **Graceful API fallbacks** — Each Whoop data endpoint (recovery, sleep, workout, cycle) now fails independently. If one endpoint errors, the others still sync.
-- **Zone duration optional** — HR zone data (`zone_duration`) is now safely optional in workout parsing. v2 API may omit this field; app handles it gracefully instead of crashing.
-
-### Fixed
-- **Whoop sync returning no data** — Root cause was v1 API deprecation. Migrated all endpoints to v2.
-- **"Cannot read property 'zone_one_milli' of undefined"** — Workout zone_duration field made optional across adapter, sync hook, and webhook handler.
-- **OAuth deep link fallback** — Added `Linking` event listener as fallback for native dev builds where `AuthSession.promptAsync` doesn't capture the redirect callback. Handles both prompt result and deep link paths.
-- **Sync error visibility** — Full error messages now displayed on Settings screen below Sync button (was truncated in toast).
-
 ### Added
-- **Deep link OAuth fallback** — Native dev builds now have a secondary callback handler via React Native `Linking` API, catching OAuth redirects that `AuthSession` misses.
-- **Privacy Policy & Callback files** — Added for Whoop Developer Portal compliance.
-
-## [3.1.1] - 2026-03-18
-
-### Added
-- **Persisted settings store** — Onboarding data (athlete mode, sports, equipment, goals, etc.) now survives app restarts via file-system persistence
-- **Custom item input** on onboarding — "Add other..." text input on equipment, environment, goals, and recovery priorities sections
-- **Treadmill** added to equipment options
-- **Refresh Connection & Sync** button on Device Setup — refreshes OAuth token without full re-auth flow
-- **Reconnect button** on Dashboard sync banner — links to Device Setup when connection is lost
-
-### Changed
-- **Dashboard sync** — Always syncs last 7 days on mount (was today-only when data exists), catches gaps after reconnections
-- **Settings tab** reads from persisted settings store instead of Supabase profile (works offline)
-- **Dashboard hydrates** daily store from persisted settings on mount
-
-### Fixed
-- **Onboarding not persisting** — Settings now saved to both file-system store (local) and Supabase (when available)
-- **Whoop sync missing recent days** — After reconnect, syncs 7 days instead of just today
-- **Sync banner** — Hides when everything is fine; shows "Reconnect" for auth errors instead of useless "Sync" button
+- **Whoop API v2 migration** — Compatible with current Whoop developer API
+- **OAuth deep link fallback** — System browser fallback when in-app browser blocked
+- **Connection resilience** — Auto token refresh, retry with backoff, health check
 
 ## [3.1.0] - 2026-03-18
 
 ### Added
-- **5-Step Onboarding Questionnaire** — Full athlete profile setup:
-  - Step 1: Sport selection (33 sports, multi-select by category) + experience level
-  - Step 2: Training context — athlete mode (Self-Directed / Coach-Led), schedule (single/2-a-day), frequency, hours/week, training phase
-  - Step 3: Goals & recovery priorities (ranked, max 3)
-  - Step 4: Environment (gym/home/pool/outdoors), equipment (10 options), dietary approach
-  - Step 5: Baseline health (injuries/conditions) + profile summary review
-- **Settings tab** (renamed from Profile) with organized sections:
-  - Athlete Profile with "Edit Athlete Profile" button linking to onboarding
-  - Training Mode toggles (Self-Directed / Coach-Led, Single / Two-a-day)
-  - Connected Devices with Coming Soon list (Garmin, Oura, Apple Watch, Polar, COROS)
-  - Data section (Lab Results, Import Wearable Data)
-  - Account (Sign Out)
-- **Live athlete mode toggle** — Switching mode in Settings immediately updates the daily store and engine behavior
-
-### Changed
-- **Tab label** — "Profile" renamed to "Settings" in bottom navigation
-- **Onboarding screen** — Expanded from single sport-picker to 5-step questionnaire with progress dots, back/next navigation, and profile summary
-- **Onboarding route** — Now opens as modal, accessible from Settings > Edit Athlete Profile
+- **Onboarding questionnaire** — 5-step athlete profile (About You, Training Context, Goals, Environment, Health)
+- **Settings tab** — Profile renamed to Settings with gear icon, restructured sections
+- **Persisted settings** — Athlete mode, training schedule, equipment, environment survive app restart
+- **Custom onboarding items** — "Other" text input for sports, equipment, environment, diet
 
 ## [3.0.0] - 2026-03-18
 
+### Added — Athlete Mode
+- **Competitive vs Recreational athlete mode** — Threads through entire scoring pipeline
+- **Relaxed thresholds for competitive athletes** — Perform at 75+ (was 85), Train at 60+ (was 70)
+- **Reduced penalties** — 40% reduction for competitive athletes (coach manages risk)
+- **ACWR danger zone widened** — 1.5 for competitive (was 1.3)
+- **Training plan store** — Manual entry, weekly templates, template auto-expansion
+- **Plan-aware recovery engine** — Aggressive/preparation/inter-session/standard strategies
+- **3 new sport profiles** — Ultramarathon, Biathlon, Track & Field
+- **Train tab branches** — Competitive athletes see RecoveryBetweenSessions + PlanInput
+
+## [2.6.0] - 2026-03-17
+
 ### Added
-- **Athlete Mode** — New `competitive` vs `recreational` mode that flows through the entire scoring pipeline
-  - Competitive mode: relaxed IACI tier thresholds (75/60/45/25 vs 85/70/55/35)
-  - 40% reduced penalty scaling for competitive athletes (coach manages risk)
-  - ACWR danger threshold shifts from 1.3 to 1.5 (normal build phase for endurance athletes)
-  - Performance modality permissions upgraded (`caution` → `allowed`) when coach-supervised
-- **Training Plan Ingestion** — New `training-plan-store` with support for:
-  - Manual session entry (workout type + duration + intensity zone)
-  - Weekly template with auto-expansion to 7-day planned sessions
-  - Future TrainingPeaks and .ics calendar import interfaces
-- **Plan-Aware Recovery Engine** (`lib/engine/plan-aware-recovery.ts`) — 4 recovery strategies:
-  - Aggressive: hard today + hard tomorrow → cold exposure, compression, sleep optimization
-  - Preparation: easy today + hard tomorrow → mobility, activation, hydration
-  - Inter-session: between AM and PM sessions → shortest high-impact modalities (capped 15min)
-  - Standard: general recovery recommendations
-- **3 New Sport Profiles** — Ultramarathon, Biathlon, Track & Field (33 total sports)
-- **Train Tab Competitive Mode** — Shows today's planned sessions + plan-aware recovery recommendations + "What's your training today?" quick entry
-- **RecoveryBetweenSessions component** — Strategy-aware recovery stack with color-coded urgency badges
-- **PlanInput component** — Chip-based workout type/zone/duration picker for quick session entry
-- **2-a-day support** — AM/PM session slots in training plan and workout store
-- **Session intensity classifier** — Maps workout type strings to rest/easy/moderate/hard/key intensity levels
-- **ProfileRow extended** — 10 new fields: athlete_mode, training_schedule, training_frequency, training_hours_week, training_phase, experience_level, primary_goal, recovery_priorities, upcoming_events, known_conditions, onboarding_completed
-- **Competitive constants** — `COMPETITIVE_TIER_THRESHOLDS`, `COMPETITIVE_ACWR_DANGER_MIN`, `COMPETITIVE_PENALTY_SCALING`
-- **39 new tests** across 6 test files (563 total, 39 suites)
+- **AI Recovery Assistant** — Chat-based assistant with Claude integration via Supabase Edge Function
+- **Whoop historical sync** — Backfills all available data on first connection
+- **Dual-score daily cards** — IACI + device recovery shown side by side
+- **Pull-to-refresh** — Syncs last 7 days of device data
+- **Collapsible training categories** on Train screen
 
 ### Changed
-- **`computeIACI`** — New optional `athleteMode` parameter threads through penalties and protocol prescription
-- **`computePenalties`** — New optional `penaltyScaling` parameter (default 1.0 preserves existing behavior)
-- **`getTrainingCompatibility`** — Accepts configurable tier thresholds and athlete mode config
-- **`prescribeProtocol`** — Threads athlete mode to training compatibility
-- **`getBasePermissions`** — Parameterized tier thresholds instead of hardcoded 85/70/55/35
-- **Load capacity ACWR** — Configurable danger threshold via `acwrDangerMin` (was hardcoded 1.3)
-- **Daily store** — Added `athleteMode` and `trainingSchedule` state with setters
+- Rebranded to reVIVE Metrx
 
-### Technical
-- All engine changes use optional parameters with backward-compatible defaults
-- Existing 524 tests pass unchanged — zero breaking changes
-- New types: `AthleteModeConfig`, `PlannedSession`, `WeeklyTemplate`, `SessionIntensity`, `RecoveryRecommendation`
-- New engine files: `athlete-mode.ts`, `plan-aware-recovery.ts`
-- New store: `training-plan-store.ts` (persisted via file-storage)
-
-## [2.6.1] - 2026-03-17
+## [2.5.0] - 2026-03-17
 
 ### Added
-- **Historical Whoop backfill** — Dashboard auto-syncs all available Whoop data on first connection (recovery, sleep, workouts, cycles), not just today
-- **Pull-to-refresh sync** — Pulling down on Dashboard syncs the last 7 days of Whoop data and refreshes the feed
-- **Sync progress banner** — Dashboard shows real-time sync status, record count, and errors with manual sync button
-- **Day strain from cycles** — Fetches Whoop cycle data for accurate total day strain (falls back to workout sum)
-- **Dual score display** — Expanded daily cards show IACI ring and device recovery circle side-by-side
-- **Device data on all historical cards** — Feed now extends beyond 14 days to show all imported Whoop dates
+- **Comprehensive test suite** — 502 tests across 30 suites
+- Fixed papaparse double-header bug, sport profile key mismatches, inflammation score thresholds
 
-### Changed
-- **Collapsed card layout** — Recovery color bar (green/yellow/red) on left, IACI score (large) over device recovery % (small), date with WHOOP badge above, HRV/Sleep %/Strain stacked on right
-- **Sleep metric** — Collapsed cards now show sleep performance percentage instead of hours
-- **Expanded card scores row** — IACI ring and device recovery displayed as equal peers with labels
-
-### Fixed
-- **Whoop cycle API 404** — Cycle endpoint fetch now fails gracefully if unavailable
-- **Day strain calculation** — Prefers cycle-level day strain over summed workout strain for accuracy
-- **Feed data quality** — `canonicalToPhysRow` properly maps `dayStrain` from canonical records
-
-## [2.2.4] - 2026-03-14
+## [2.4.0] - 2026-03-16
 
 ### Added
-- **Whoop ZIP import** — Import screen now accepts Whoop data export ZIP files (containing physiological_cycles.csv, sleeps.csv, workouts.csv, journal_entries.csv) in addition to single CSV files
-- **ZIP parser** (`lib/adapters/whoop/zip-parser.ts`) — Extracts and merges all 4 CSVs from a Whoop export ZIP, maps to canonical physiology records with full workout detail including HR zone distribution
-- **Physiology store** (`store/physiology-store.ts`) — Zustand store for imported physiology data in demo mode, enabling IACI computation from imported Whoop data without Supabase
-- **Import results detail** — Import screen now shows days imported, workout count, and date range after import
+- **Whoop Live API integration** — OAuth2 flow, auto-sync, token refresh, historical backfill
 
-### Changed
-- **IACI demo mode** — `computeDemo()` now uses imported Whoop physiology data (HRV, RHR, sleep metrics, strain) alongside morning check-in inputs, computes baselines from 28-day history, and calculates data completeness from both sources
-- **Import screen** — Updated to handle ZIP and CSV files, with demo mode local storage and Whoop export instructions
-- **Profile tab** — Import link updated to "Import Whoop Data (ZIP or CSV)"
-
-## [2.2.3] - 2026-03-14
-
-### Fixed
-- **Navigation** — Added back button to modal screens (Morning Check-In, Log Activity) and global `headerBackTitle` so users can always navigate back from protocol detail and other stack screens
-- **"Use Yesterday's Data"** — Was silently failing in demo mode due to early return when Supabase not configured; now uses previous check-in data or sensible defaults and triggers IACI computation
+## [2.3.0] - 2026-03-16
 
 ### Added
-- **Recovery protocol search** — Search bar in "Browse All Protocols" section filters by name, series, or primary system
-- **Protocol sort** — Alphabetical A-Z / Z-A toggle button when browsing all 80 protocols
+- **Source-agnostic data pipeline** — Canonical physiology records, device-agnostic architecture
+- Persistence layer with file-system storage
 
-## [2.2.2] - 2026-03-14
-
-### Fixed
-- **IACI demo mode scoring** — `computeDemo()` was generating random subsystem scores (55-95 range), completely ignoring actual check-in inputs; now feeds real check-in data through all 6 subsystem scorers so minimum inputs produce appropriately low IACI scores and maximum inputs produce high scores
-
-### Changed
-- **Train tab** — Expanded from 8 hardcoded quick-log buttons to categorized activity grid (Performance, Recovery Training, Mind & Body, Active Recovery) with search bar and IACI-recommended top pick
-- **Log Workout screen** — Replaced 13-item flat list with full 32-modality categorized selector (11 categories), search bar, and recently used activities section; submit button shows selected activity name
+## [2.2.0] - 2026-03-16
 
 ### Added
-- **Check-in data persistence** — Morning check-in values now stored in daily store (`CheckinData`) for consumption by demo mode IACI computation pipeline
+- **Sport-aware training system** — 32 modalities with IACI-gated permissions
+- **Whoop ZIP import** with physiology store integration
 
-## [2.2.1] - 2026-03-14
-
-### Changed
-- **App rebrand** — Renamed from "Athlete Recovery" to "reVIVE Metrx" across all surfaces: app display name, Expo config (slug, scheme, bundle IDs), sign-in screen (logo, title), OAuth redirect URIs, package.json, and documentation
-
-## [2.2.0] - 2026-03-14
+## [2.1.0] - 2026-03-16
 
 ### Added
+- Scrollable morning check-in, hydration slider
+- Protocol detail screen, evidence-grouped recovery screen
+- IACI algorithm test suite
 
-#### Sport-Aware Training-for-Recovery System
-- **30 sport profiles** (`data/sport-profiles.ts`) — Endurance, strength, combat, field/court, other, and wellness/longevity categories; each profile defines subsystem stress maps, sport-specific stress markers, IACI weight presets, and recommended recovery modalities
-- **32 training modalities** (`data/training-recovery-map.ts`) — Expanded from 8 performance-only to 32 modalities across 11 categories: aerobic, strength, bodyweight, AGT (anti-glycolytic), mitochondrial, mind-body, mobility, aquatic, low-impact, lifestyle, and skill work
-- **Sport stress engine** (`lib/engine/sport-stress.ts`) — Weight preset derivation from sport profiles, subsystem score adjustments (high=1pt, very_high=2pt penalties), multi-sport union of recovery needs
-- **Sport onboarding screen** (`app/onboarding.tsx`) — Multi-select sport chip grid grouped by category with Wellness & Longevity prominently featured; saves to profile as JSON array
-- **Training recommendations hook** (`hooks/use-training-recommendations.ts`) — Consumes IACI result and sport profile to expose ranked training-for-recovery recommendations with top pick and category grouping
-- **TrainingSection** (`components/recovery/TrainingSection.tsx`) — Collapsible "Training for Recovery" section on recovery screen showing top 3 recommendations with show-more toggle
-- **TrainingRecommendationCard** (`components/recovery/TrainingRecommendationCard.tsx`) — Expandable card with permission badge, recovery framing, subsystem pills, evidence level, intensity guidance, duration range, and examples
-
-#### New Training Modality Categories
-- **Recovery strength** — Light eccentric work, corrective exercise, light kettlebell flow
-- **Bodyweight** — Light bodyweight circuit (push-ups, air squats, planks), calisthenics flow
-- **Anti-glycolytic (AGT)** — Alactic power (5-10s bursts + full rest), aerobic repeats (submaximal + generous rest)
-- **Mitochondrial** — Zone 2 Mito Builder for longevity/wellness focus
-- **Mind-body** — Restorative yoga, tai chi/qigong, active breathwork, guided meditation
-- **Mobility** — Dynamic mobility flow
-- **Aquatic & low-impact** — Easy swimming, pool recovery, recovery walking, easy cycling
-- **Lifestyle** — Gardening, massage, dancing, hiking, sauna, cold exposure, play & recreation
-
-### Changed
-- **Training compatibility** — Expanded from 8-field interface to `Record<TrainingModalityKey, TrainingPermission>` with 32 modality keys across 5 IACI tiers; recovery-focused modalities remain safe at lower tiers
-- **Phenotype overrides** — All 7 phenotypes now apply modality-specific overrides across the full 32-modality set
-- **IACI weight selection** — Replaced hardcoded `profile?.sport === 'endurance'` check with sport profile lookup supporting 4 weight presets (default, endurance, power, older_athlete)
-- **IACI composite** — Sport stress markers now feed subsystem score adjustments before penalty computation
-- **Protocol engine** — Wires sport-aware `recommendedTraining` into `ProtocolPrescription`
-- **Recovery screen** — Added TrainingSection above passive recovery protocols
-- **Dashboard training card** — Shows curated 8 performance modalities instead of iterating all 32
-
-## [2.1.4] - 2026-03-14
+## [2.0.0] - 2026-03-16
 
 ### Added
-- Comprehensive IACI algorithm test suite with 80+ assertions verifying poor inputs produce poor recovery and optimal inputs produce excellent recovery across 6-tier recovery bands (Optimum ≥81 / Strong 61-80 / Moderate 41-60 / Sufficient 21-40 / Insufficient 1-20 / Poor 0)
-- Whoop input integration tests covering HRV, RHR, sleep score, and respiratory rate across optimal, suboptimal, and critical states
+- Infinite scroll feed, systemic load engine, recovery day plans
 
-## [2.1.3] - 2026-03-14
-
-### Changed
-- **Recovery screen** — Replaced flat protocol list and series filter tabs with evidence-grouped accordion layout (Strong / Moderate / Emerging); protocols ranked within each group by relevance to user's current subsystem deficits
-- **Ranking algorithm** — New `rankByRelevance()` scores each protocol by average deficit across its targeted subsystems, with +20 bonus for phenotype-specific picks from the protocol engine
+## [1.0.0] - 2026-03-15
 
 ### Added
-- **TopPickCard** — Hero card highlighting the #1 best-match protocol per evidence tier with accent border, targeted subsystem pills, and dose sweet spot
-- **EvidenceSection** — Collapsible accordion component per evidence level with expand/collapse and "Show N more" toggle to prevent doom-scrolling
-- **Relevance score** — ProtocolSeriesCard now displays a relevance percentage badge
-- **Empty state** — Recovery tab shows "Start Check-In" prompt when no IACI data available
-- **IACI context** — Recovery header now shows IACI score and readiness tier alongside phenotype label
-
-## [2.1.2] - 2026-03-14
-
-### Added
-- **Protocol detail screen** — New `app/protocol/[slug].tsx` with full protocol info: header badges, instructions, dosage (min/sweet spot/upper limit), ideal timing, cautions, equipment, target areas, IACI systems targeted, evidence notes, athlete tips, and environment
-- **Demo video player** — `ProtocolVideoPlayer` component with play button poster, confirmation alert, and WebView-based video playback (YouTube iframe embed + MP4 fallback); works in Expo Go without native modules
-- **Protocol navigation** — Tapping a protocol card on the Recovery tab now opens the detail screen
-- **Video library** — All 80 recovery protocols mapped to technique-specific YouTube demo video URLs
-
-### Fixed
-- **TypeScript** — Fixed `SubsystemKey` type error in `use-iaci.ts` demo mode score generation
-
-## [2.1.1] - 2026-03-14
-
-### Fixed
-- **Demo mode IACI** — Check-in now triggers `computeDemo()` to generate realistic IACI scores without Supabase; previously IACI never computed because Whoop sync gate was never satisfied in offline mode
-- **Recovery protocols empty** — Protocols now load from bundled `data/recovery-protocols.json` in demo mode instead of querying empty Supabase table; all 80 protocols with series filter counts now populate
-
-### Changed
-- **Dashboard** — IACI computation in demo mode bypasses Whoop sync requirement; skips Whoop auto-sync when Supabase is not configured
-- **tsconfig** — Added `resolveJsonModule` and `esModuleInterop` for local JSON seed data imports
-
-## [2.1.0] - 2026-03-14
-
-### Changed
-- **Morning Check-In** — Converted from 5-step wizard to single scrollable form; all sections (Quick State, Body, Mind & Fuel, Recovery Actions, Flags) visible and scrollable in one view with a single Submit button at the bottom
-- **Morning Check-In Submit** — Fixed submit navigation: uses `router.back()` for modal dismiss with `router.replace()` fallback for safety
-- **Hydration Input** — Replaced glass counter with graduated sliding scale (0–2.0L in 0.25L increments) using custom `HydrationSlider` component
-
-### Added
-- `components/ui/HydrationSlider.tsx` — Custom pan-responder slider with graduated tick marks and 0.25L snap increments
-
-## [2.0.0] - 2026-03-14
-
-### Added
-
-#### Infinite Scroll Feed (Whoop Model)
-- `lib/types/feed.ts` — FeedDay, MetricSource, MetricValidation types
-- `store/feed-store.ts` — Zustand store for feed state (days, cursor, pagination, accordion)
-- `hooks/use-feed.ts` — Paginated data fetching with carry-forward yesterday's check-in
-- `components/feed/DailyCard.tsx` — Expandable card wrapper with tier-colored border
-- `components/feed/DailyCardCollapsed.tsx` — Compact 90px card (56px IACI ring, date, metrics)
-- `components/feed/DailyCardExpanded.tsx` — Full card with all subsystem data
-- `components/feed/CheckinPromptCard.tsx` — "Start Check-In" + "Use Yesterday's Data" prompt
-- `components/feed/WhoopMetricRow.tsx` — Editable metric with source badge + accept/edit buttons
-
-#### Systemic Load Stress Capacity Engine
-- `lib/types/load-capacity.ts` — LoadCapacityResult, SubsystemStressFactor, SystemStatusSummary, WorkoutImpactResult, RecoveryPlan, RecoveryDayPlan types
-- `lib/engine/load-capacity.ts` — Bottom-up systemic stress algorithm: per-subsystem stress factors with Whoop/load modifiers, weighted combination with cross-system amplifiers, area capacity from DOMS, workout focus classification
-- `lib/engine/workout-impact.ts` — Post-workout impact calculator (subsystem deltas, area soreness, recovery time estimates)
-- `lib/engine/recovery-plan.ts` — Post-workout recovery plan generator (immediate/short-term/evening/next-day)
-- `lib/engine/recovery-day-plan.ts` — Multi-systemic recovery day protocol for recovery-only days (4 time blocks, nutrition, sleep)
-- `hooks/use-load-capacity.ts` — Compute load capacity after IACI, auto-generate recovery day plan when recovery-only
-- `hooks/use-recovery-plan.ts` — Generate post-workout recovery plan after logging
-
-#### Feed UI Components
-- `components/feed/SystemStatusCard.tsx` — Stress level badge, headline, per-subsystem one-liners
-- `components/feed/WorkoutFocusBadge.tsx` — Fitness Building / Active Recovery / Recovery Only recommendation
-- `components/feed/AreaCapacityMap.tsx` — Body region capacity visualization (color-coded pills)
-- `components/feed/RecoveryPlanCard.tsx` — Post-workout recovery plan display
-- `components/feed/RecoveryDayPlanCard.tsx` — Full-day recovery protocol display with timeline
-
-### Changed
-- **Dashboard** — Completely rewritten from ScrollView to FlatList infinite scroll feed with accordion cards, pull-to-refresh, and infinite pagination (14 days per page)
-- **Morning Check-In** — Pre-fills sliders with yesterday's values when available, shows "Pre-filled with yesterday's responses" banner
-- **Post-Workout** — Generates and displays recovery plan after logging workout before dismissing
-
-## [1.0.0] - 2026-03-13
-
-### Added
-- Comprehensive SME test plan (`TEST_PLAN.md`) covering 13 test categories, 200+ test cases across unit, integration, component, E2E, performance, and security testing
-
-### Fixed
-- **App crash on launch** — `supabaseUrl is required` error when Supabase env vars not configured; added placeholder client with `isSupabaseConfigured` guard
-- **TypeScript compilation** — excluded Supabase Edge Functions (Deno runtime) from tsconfig
-
-### Changed
-- **Offline/demo mode** — app now runs without Supabase credentials using placeholder client; sign-in screen shows "Enter App" button that bypasses auth while keeping email/password hooks in place for future credential storage
-- **Auth store** — added `offlineMode` state; `signIn`/`signUp`/`signOut`/`fetchProfile` gracefully no-op when Supabase is not configured
-- **Auth gate** (`app/index.tsx`) — routes to sign-in when in offline mode instead of auto-redirecting to dashboard
-- **Sign-in screen** — redesigned with AR logo, "Integrated Athlete Condition Index" subtitle, yellow offline mode banner, and conditional button text ("Sign In" vs "Enter App")
-
-## [0.1.0] - 2026-03-13
-
-### Added
-
-#### Project Scaffolding
-- Expo (React Native) project with Expo Router file-based routing
-- TypeScript strict mode with `@/*` path aliases
-- EAS Build configuration for iOS and Android
-- Environment variable setup with `.env.example`
-
-#### Type System (lib/types/)
-- `canonical.ts` — `CanonicalPhysiologyRecord`, `SleepMetrics`, `CardiovascularMetrics`, `WorkoutMetrics`, `DataQualityTier`
-- `iaci.ts` — Full IACI type hierarchy: `SubsystemKey`, `SubsystemScore`, `SubsystemWeights` (4 presets), `PhenotypeKey`, `ProtocolClass`, `ReadinessTier`, `IACIResult`
-- `protocols.ts` — `RecoveryProtocol` (10 series), `RecoveryLog`, `RecoveryRecommendation`
-- `exercises.ts` — `Exercise` (12 categories), `Workout`, `WorkoutSet`
-- `inflammation.ts` — `InflammationMarkerDef`, `InflammationEntry`, `InflammationScore`
-- `progress.ts` — `StallType`, `TrendSnapshot`, `ProgressAssessment`, `ACWR`
-- `database.ts` — Supabase row types mirroring all SQL tables
-
-#### IACI Engine (lib/engine/)
-- 6 subsystem scorers: autonomic, musculoskeletal, cardiometabolic, sleep-circadian, metabolic, psycho-emotional
-- Baseline tracker with 21-day rolling window (min 7 samples)
-- Penalty logic with 6 mismatch-state penalties
-- IACI composite calculator orchestrating weighted scores → penalties → phenotype → protocol
-- Phenotype classifier (7 phenotypes, priority-ordered rules)
-- Protocol engine mapping phenotypes to recommended modality slugs
-- Training compatibility engine with base permissions + phenotype overrides
-- Inflammation scoring from wearable proxies, self-reported, and lab markers
-- Progress tracker: ACWR, training monotony, stall detection (5 types)
-- Trend analyzer for 7d/21d/28d/90d periods
-- Personalization stub for phase-2 athlete-type weight presets
-
-#### Whoop Integration (lib/adapters/)
-- Wearable adapter interface and plugin registry
-- `WhoopApiClient` — OAuth flow, paginated API for recovery/sleep/workout/cycle endpoints
-- Whoop CSV export parser using PapaParse
-- Webhook handler for recovery.updated, sleep.updated, workout.updated
-- Data quality scoring (high/medium/low/estimated tiers)
-
-#### State Management (store/)
-- `auth-store.ts` — Session, user, profile with Supabase Auth
-- `daily-store.ts` — Today's IACI result, check-in and sync status
-- `workout-store.ts` — Active and recent workouts
-- `sync-store.ts` — Whoop sync status, errors, offline pending count
-
-#### Hooks (hooks/)
-- `use-auth.ts` — Auth wrapper with auto-initialization
-- `use-iaci.ts` — Full IACI computation pipeline (fetch → baseline → score → composite → store)
-- `use-whoop-sync.ts` — Morning sync (recovery + sleep) and post-workout sync with Whoop API field mapping
-- `use-protocols.ts` — Protocol fetching, filtering by IACI/phenotype/constraints, adherence logging
-- `use-workout-logger.ts` — Workout logging and recent workout retrieval
-- `use-trends.ts` — 90-day trend analysis across 4 periods
-- `use-progress.ts` — ACWR, monotony, and stall detection computation
-- `use-offline-sync.ts` — Phase-2 stub for AppState monitoring
-
-#### UI Components (components/)
-- Base UI: `ThemedText`, `Card`, `Button`, `Slider` (discrete dot slider)
-- Dashboard: `IACIRing` (SVG circular progress), `SubsystemBars`, `PhenotypeCard`, `ProtocolCard`, `TrainingCompatCard`, `MetricsRow`
-- Check-in: `BodyMap` (13-region tap-to-cycle soreness)
-- Recovery: `ProtocolSeriesCard` with evidence icons and CNS warnings
-
-#### Screens (app/)
-- Auth flow: sign-in, sign-up with email/password
-- 5-tab layout: Dashboard, Train, Recovery, Trends, Profile
-- Dashboard with pre-checkin CTA → auto-sync → IACI ring → metrics → subsystems → phenotype → protocol → training compat
-- Morning check-in: 5-step modal (Quick State → Body Map → Mind & Fuel → Recovery Actions → Flags)
-- Post-workout logger: 13 workout types, duration, RPE, notes
-- Recovery hub: filter tabs (Recommended, All, 10 series), constraint-enforced filtering
-- Training compatibility display with recent workout logging
-- Trends: period selector, IACI trend, training load, ACWR zones, stall detection
-- Profile: user info, connected devices, settings, lab results link, CSV import
-- Progress report: ACWR display, monotony, stall detection with alternatives
-- Evening recovery check-in: body feel, energy, pain, notes
-- Workout detail `[id]`: HR zones, strain, metrics
-- Exercise detail `[id]`: strain/recovery cost, equipment, log button
-- Device setup: Whoop OAuth flow with AuthSession
-- CSV import: document picker → parse → upsert
-- Lab results: 7 inflammation markers with normal ranges
-
-#### Database (supabase/)
-- 15 migration files creating all tables with RLS policies and indexes
-- `seed.sql` — 80 recovery protocols, 56 exercises, 16 inflammation marker definitions
-
-#### Seed Data (data/)
-- `recovery-protocols.json` — 80 modalities across 10 series extracted from Excel files
-- `exercises.json` — 56 exercises across 12 categories
-- `inflammation-markers.json` — 11 lab markers + 5 wearable proxies
-- `phenotype-rules.json` — 7 phenotype classification rules
-
-#### AI Integration
-- `lib/ai/coaching.ts` — Claude API proxy for natural-language recovery explanations with rule-based fallback
-- Supabase Edge Functions: `coaching-explain`, `whoop-webhook`, `compute-trends`
-
-#### Infrastructure
-- Supabase client with `ExpoSecureStoreAdapter` for token persistence
-- Utility modules: math (rolling stats, z-scores, EMA), date helpers, constants (thresholds, colors, labels)
+- Initial release — Expo project scaffold, IACI engine, Whoop adapter, UI components, offline demo mode
