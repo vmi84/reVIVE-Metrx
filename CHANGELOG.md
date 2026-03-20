@@ -8,6 +8,18 @@ Versioning: **Major.Significant.Minor** — Major = new features/architecture, S
 
 ## [Unreleased]
 
+## [5.0.2] - 2026-03-19
+
+### Fixed
+- **Settings top-level sections now collapse/expand** — Athlete Profile, Connected Devices, Data, Training Mode, App Preferences all have chevron toggles with LayoutAnimation
+- **Check-In chart reads today's data from daily store** — If IACI score exists, check-in data is available for the chart
+- **Cold Exposure/Sauna properly filtered** — Require specific equipment environments (`cold_plunge`, `sauna`), not generic `home`/`gym`
+- **Recovery options link to specific exercises** — Modality param filters Recovery Exercise Library to matching exercises
+- **Help Guide summary text readable** — Changed from dim secondary to white text
+
+### Changed
+- Settings `sectionHeader` marginBottom reduced to 0 when toggleable (chevron takes the space)
+
 ## [5.0.1] - 2026-03-19
 
 ### Fixed
