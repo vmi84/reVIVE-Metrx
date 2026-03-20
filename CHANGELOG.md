@@ -6,6 +6,62 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [4.5.0] - 2026-03-19
+
+### Changed
+- **Effort tab completely redesigned** — New 3-step flow: Training Compatibility → Log Workout → Recovery Options
+  - Removed dead category browse cards (Performance, Recovery Training, Mind & Body, Active Recovery)
+  - Recovery options ONLY shown after a workout is entered
+  - Each recovery option links to Exercise Library for demos and details
+  - Time filter (All / ≤10min / ≤20min / ≤30min) for recovery options
+  - Recovery options filtered by user's equipment and environment
+
+### Added
+- **Trends chart** — IACI score (blue) + device recovery (green dashed) plotted over time using react-native-svg
+  - Period selector: 7d / 21d / 28d / 90d
+  - Y-axis 0-100, date labels on X-axis
+  - Reads from physiology store + feed store for real data
+
+## [4.4.0] - 2026-03-19
+
+### Added
+- **Light/dark theme toggle** in Settings → App Preferences
+- **Preferred training modalities** — Athletes select top 3 ranked recovery activities in Settings
+  - Recommendations weighted by preference order (1st > 2nd > 3rd)
+  - Filters recovery options to preferred activities first
+
+## [4.3.0] - 2026-03-19
+
+### Fixed
+- **Check-in data persistence** — Check-in values now persist and are viewable/editable after submission
+- **Connection resilience** — Aggressive background token refresh (30min before expiry), retry with backoff, token health check on app launch
+- **Pull-to-refresh no longer wipes IACI** — Feed refresh preserves today's computed IACI score
+
+## [4.2.0] - 2026-03-19
+
+### Added
+- **User-preferred recovery activities** — Recovery recommendations weighted by athlete's sport and preferred modalities
+- **Sport-aware activity labels** — Runners see "Easy Run" instead of "Walking Recovery" as Z1 option
+- **Exhaustive training compatibility tests** — 827 tests covering every IACI value 0-99 for both recreational and competitive modes
+
+### Fixed
+- **Competitive training compatibility** — Athlete mode config now correctly threads through entire IACI → protocol → training compatibility pipeline
+- **IACI recomputes on athlete mode change** — Toggling competitive in Settings immediately recomputes scores
+
+## [4.1.0] - 2026-03-19
+
+### Added
+- **10-input morning check-in** — Expanded from 4 to 10 core inputs organized in Physical + Mental/Nutrition groups
+  - Physical: Energy, Sleep Quality, Soreness, Stiffness, Heavy Legs, Cramping
+  - Mental/Nutrition: Motivation, Stress, Mental Fatigue, Hydration, Readiness
+- **Cramping tracking** — New musculoskeletal input with location text entry, wired into IACI engine (score of 20 when cramping, weight 0.12)
+- **Heat-related illness** — Added to illness symptoms with severity weighting
+- **Electrolyte quantity tracking** — Servings/tablets entry when electrolytes = Yes
+
+### Changed
+- All 10 inputs always provided directly (no proxy mapping from 4-input quick check)
+- Each subsystem now has 2+ direct inputs for better fidelity
+
 ## [4.0.0] - 2026-03-19
 
 ### Added
