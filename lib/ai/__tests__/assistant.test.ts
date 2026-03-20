@@ -141,7 +141,7 @@ describe('sendAssistantMessage', () => {
 });
 
 describe('sendAssistantMessage offline', () => {
-  it('returns offline message when Supabase not configured', async () => {
+  it('returns helpful offline response when Supabase not configured', async () => {
     // Re-mock with isSupabaseConfigured = false
     jest.resetModules();
     jest.doMock('../../supabase', () => ({
@@ -149,11 +149,33 @@ describe('sendAssistantMessage offline', () => {
       supabase: { functions: { invoke: jest.fn() } },
     }));
     jest.doMock('../assistant-context', () => ({
-      gatherAssistantContext: jest.fn(() => ({})),
+      gatherAssistantContext: jest.fn(() => ({ iaciScore: null, hrv: null })),
     }));
 
     const { sendAssistantMessage: sendOffline } = require('../assistant');
-    const reply = await sendOffline([makeMessage('user', 'Test')]);
-    expect(reply).toContain('network connection');
+    // Should give a useful response, not an error
+    const reply = await sendOffline([makeMessage('user', 'what is IACI?')]);
+    expect(typeof reply).toBe('string');
+    expect(reply.length).toBeGreaterThan(20);
+  });
+
+  it('returns context-aware response for score query offline', async () => {
+    jest.resetModules();
+    jest.doMock('../../supabase', () => ({
+      isSupabaseConfigured: false,
+      supabase: { functions: { invoke: jest.fn() } },
+    }));
+    jest.doMock('../assistant-context', () => ({
+      gatherAssistantContext: jest.fn(() => ({
+        iaciScore: 72,
+        readinessTier: 'train',
+        phenotype: 'Locally Fatigued',
+        hrv: 65,
+      })),
+    }));
+
+    const { sendAssistantMessage: sendOffline } = require('../assistant');
+    const reply = await sendOffline([makeMessage('user', 'what is my iaci score?')]);
+    expect(reply).toContain('72');
   });
 });

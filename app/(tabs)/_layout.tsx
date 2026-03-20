@@ -2,6 +2,7 @@ import { Tabs } from 'expo-router';
 // @ts-ignore — bundled with expo, types resolved at runtime
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../lib/utils/constants';
+import { HelpButton } from '../../components/ui/HelpButton';
 
 export default function TabLayout() {
   return (
@@ -33,6 +34,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home-outline" size={size} color={color} />
           ),
+          headerRight: () => <HelpButton screen="home" />,
+          headerRightContainerStyle: { paddingRight: 16 },
         }}
       />
       <Tabs.Screen
@@ -43,6 +46,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="fitness-outline" size={size} color={color} />
           ),
+          headerRight: () => <HelpButton screen="recovery" />,
+          headerRightContainerStyle: { paddingRight: 16 },
         }}
       />
       <Tabs.Screen
@@ -53,6 +58,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="bicycle-outline" size={size} color={color} />
           ),
+          headerRight: () => <HelpButton screen="effort" />,
+          headerRightContainerStyle: { paddingRight: 16 },
         }}
       />
       <Tabs.Screen
@@ -63,6 +70,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="analytics-outline" size={size} color={color} />
           ),
+          headerRight: () => <HelpButton screen="trends" />,
+          headerRightContainerStyle: { paddingRight: 16 },
         }}
       />
       <Tabs.Screen
@@ -73,6 +82,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="settings-outline" size={size} color={color} />
           ),
+          headerRight: () => <HelpButton screen="settings" />,
+          headerRightContainerStyle: { paddingRight: 16 },
         }}
       />
     </Tabs>

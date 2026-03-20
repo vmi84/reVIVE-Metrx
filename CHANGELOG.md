@@ -8,6 +8,19 @@ Versioning: **Major.Significant.Minor** — Major = new features/architecture, S
 
 ## [Unreleased]
 
+## [5.0.3] - 2026-03-19
+
+### Fixed
+- **AI Assistant works offline** — No longer requires Supabase. Uses local help guide + user context to answer questions about scores, recovery, training, trends, and app features
+- **Keyboard no longer blocks chat input** — KeyboardAvoidingView offset increased to 90 on iOS
+- **Settings cards start collapsed** — All 5 sections collapsed by default for clean first view
+- **? help buttons on every screen** — Each tab header now has a ? button linking to the Help Guide filtered to that screen's topics
+
+### Added
+- **HelpButton component** — Reusable ? circle button for screen headers
+- **Offline AI responder** — Context-aware responses (uses IACI score, HRV, phenotype when available), falls back to help guide search, then shows menu of available topics
+- **2 new assistant tests** — Offline response tests (828 total)
+
 ## [5.0.2] - 2026-03-19
 
 ### Fixed
