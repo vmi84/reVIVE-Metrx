@@ -6,6 +6,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [4.7.0] - 2026-03-19
+
+### Added
+- **Tabbed Trends charts** — 3 chart tabs on Trends screen:
+  - Recovery: IACI Score, Device Recovery, HRV (normalized), Sleep Quality, RHR (inverted) — all toggleable
+  - Check-In: Energy, Sleep Quality, Soreness, Motivation, Stress, Mental Fatigue, Physical/Mental composites — all check-in data normalized to 0-100 and plottable
+  - Training Load: Day Strain chart + ACWR with colored zone shading (green/yellow/red), zones adapt for competitive athletes
+- **Help Guide screen** — 16 comprehensive entries covering every card, metric, and concept
+  - Filterable by screen (Home, Recovery, Effort, Trends, Settings, Check-In)
+  - Collapsible entries with Summary, Detail, Why It Matters, How To Use
+  - Color-coded screen badges
+  - Accessible from Settings > Help Guide
+- **AI assistant trained on Help Guide** — Full guide content injected into assistant context so the AI can explain any feature
+
+### Changed
+- Trends tab restructured from single scrolling list to tabbed chart interface
+- Check-in data now quantified and graphable (1-5 scale normalized to 0-100)
+
+## [4.6.0] - 2026-03-19
+
+### Added
+- **Interactive chart legend** — Tap any legend item to show/hide that data series
+- **ACWR visualization** — Colored zone shading chart (green sweet spot, yellow caution, red danger) with explainer text
+- **7 data series on recovery chart** — IACI, Device Recovery, HRV, Sleep, RHR, Physical Feel, Mental Feel
+- **Help Guide data layer** — 16 entries with getHelpForScreen(), getHelpEntry(), getHelpGuideAsContext() utilities
+
 ## [4.5.0] - 2026-03-19
 
 ### Changed
