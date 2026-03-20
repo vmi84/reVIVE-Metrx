@@ -68,7 +68,7 @@ export type TrainingCategory =
   | 'lifestyle'
   | 'skill';
 
-export type ModalityEnvironment = 'home' | 'gym' | 'pool' | 'outdoors' | 'anywhere' | 'studio';
+export type ModalityEnvironment = 'home' | 'gym' | 'pool' | 'outdoors' | 'anywhere' | 'studio' | 'sauna' | 'cold_plunge';
 
 export interface TrainingRecoveryProfile {
   key: TrainingModalityKey;
@@ -669,7 +669,7 @@ export const TRAINING_RECOVERY_MAP: Record<TrainingModalityKey, TrainingRecovery
       loadingThreshold: 'Extended sessions (>30 min traditional) create cardiovascular stress',
     },
     evidenceLevel: 'strong',
-    environment: ['gym', 'home'],
+    environment: ['sauna'],
     durationRange: { min: 10, sweet: 20, max: 30 },
     iaciFloor: 20,
     examples: ['Finnish sauna', 'Infrared sauna', 'Steam room', 'Hot tub'],
@@ -688,7 +688,7 @@ export const TRAINING_RECOVERY_MAP: Record<TrainingModalityKey, TrainingRecovery
       loadingThreshold: 'Extended exposure (>10 min) or very cold (<5°C) creates excessive stress',
     },
     evidenceLevel: 'strong',
-    environment: ['home', 'gym', 'outdoors'],
+    environment: ['cold_plunge'],
     durationRange: { min: 2, sweet: 5, max: 10 },
     iaciFloor: 25,
     examples: ['Cold plunge', 'Cold shower', 'Ice bath', 'Lake/ocean swim (cold)'],

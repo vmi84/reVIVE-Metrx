@@ -87,7 +87,7 @@ export default function HelpGuide() {
                   {isExpanded ? '▼' : '▶'}
                 </ThemedText>
               </View>
-              <ThemedText variant="caption" color={COLORS.textSecondary} numberOfLines={isExpanded ? undefined : 2}>
+              <ThemedText variant="caption" color={COLORS.text} numberOfLines={isExpanded ? undefined : 2} style={{ lineHeight: 18 }}>
                 {entry.summary}
               </ThemedText>
             </TouchableOpacity>

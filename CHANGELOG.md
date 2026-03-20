@@ -8,6 +8,24 @@ Versioning: **Major.Significant.Minor** — Major = new features/architecture, S
 
 ## [Unreleased]
 
+## [5.0.1] - 2026-03-19
+
+### Fixed
+- **Help Guide text unreadable** — Summary text now uses white (`COLORS.text`) instead of dim secondary color
+- **Cold Exposure showing without equipment** — Now requires `cold_plunge` environment. Sauna requires `sauna` environment. No longer shows when user only has home/gym/outdoors
+- **Check-In chart empty** — Today's check-in data now sourced from daily store when feed subjective entry is null (offline/demo mode)
+- **Exercise Library modality link** — Effort tab recovery options now filter the library to specific exercises for that modality (passes `?modality=` param)
+
+### Changed
+- **Exercise Library** renamed to **Recovery Exercise Library**
+- **Browse All 80 Protocols** renamed to **Browse All Recovery Exercises**
+- **Check-In Metrics Chart** added to Help Guide (was missing)
+
+### Known Issues (deferred)
+- Light theme toggle stored but not applied — needs ThemeProvider implementation
+- Exercise pictures/sequences — needs image assets
+- Device connection resilience — ongoing improvement
+
 ## [5.0.0] - 2026-03-19
 
 ### Added — Trends Visualization + Help System

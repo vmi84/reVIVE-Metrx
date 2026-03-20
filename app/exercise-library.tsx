@@ -32,7 +32,7 @@ const ALL_CATEGORIES: (ExerciseCategory | 'all')[] = [
 ];
 
 export default function ExerciseLibraryScreen() {
-  const params = useLocalSearchParams<{ id?: string; category?: string }>();
+  const params = useLocalSearchParams<{ id?: string; category?: string; modality?: string }>();
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ExerciseCategory | 'all'>(
     (params.category as ExerciseCategory) ?? 'all',
@@ -45,11 +45,16 @@ export default function ExerciseLibraryScreen() {
     let list = search.trim()
       ? searchExercises(search)
       : EXERCISE_LIBRARY;
+    // Filter by modality if coming from Effort tab recovery option
+    if (params.modality) {
+      const modalityFiltered = list.filter(e => e.modalityKeys.includes(params.modality!));
+      if (modalityFiltered.length > 0) list = modalityFiltered;
+    }
     if (selectedCategory !== 'all') {
       list = list.filter(e => e.category === selectedCategory);
     }
     return list;
-  }, [search, selectedCategory]);
+  }, [search, selectedCategory, params.modality]);
 
   const handleSelect = useCallback((exercise: ExerciseDemo) => {
     setSelectedExercise(exercise);
@@ -87,7 +92,7 @@ export default function ExerciseLibraryScreen() {
         <TouchableOpacity onPress={handleBack} style={styles.backBtn}>
           <ThemedText variant="body" color={COLORS.primary}>Back</ThemedText>
         </TouchableOpacity>
-        <ThemedText variant="body" style={styles.headerTitle}>Exercise Library</ThemedText>
+        <ThemedText variant="body" style={styles.headerTitle}>Recovery Exercise Library</ThemedText>
         <View style={styles.backBtn} />
       </View>
 
