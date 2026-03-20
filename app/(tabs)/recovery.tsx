@@ -130,7 +130,7 @@ export default function Recovery() {
             style={styles.browseAllBtn}
           >
             <ThemedText variant="body" color={COLORS.primary} style={styles.browseAllText}>
-              {showAll ? 'Hide All Protocols' : `Browse All ${protocols.length} Protocols`}
+              {showAll ? 'Hide Recovery Exercises' : `Browse All ${protocols.length} Recovery Exercises`}
             </ThemedText>
           </TouchableOpacity>
 

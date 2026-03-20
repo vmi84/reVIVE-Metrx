@@ -134,6 +134,15 @@ export const HELP_GUIDE: HelpEntry[] = [
     howToUse: 'Use the period selector (7d/21d/28d/90d) to zoom in or out. Hide irrelevant series by tapping their legend. Compare IACI to device recovery — when they diverge, it highlights which aspects of recovery are lagging.',
   },
   {
+    id: 'checkin-chart',
+    screen: 'trends',
+    title: 'Check-In Metrics Chart',
+    summary: 'Your daily check-in data plotted over time — track how you feel across days and weeks.',
+    detail: 'Shows 8 data series from your morning check-in, all normalized to a 0-100 scale: Energy, Sleep Quality, Soreness (inverted — higher = less sore), Motivation, Stress (inverted — higher = less stressed), Mental Fatigue (inverted), Physical Composite (avg of energy + soreness), Mental Composite (avg of motivation + stress + mental fatigue). Tap any legend item to show/hide.',
+    whyItMatters: 'Your subjective experience captures what devices miss. Tracking motivation over time shows burnout before HRV drops. Tracking soreness patterns reveals overuse injuries before they become acute. The composites give a quick read on your physical vs mental state trends.',
+    howToUse: 'Select the Check-In tab on the Trends screen. Compare your Physical Composite to your Mental Composite — when mental drops while physical is fine, you may be psychologically overtrained. When physical drops but mental is fine, you need physical recovery. Both dropping together signals accumulated fatigue.',
+  },
+  {
     id: 'acwr',
     screen: 'trends',
     title: 'Acute:Chronic Workload Ratio (ACWR)',

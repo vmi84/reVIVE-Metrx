@@ -99,12 +99,15 @@ export default function Trends() {
       const rhrInverted = rawRhr != null ? Math.max(0, Math.min(100, (80 - rawRhr) * 2.5)) : null;
 
       // Check-in metrics (1-5 → 0-100)
-      const energyRaw = subj?.overall_energy ?? null;
-      const sleepQualRaw = subj?.subjective_sleep_quality ?? null;
-      const sorenessRaw = subj?.stiffness ?? null; // Using quick soreness
-      const motivRaw = subj?.motivation ?? null;
-      const stressRaw = subj?.subjective_stress ?? null;
-      const mentalFatRaw = subj?.mental_fatigue ?? null;
+      // Use subjective entry from feed, OR fall back to daily store check-in for today
+      const checkin = useDailyStore.getState().checkinData;
+      const isToday = i === 0;
+      const energyRaw = subj?.overall_energy ?? (isToday ? checkin?.overallEnergy : null) ?? null;
+      const sleepQualRaw = subj?.subjective_sleep_quality ?? (isToday ? checkin?.sleepQuality : null) ?? null;
+      const sorenessRaw = subj?.stiffness ?? (isToday ? checkin?.stiffness : null) ?? null;
+      const motivRaw = subj?.motivation ?? (isToday ? checkin?.motivation : null) ?? null;
+      const stressRaw = subj?.subjective_stress ?? (isToday ? checkin?.stress : null) ?? null;
+      const mentalFatRaw = subj?.mental_fatigue ?? (isToday ? checkin?.mentalFatigue : null) ?? null;
 
       const toScale = (v: number | null) => v != null ? (v / 5) * 100 : null;
       const toScaleInv = (v: number | null) => v != null ? ((6 - v) / 5) * 100 : null;
