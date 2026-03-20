@@ -70,7 +70,9 @@ export default function Settings() {
   const scheduleLabel = trainingSchedule === 'double' ? 'Two-a-day' : 'Single session';
 
   // Top-level section collapse state (separate from profile sub-groups)
-  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
+  const [collapsedSections, setCollapsedSections] = useState<Set<string>>(
+    new Set(['profile', 'devices', 'data', 'training', 'prefs']),
+  );
   const toggleSection = (key: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setCollapsedSections(prev => {
