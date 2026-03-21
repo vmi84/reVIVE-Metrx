@@ -17,6 +17,7 @@ import {
   TrainingPermission,
   TrainingModalityKey,
   RankedTrainingModality,
+  TrendContext,
 } from '../types/iaci';
 import { TRAINING_RECOVERY_MAP, TrainingRecoveryProfile } from '../../data/training-recovery-map';
 import type { AthleteModeConfig } from '../types/athlete-mode';
@@ -67,6 +68,7 @@ export function getTrainingCompatibility(
   phenotypeKey: PhenotypeKey,
   scores: SubsystemScores,
   athleteMode?: AthleteModeConfig | null,
+  trendContext?: TrendContext | null,
 ): TrainingCompatibility {
   const thresholds = athleteMode?.tierThresholds ?? {
     perform: TIER_THRESHOLDS.perform,
@@ -75,10 +77,44 @@ export function getTrainingCompatibility(
     recover: TIER_THRESHOLDS.recover,
     protect: 0,
   };
-  let base = getBasePermissions(iaciScore, thresholds);
+
+  // Trend-adjusted score for tier lookup: declining near boundary → treat as lower tier
+  let effectiveScore = iaciScore;
+  if (trendContext) {
+    const nearBoundary = [thresholds.perform, thresholds.train, thresholds.maintain, thresholds.recover]
+      .some(t => Math.abs(iaciScore - t) <= 5);
+    if (nearBoundary && trendContext.direction === 'declining') {
+      effectiveScore = iaciScore - 5;
+    } else if (nearBoundary && trendContext.direction === 'improving') {
+      effectiveScore = iaciScore + 3;
+    }
+  }
+
+  let base = getBasePermissions(effectiveScore, thresholds);
 
   // Apply phenotype overrides FIRST
   let result = applyPhenotypeOverrides(base, phenotypeKey, scores);
+
+  // Trend-based permission adjustment (after phenotype, before competitive)
+  if (trendContext?.direction === 'declining') {
+    // Downgrade one performance modality from 'allowed' to 'caution'
+    const perfKeys: TrainingModalityKey[] = ['intervals', 'tempo', 'strengthHeavy', 'plyometrics'];
+    for (const key of perfKeys) {
+      if (result[key] === 'allowed') {
+        result = { ...result, [key]: downgrade(result[key]) };
+        break;
+      }
+    }
+  } else if (trendContext?.direction === 'improving') {
+    // Upgrade one performance modality from 'caution' to 'allowed'
+    const perfKeys: TrainingModalityKey[] = ['zone2', 'tempo', 'strengthLight', 'intervals'];
+    for (const key of perfKeys) {
+      if (result[key] === 'caution') {
+        result = { ...result, [key]: upgrade(result[key]) };
+        break;
+      }
+    }
+  }
 
   // Competitive mode: upgrade caution/avoid → allowed for performance modalities AFTER phenotype
   // This ensures competitive athletes aren't unnecessarily restricted by phenotype downgrades
