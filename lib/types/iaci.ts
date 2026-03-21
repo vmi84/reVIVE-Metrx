@@ -12,7 +12,8 @@ export type SubsystemKey =
   | 'cardiometabolic'
   | 'sleep'
   | 'metabolic'
-  | 'psychological';
+  | 'psychological'
+  | 'neurological';
 
 export interface SubsystemScore {
   key: SubsystemKey;
@@ -40,42 +41,47 @@ export interface SubsystemWeights {
   sleep: number;
   metabolic: number;
   psychological: number;
+  neurological: number;
 }
 
 export const DEFAULT_WEIGHTS: SubsystemWeights = {
-  autonomic: 0.25,
-  musculoskeletal: 0.20,
-  cardiometabolic: 0.15,
-  sleep: 0.15,
-  metabolic: 0.15,
-  psychological: 0.10,
+  autonomic: 0.23,
+  musculoskeletal: 0.18,
+  cardiometabolic: 0.14,
+  sleep: 0.14,
+  metabolic: 0.14,
+  psychological: 0.09,
+  neurological: 0.08,
 };
 
 export const ENDURANCE_WEIGHTS: SubsystemWeights = {
-  autonomic: 0.22,
-  musculoskeletal: 0.15,
-  cardiometabolic: 0.22,
-  sleep: 0.16,
-  metabolic: 0.15,
+  autonomic: 0.20,
+  musculoskeletal: 0.14,
+  cardiometabolic: 0.20,
+  sleep: 0.15,
+  metabolic: 0.14,
   psychological: 0.10,
+  neurological: 0.07,
 };
 
 export const POWER_WEIGHTS: SubsystemWeights = {
-  autonomic: 0.22,
-  musculoskeletal: 0.25,
-  cardiometabolic: 0.12,
-  sleep: 0.15,
-  metabolic: 0.16,
+  autonomic: 0.20,
+  musculoskeletal: 0.23,
+  cardiometabolic: 0.11,
+  sleep: 0.14,
+  metabolic: 0.15,
   psychological: 0.10,
+  neurological: 0.07,
 };
 
 export const OLDER_ATHLETE_WEIGHTS: SubsystemWeights = {
-  autonomic: 0.28,
-  musculoskeletal: 0.17,
-  cardiometabolic: 0.13,
-  sleep: 0.18,
-  metabolic: 0.14,
+  autonomic: 0.25,
+  musculoskeletal: 0.15,
+  cardiometabolic: 0.12,
+  sleep: 0.16,
+  metabolic: 0.12,
   psychological: 0.10,
+  neurological: 0.10,
 };
 
 // --- Level 3.5: Penalties ---
@@ -96,7 +102,8 @@ export type PhenotypeKey =
   | 'sleep_driven_suppression'
   | 'accumulated_fatigue'
   | 'under_fueled'
-  | 'illness_risk';
+  | 'illness_risk'
+  | 'neurologically_compromised';
 
 export interface Phenotype {
   key: PhenotypeKey;
@@ -120,7 +127,7 @@ export interface ProtocolPrescription {
   explanation: string;
 }
 
-// --- Training Modalities (32 total) ---
+// --- Training Modalities (39 total) ---
 
 export type TrainingModalityKey =
   // Existing performance modalities (8)
@@ -142,7 +149,11 @@ export type TrainingModalityKey =
   | 'swimEasy' | 'aquaticRecovery' | 'walkingRecovery' | 'easyCycling'
   // Lifestyle & active recovery (7)
   | 'gardening' | 'massage' | 'dancing' | 'hiking'
-  | 'sauna' | 'coldExposure' | 'playRecreation';
+  | 'sauna' | 'coldExposure' | 'playRecreation'
+  // Neurological recovery (7)
+  | 'redLightTherapy' | 'neurofeedback' | 'pemfTherapy'
+  | 'vestibularRehab' | 'cognitiveRest' | 'gentleNeckMobility'
+  | 'eyeTrackingDrills';
 
 export type TrainingCompatibility = Record<TrainingModalityKey, TrainingPermission>;
 
@@ -150,7 +161,8 @@ export type TrainingPermission = 'recommended' | 'allowed' | 'caution' | 'avoid'
 
 export type TrainingCategory =
   | 'aerobic' | 'strength' | 'bodyweight' | 'agt' | 'mitochondrial'
-  | 'mind_body' | 'mobility' | 'aquatic' | 'low_impact' | 'lifestyle' | 'skill';
+  | 'mind_body' | 'mobility' | 'aquatic' | 'low_impact' | 'lifestyle' | 'skill'
+  | 'neurological_recovery';
 
 export interface RankedTrainingModality {
   key: TrainingModalityKey;

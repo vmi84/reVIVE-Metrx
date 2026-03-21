@@ -58,6 +58,7 @@ export function computeWorkoutImpact(inputs: WorkoutImpactInputs): WorkoutImpact
     sleep: 0,
     metabolic: 0,
     psychological: 0,
+    neurological: 0,
   };
 
   // Autonomic: proportional to strain, amplified if already stressed

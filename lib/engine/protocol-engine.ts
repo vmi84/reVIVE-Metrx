@@ -27,6 +27,15 @@ interface PhenotypeProtocolMap {
 }
 
 const PHENOTYPE_PROTOCOLS: Record<PhenotypeKey, PhenotypeProtocolMap> = {
+  neurologically_compromised: {
+    focusAreas: ['cognitive_rest', 'vestibular', 'cervical_mobility', 'red_light'],
+    modalitySlugs: [
+      'cognitive-rest-protocol', 'cervical-mobility-flow', 'gentle-walking',
+      'vestibular-balance-drills', 'red-light-therapy-head', 'coherent-breathing',
+      'body-scan-meditation', 'grounding-earthing',
+    ],
+    explanation: 'Neurological recovery protocol. Cognitive rest priority. Gentle vestibular rehabilitation if tolerated. Red light therapy for neuroinflammation. No impact, no complex coordination, no screens.',
+  },
   fully_recovered: {
     focusAreas: ['dynamic_mobility', 'technique'],
     modalitySlugs: [

@@ -68,6 +68,12 @@ describe('useDailyStore', () => {
       readiness: 3, quickCheckInOnly: false,
       feelingIll: false, illnessSymptoms: [],
       illnessSeverityScore: 0, additionalSymptoms: '',
+      cognitiveClarity: 4, reactionTimeSharpness: 4,
+      coordinationBalance: 4, headachePressure: false,
+      headacheSeverity: 0, dizzinessVertigo: false,
+      numbnessTingling: false, numbnessTinglingLocation: '',
+      lightNoiseSensitivity: false, recentHeadImpact: false,
+      daysSinceHeadImpact: 0, visualDisturbance: false,
     };
     useDailyStore.getState().setCheckinData(data);
     expect(useDailyStore.getState().checkinData).toEqual(data);

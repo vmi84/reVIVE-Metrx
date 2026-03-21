@@ -199,6 +199,7 @@ const SUBSYSTEM_LABELS: Record<SubsystemKey, string> = {
   sleep: 'Sleep/Circadian',
   metabolic: 'Metabolic',
   psychological: 'Psychological',
+  neurological: 'Neurological',
 };
 
 function generateStatusSummary(

@@ -12,6 +12,7 @@ import { scoreCardiometabolic, CardiometabolicInputs } from '../lib/engine/subsy
 import { scoreSleepCircadian, SleepCircadianInputs } from '../lib/engine/subsystems/sleep-circadian';
 import { scoreMetabolic, MetabolicInputs } from '../lib/engine/subsystems/metabolic';
 import { scorePsychoEmotional, PsychoEmotionalInputs } from '../lib/engine/subsystems/psycho-emotional';
+import { scoreNeurological, NeurologicalInputs, isConcussionActive } from '../lib/engine/subsystems/neurological';
 import { getWeightsForSportProfile, applySportAdjustments } from '../lib/engine/sport-stress';
 import { getAthleteModeConfig } from '../lib/engine/athlete-mode';
 import { today, daysAgo } from '../lib/utils/date';
@@ -176,6 +177,21 @@ export function useIACI() {
         overallEnergy: subj?.overall_energy ?? null,
       });
 
+      const neurological = scoreNeurological({
+        cognitiveClarity: (subj as any)?.cognitiveClarity ?? null,
+        reactionTimeSharpness: (subj as any)?.reactionTimeSharpness ?? null,
+        coordinationBalance: (subj as any)?.coordinationBalance ?? null,
+        headachePressure: (subj as any)?.headachePressure ?? null,
+        headacheSeverity: (subj as any)?.headacheSeverity ?? null,
+        dizzinessVertigo: (subj as any)?.dizzinessVertigo ?? null,
+        numbnessTingling: (subj as any)?.numbnessTingling ?? null,
+        numbnessTinglingLocation: (subj as any)?.numbnessTinglingLocation ?? null,
+        lightNoiseSensitivity: (subj as any)?.lightNoiseSensitivity ?? null,
+        recentHeadImpact: (subj as any)?.recentHeadImpact ?? null,
+        daysSinceHeadImpact: (subj as any)?.daysSinceHeadImpact ?? null,
+        visualDisturbance: (subj as any)?.visualDisturbance ?? null,
+      });
+
       const subsystemScores: SubsystemScores = {
         autonomic,
         musculoskeletal,
@@ -183,6 +199,7 @@ export function useIACI() {
         sleep,
         metabolic,
         psychological,
+        neurological,
       };
 
       // Get weights from sport profile
@@ -386,6 +403,22 @@ export function useIACI() {
         overallEnergy: checkinData?.overallEnergy ?? null,
       });
 
+      const neurologicalInputs: NeurologicalInputs = {
+        cognitiveClarity: (checkinData as any)?.cognitiveClarity ?? null,
+        reactionTimeSharpness: (checkinData as any)?.reactionTimeSharpness ?? null,
+        coordinationBalance: (checkinData as any)?.coordinationBalance ?? null,
+        headachePressure: (checkinData as any)?.headachePressure ?? null,
+        headacheSeverity: (checkinData as any)?.headacheSeverity ?? null,
+        dizzinessVertigo: (checkinData as any)?.dizzinessVertigo ?? null,
+        numbnessTingling: (checkinData as any)?.numbnessTingling ?? null,
+        numbnessTinglingLocation: (checkinData as any)?.numbnessTinglingLocation ?? null,
+        lightNoiseSensitivity: (checkinData as any)?.lightNoiseSensitivity ?? null,
+        recentHeadImpact: (checkinData as any)?.recentHeadImpact ?? null,
+        daysSinceHeadImpact: (checkinData as any)?.daysSinceHeadImpact ?? null,
+        visualDisturbance: (checkinData as any)?.visualDisturbance ?? null,
+      };
+      const neurological = scoreNeurological(neurologicalInputs);
+
       // Illness suppresses multiple subsystems even if objective metrics look OK
       if (checkinData?.feelingIll && (checkinData?.illnessSymptoms?.length ?? 0) > 0) {
         const symptomCount = checkinData.illnessSymptoms.length;
@@ -403,6 +436,7 @@ export function useIACI() {
         sleep,
         metabolic,
         psychological,
+        neurological,
       };
 
       // Get sport-aware weights
@@ -447,6 +481,9 @@ export function useIACI() {
       const heatHasEmergency = (checkinData?.heatSymptoms ?? []).some(s => HEAT_EMERGENCY_SYMPTOMS.includes(s));
       const crampingReported = checkinData?.cramping ?? false;
 
+      // Concussion protocol from neurological inputs
+      const concussionProtocolActive = isConcussionActive(neurologicalInputs);
+
       // Get athlete mode config from daily store
       const { athleteMode: mode, trainingSchedule } = useDailyStore.getState();
       const athleteModeConfig = mode === 'competitive'
@@ -460,6 +497,7 @@ export function useIACI() {
         allPreferred.length > 0 ? allPreferred : undefined,
         heatIllnessReported, heatSymptomCount, heatHasEmergency,
         crampingReported,
+        concussionProtocolActive,
       );
       setIACI(result);
     } catch (err) {

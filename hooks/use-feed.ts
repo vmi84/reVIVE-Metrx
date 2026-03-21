@@ -59,7 +59,7 @@ function buildFeedDay(
     // Populate subsystem scores from stored JSON
     if (phys.subsystem_scores) {
       const stored = phys.subsystem_scores as Record<string, number>;
-      const keys = ['autonomic', 'musculoskeletal', 'cardiometabolic', 'sleep', 'metabolic', 'psychological'] as const;
+      const keys = ['autonomic', 'musculoskeletal', 'cardiometabolic', 'sleep', 'metabolic', 'psychological', 'neurological'] as const;
       const scores: Record<string, any> = {};
       for (const key of keys) {
         const score = stored[key] ?? 50;
@@ -211,6 +211,7 @@ function generateMockFeed(): FeedDay[] {
           sleep: { key: 'sleep', score: Math.round(50 + Math.random() * 40), band: 'trainable', inputs: {}, limitingFactors: [] },
           metabolic: { key: 'metabolic', score: Math.round(50 + Math.random() * 40), band: 'trainable', inputs: {}, limitingFactors: [] },
           psychological: { key: 'psychological', score: Math.round(50 + Math.random() * 40), band: 'trainable', inputs: {}, limitingFactors: [] },
+          neurological: { key: 'neurological', score: 65, band: 'limited', inputs: {}, limitingFactors: [] },
         },
         penalties: [],
         phenotype: { key: 'fully_recovered', label: 'Fully Recovered', description: 'All systems recovered', primaryLimiters: [] },
@@ -464,6 +465,18 @@ export function useFeed() {
         illnessSymptoms: [],
         illnessSeverityScore: 0,
         additionalSymptoms: '',
+        cognitiveClarity: 3,
+        reactionTimeSharpness: 3,
+        coordinationBalance: 3,
+        headachePressure: false,
+        headacheSeverity: 1,
+        dizzinessVertigo: false,
+        numbnessTingling: false,
+        numbnessTinglingLocation: '',
+        lightNoiseSensitivity: false,
+        recentHeadImpact: false,
+        daysSinceHeadImpact: 0,
+        visualDisturbance: false,
       };
 
       store.setCheckinData(defaultData);

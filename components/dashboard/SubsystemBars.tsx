@@ -14,6 +14,7 @@ const SUBSYSTEM_LABELS: Record<SubsystemKey, string> = {
   sleep: 'Sleep/Circadian',
   metabolic: 'Metabolic',
   psychological: 'Psychological',
+  neurological: 'Neurological',
 };
 
 function getBarColor(score: number): string {
@@ -27,7 +28,7 @@ function getBarColor(score: number): string {
 export function SubsystemBars({ scores }: SubsystemBarsProps) {
   const keys: SubsystemKey[] = [
     'autonomic', 'musculoskeletal', 'cardiometabolic',
-    'sleep', 'metabolic', 'psychological',
+    'sleep', 'metabolic', 'psychological', 'neurological',
   ];
 
   return (

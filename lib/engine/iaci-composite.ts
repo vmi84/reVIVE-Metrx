@@ -1,7 +1,7 @@
 /**
  * IACI Composite Index (Level 3)
  *
- * CRI_base = weighted sum of 6 subsystem scores
+ * CRI_base = weighted sum of 7 subsystem scores
  * Final Index = CRI_base - penalties + positive_modifiers
  */
 
@@ -42,6 +42,7 @@ export function computeIACI(
   heatSymptomCount: number = 0,
   heatHasEmergency: boolean = false,
   crampingReported: boolean = false,
+  concussionProtocolActive: boolean = false,
 ): IACIResult {
   // Level 3: Weighted composite
   const baseScore = Math.round(
@@ -50,7 +51,8 @@ export function computeIACI(
     subsystemScores.cardiometabolic.score * weights.cardiometabolic +
     subsystemScores.sleep.score * weights.sleep +
     subsystemScores.metabolic.score * weights.metabolic +
-    subsystemScores.psychological.score * weights.psychological,
+    subsystemScores.psychological.score * weights.psychological +
+    subsystemScores.neurological.score * weights.neurological,
   );
 
   // Level 3.5: Penalties (scaled for competitive athletes)
@@ -59,7 +61,7 @@ export function computeIACI(
     subsystemScores, penaltyScaling,
     illnessReported, illnessSymptomCount, illnessSeverityScore,
     heatIllnessReported, heatSymptomCount, heatHasEmergency,
-    crampingReported,
+    crampingReported, concussionProtocolActive,
   );
   const penaltyTotal = totalPenaltyPoints(penalties);
   const finalScore = clamp(baseScore - penaltyTotal, 0, 100);

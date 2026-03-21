@@ -71,6 +71,7 @@ export function computeSportAdjustments(
     sleep: 0,
     metabolic: 0,
     psychological: 0,
+    neurological: 0,
   };
 
   const profiles = getSportProfiles(sportKeys);
@@ -79,7 +80,7 @@ export function computeSportAdjustments(
   // Average stress across all selected sports
   const subsystems: SubsystemKey[] = [
     'autonomic', 'musculoskeletal', 'cardiometabolic',
-    'sleep', 'metabolic', 'psychological',
+    'sleep', 'metabolic', 'psychological', 'neurological',
   ];
 
   for (const sys of subsystems) {

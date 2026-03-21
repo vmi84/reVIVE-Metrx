@@ -16,8 +16,7 @@ import type { PlannedSession, SessionIntensity } from '../types/training-plan';
 import { classifySessionIntensity } from '../types/training-plan';
 import type { IACIResult, SubsystemKey } from '../types/iaci';
 import type { AthleteModeConfig } from '../types/athlete-mode';
-import { TRAINING_RECOVERY_MAP, type TrainingRecoveryProfile } from '../../data/training-recovery-map';
-import type { TrainingModalityKey } from '../types/iaci';
+import { TRAINING_RECOVERY_MAP, type TrainingRecoveryProfile, type TrainingModalityKey } from '../../data/training-recovery-map';
 
 // ---------------------------------------------------------------------------
 // Types

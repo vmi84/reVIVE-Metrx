@@ -289,6 +289,99 @@ function getPsychologicalRecovery(stressFactor: number): SubsystemRecovery {
   return actions;
 }
 
+function getNeurologicalRecovery(stressFactor: number): SubsystemRecovery {
+  const target: SubsystemKey = 'neurological';
+  const actions: SubsystemRecovery = {
+    morning: [
+      {
+        protocolSlug: 'cognitive-rest-protocol',
+        name: 'Cognitive Rest',
+        durationMin: 20,
+        targetSubsystem: target,
+        targetAreas: [],
+        evidenceLevel: 'strong',
+        instruction: 'Screen-free quiet time. Dim lighting. No complex thinking. Minimum 20 minutes.',
+      },
+      {
+        protocolSlug: 'cervical-mobility-flow',
+        name: 'Gentle Cervical Mobility',
+        durationMin: 5,
+        targetSubsystem: target,
+        targetAreas: ['neck'],
+        evidenceLevel: 'moderate',
+        instruction: 'Gentle chin tucks, rotation, and lateral tilts. Stay within pain-free range.',
+      },
+    ],
+    midMorning: [],
+    afternoon: [
+      {
+        protocolSlug: 'gentle-walking',
+        name: 'Gentle Walk (Nature)',
+        durationMin: 15,
+        targetSubsystem: target,
+        targetAreas: [],
+        evidenceLevel: 'strong',
+        instruction: 'Easy walk in nature. No headphones. Focus on sensory awareness. Nasal breathing.',
+      },
+    ],
+    evening: [
+      {
+        protocolSlug: 'body-scan-meditation',
+        name: 'Meditation',
+        durationMin: 10,
+        targetSubsystem: target,
+        targetAreas: [],
+        evidenceLevel: 'moderate',
+        instruction: 'Body scan or guided meditation. Focus on releasing tension. 10 minutes.',
+      },
+      {
+        protocolSlug: 'extended-exhale-breathing',
+        name: 'Extended Exhale Breathing',
+        durationMin: 5,
+        targetSubsystem: target,
+        targetAreas: [],
+        evidenceLevel: 'strong',
+        instruction: '4-count inhale, 6-8 count exhale for parasympathetic activation.',
+      },
+    ],
+  };
+
+  if (stressFactor > 50) {
+    actions.midMorning.push({
+      protocolSlug: 'vestibular-balance-drills',
+      name: 'Vestibular Balance Drills',
+      durationMin: 10,
+      targetSubsystem: target,
+      targetAreas: [],
+      evidenceLevel: 'strong',
+      instruction: 'VOR head turns, gaze stabilization, tandem stance. Stop if dizziness increases.',
+    });
+    actions.midMorning.push({
+      protocolSlug: 'eye-tracking-exercises',
+      name: 'Oculomotor Exercises',
+      durationMin: 5,
+      targetSubsystem: target,
+      targetAreas: [],
+      evidenceLevel: 'moderate',
+      instruction: 'Smooth pursuit tracking, saccadic jumps, near-far focus. Keep head still.',
+    });
+  }
+
+  if (stressFactor > 40) {
+    actions.afternoon.push({
+      protocolSlug: 'red-light-therapy-head',
+      name: 'Red Light Therapy (Head/Neck)',
+      durationMin: 15,
+      targetSubsystem: target,
+      targetAreas: ['head', 'neck'],
+      evidenceLevel: 'strong',
+      instruction: '810nm panel, 6-12 inches from head/neck. Close eyes. 15 minutes.',
+    });
+  }
+
+  return actions;
+}
+
 // ---------------------------------------------------------------------------
 // Merge and Deduplicate
 // ---------------------------------------------------------------------------
@@ -409,6 +502,9 @@ export function generateRecoveryDayPlan(
       case 'psychological':
         recoveryMaps.push(getPsychologicalRecovery(sf));
         break;
+      case 'neurological':
+        recoveryMaps.push(getNeurologicalRecovery(sf));
+        break;
     }
   }
 
@@ -456,6 +552,7 @@ export function generateRecoveryDayPlan(
     sleep: 'sleep/circadian',
     metabolic: 'metabolic',
     psychological: 'psychological',
+    neurological: 'neurological/CNS',
   };
   const overallFocus = `Multi-systemic recovery targeting ${topSubsystems.map(k => LABELS[k]).join(' + ')}`;
 
@@ -469,3 +566,4 @@ export function generateRecoveryDayPlan(
     totalEstimatedMinutes,
   };
 }
+

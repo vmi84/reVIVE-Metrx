@@ -1,5 +1,5 @@
 /**
- * Training Compatibility (Expanded — 32 modalities)
+ * Training Compatibility (Expanded — 39 modalities)
  *
  * Determines which training types are recommended, allowed, cautioned, or avoided
  * based on IACI score, phenotype, and subsystem states.
@@ -133,6 +133,9 @@ function getBasePermissions(iaciScore: number, t?: TierThresholds): TrainingComp
       // Lifestyle
       gardening: R, massage: R, dancing: R, hiking: R,
       sauna: R, coldExposure: R, playRecreation: R,
+      // Neurological recovery
+      redLightTherapy: R, neurofeedback: A, pemfTherapy: R,
+      vestibularRehab: A, cognitiveRest: R, gentleNeckMobility: R, eyeTrackingDrills: A,
     });
   }
 
@@ -150,6 +153,8 @@ function getBasePermissions(iaciScore: number, t?: TierThresholds): TrainingComp
       swimEasy: R, aquaticRecovery: R, walkingRecovery: R, easyCycling: R,
       gardening: R, massage: R, dancing: R, hiking: R,
       sauna: R, coldExposure: A, playRecreation: R,
+      redLightTherapy: R, neurofeedback: A, pemfTherapy: R,
+      vestibularRehab: A, cognitiveRest: R, gentleNeckMobility: R, eyeTrackingDrills: A,
     });
   }
 
@@ -167,6 +172,8 @@ function getBasePermissions(iaciScore: number, t?: TierThresholds): TrainingComp
       swimEasy: R, aquaticRecovery: R, walkingRecovery: R, easyCycling: R,
       gardening: R, massage: R, dancing: R, hiking: R,
       sauna: R, coldExposure: A, playRecreation: R,
+      redLightTherapy: R, neurofeedback: A, pemfTherapy: R,
+      vestibularRehab: A, cognitiveRest: R, gentleNeckMobility: R, eyeTrackingDrills: A,
     });
   }
 
@@ -184,6 +191,8 @@ function getBasePermissions(iaciScore: number, t?: TierThresholds): TrainingComp
       swimEasy: A, aquaticRecovery: R, walkingRecovery: R, easyCycling: A,
       gardening: R, massage: R, dancing: A, hiking: R,
       sauna: A, coldExposure: C, playRecreation: A,
+      redLightTherapy: R, neurofeedback: C, pemfTherapy: R,
+      vestibularRehab: C, cognitiveRest: R, gentleNeckMobility: A, eyeTrackingDrills: C,
     });
   }
 
@@ -200,6 +209,8 @@ function getBasePermissions(iaciScore: number, t?: TierThresholds): TrainingComp
     swimEasy: C, aquaticRecovery: A, walkingRecovery: R, easyCycling: C,
     gardening: A, massage: R, dancing: C, hiking: A,
     sauna: C, coldExposure: X, playRecreation: A,
+    redLightTherapy: R, neurofeedback: X, pemfTherapy: R,
+    vestibularRehab: X, cognitiveRest: R, gentleNeckMobility: A, eyeTrackingDrills: X,
   });
 }
 
@@ -215,6 +226,53 @@ function applyPhenotypeOverrides(
   const result = { ...base };
 
   switch (phenotypeKey) {
+    case 'neurologically_compromised': {
+      // Check if concussion protocol is active (score capped at 25)
+      const isConcussion = scores.neurological.score <= 25;
+
+      if (isConcussion) {
+        // Concussion: ALL modalities avoid except walking (caution), meditation, breathwork
+        for (const key of Object.keys(result) as TrainingModalityKey[]) {
+          result[key] = X;
+        }
+        result.walkingRecovery = C;
+        result.meditation = A;
+        result.breathworkActive = A;
+        result.cognitiveRest = R;
+        result.redLightTherapy = A;
+        result.pemfTherapy = A;
+        result.gentleNeckMobility = C;
+      } else {
+        // Neurological impairment without concussion — restrict impact/balance-risk
+        result.intervals = X;
+        result.strengthHeavy = X;
+        result.plyometrics = X;
+        result.agtAlactic = X;
+        result.tempo = X;
+        result.techniqueDrill = C;
+        result.hiking = C;
+        result.yoga = C;
+        result.swimEasy = C; // drowning risk if dizzy
+        result.easyCycling = C; // fall risk
+        result.coldExposure = X;
+        result.sauna = C;
+        // Safe activities
+        result.walkingRecovery = R;
+        result.meditation = R;
+        result.breathworkActive = R;
+        result.mobilityFlow = A;
+        result.taiChi = A;
+        result.massage = R;
+        result.cognitiveRest = R;
+        result.redLightTherapy = R;
+        result.pemfTherapy = R;
+        result.vestibularRehab = C;
+        result.gentleNeckMobility = A;
+        result.eyeTrackingDrills = C;
+      }
+      break;
+    }
+
     case 'locally_fatigued':
       // Musculoskeletal limited — avoid impact, allow non-impact alternatives
       if (scores.musculoskeletal.score < 45) {
@@ -600,7 +658,7 @@ function computeRecommendedRPE(
 function computeIACIFromScores(scores: SubsystemScores): number {
   const keys: SubsystemKey[] = [
     'autonomic', 'musculoskeletal', 'cardiometabolic',
-    'sleep', 'metabolic', 'psychological',
+    'sleep', 'metabolic', 'psychological', 'neurological',
   ];
   const total = keys.reduce((sum, k) => sum + (scores[k]?.score ?? 50), 0);
   return Math.round(total / keys.length);

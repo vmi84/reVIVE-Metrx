@@ -8,7 +8,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, Switch, TouchableOpacity, LayoutAnimation, TextInput } from 'react-native';
+import { View, ScrollView, StyleSheet, TouchableOpacity, LayoutAnimation, TextInput } from 'react-native';
 import { router } from 'expo-router';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useAuthStore } from '../store/auth-store';
@@ -16,6 +16,8 @@ import { useDailyStore } from '../store/daily-store';
 import { SegmentedRating } from '../components/checkin/SegmentedRating';
 import { DetailSection } from '../components/checkin/DetailSection';
 import { BodyMap } from '../components/checkin/BodyMap';
+import { YesNoButton } from '../components/checkin/YesNoButton';
+import { isConcussionActive } from '../lib/engine/subsystems/neurological';
 import { Slider } from '../components/ui/Slider';
 import { HydrationSlider } from '../components/ui/HydrationSlider';
 import { Card } from '../components/ui/Card';
@@ -64,6 +66,20 @@ export default function MorningCheckin() {
   // Heat-related illness
   const [heatIllness, setHeatIllness] = useState(false);
   const [heatSymptoms, setHeatSymptoms] = useState<string[]>([]);
+
+  // ── Neurological ──
+  const [cognitiveClarity, setCognitiveClarity] = useState(3);
+  const [reactionTimeSharpness, setReactionTimeSharpness] = useState(3);
+  const [coordinationBalance, setCoordinationBalance] = useState(3);
+  const [headachePressure, setHeadachePressure] = useState(false);
+  const [headacheSeverity, setHeadacheSeverity] = useState(1);
+  const [dizzinessVertigo, setDizzinessVertigo] = useState(false);
+  const [numbnessTingling, setNumbnessTingling] = useState(false);
+  const [numbnessTinglingLocation, setNumbnessTinglingLocation] = useState('');
+  const [lightNoiseSensitivity, setLightNoiseSensitivity] = useState(false);
+  const [recentHeadImpact, setRecentHeadImpact] = useState(false);
+  const [daysSinceHeadImpact, setDaysSinceHeadImpact] = useState(0);
+  const [visualDisturbance, setVisualDisturbance] = useState(false);
 
   // Track if user opened any detail section
   const [detailTouched, setDetailTouched] = useState(false);
@@ -274,6 +290,18 @@ export default function MorningCheckin() {
         isTraveling,
         giIssues,
         readiness,
+        cognitiveClarity,
+        reactionTimeSharpness,
+        coordinationBalance,
+        headachePressure,
+        headacheSeverity,
+        dizzinessVertigo,
+        numbnessTingling,
+        numbnessTinglingLocation,
+        lightNoiseSensitivity,
+        recentHeadImpact,
+        daysSinceHeadImpact,
+        visualDisturbance,
         quickCheckInOnly: false, // All 10 inputs always provided
         feelingIll,
         illnessSymptoms: feelingIll ? illnessSymptoms : [],
@@ -359,42 +387,8 @@ export default function MorningCheckin() {
         <SegmentedRating label="Sleep Quality" value={sleep} onChange={setSleep} />
         <SegmentedRating label="Soreness" value={soreness} onChange={setSorenessQuick} inverted />
         <SegmentedRating label="Stiffness" value={stiffness} onChange={(v) => { setStiffness(v); setDetailTouched(true); }} inverted />
-        <View style={styles.heavyLegsRow}>
-          <ThemedText variant="body" style={styles.heavyLegsLabel}>Heavy Legs</ThemedText>
-          <View style={styles.heavyLegsToggle}>
-            <TouchableOpacity
-              style={[styles.ynBtn, !heavyLegs && styles.ynBtnActive]}
-              onPress={() => { setHeavyLegs(false); setDetailTouched(true); }}
-            >
-              <ThemedText variant="caption" style={!heavyLegs ? styles.ynTextActive : styles.ynText}>No</ThemedText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.ynBtn, heavyLegs && styles.ynBtnActiveRed]}
-              onPress={() => { setHeavyLegs(true); setDetailTouched(true); }}
-            >
-              <ThemedText variant="caption" style={heavyLegs ? styles.ynTextActive : styles.ynText}>Yes</ThemedText>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Cramping */}
-        <View style={styles.heavyLegsRow}>
-          <ThemedText variant="body" style={styles.heavyLegsLabel}>Cramping</ThemedText>
-          <View style={styles.heavyLegsToggle}>
-            <TouchableOpacity
-              style={[styles.ynBtn, !cramping && styles.ynBtnActive]}
-              onPress={() => { setCramping(false); setCrampingLocation(''); setDetailTouched(true); }}
-            >
-              <ThemedText variant="caption" style={!cramping ? styles.ynTextActive : styles.ynText}>No</ThemedText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.ynBtn, cramping && styles.ynBtnActiveRed]}
-              onPress={() => { setCramping(true); setDetailTouched(true); }}
-            >
-              <ThemedText variant="caption" style={cramping ? styles.ynTextActive : styles.ynText}>Yes</ThemedText>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <YesNoButton label="Heavy Legs" value={heavyLegs} onChange={(v) => { setHeavyLegs(v); setDetailTouched(true); }} />
+        <YesNoButton label="Cramping" value={cramping} onChange={(v) => { setCramping(v); if (!v) setCrampingLocation(''); setDetailTouched(true); }} />
         {cramping && (
           <TextInput
             style={styles.crampingInput}
@@ -404,6 +398,11 @@ export default function MorningCheckin() {
             placeholderTextColor={COLORS.textMuted}
           />
         )}
+
+        {/* Neurological */}
+        <ThemedText variant="caption" color={COLORS.textMuted} style={[styles.groupLabel, { marginTop: 8 }]}>NEUROLOGICAL</ThemedText>
+        <SegmentedRating label="Cognitive Clarity" value={cognitiveClarity} onChange={(v) => { setCognitiveClarity(v); }} />
+        <SegmentedRating label="Reaction Time" value={reactionTimeSharpness} onChange={(v) => { setReactionTimeSharpness(v); }} />
 
         {/* Mental & Nutrition */}
         <ThemedText variant="caption" color={COLORS.textMuted} style={[styles.groupLabel, { marginTop: 8 }]}>MENTAL & NUTRITION</ThemedText>
@@ -457,10 +456,7 @@ export default function MorningCheckin() {
           </DetailSection>
 
           <DetailSection title="Nutrition Detail" summary={nutritionSummary()}>
-            <View style={styles.toggleRow}>
-              <ThemedText variant="body">Electrolytes</ThemedText>
-              <Switch value={electrolytes} onValueChange={(v) => { setElectrolytes(v); if (!v) setElectrolyteServings(''); setDetailTouched(true); }} trackColor={{ true: COLORS.primary }} />
-            </View>
+            <YesNoButton label="Electrolytes" value={electrolytes} onChange={(v) => { setElectrolytes(v); if (!v) setElectrolyteServings(''); setDetailTouched(true); }} yesColor={COLORS.success} noColor={COLORS.error} />
             {electrolytes && (
               <View style={styles.gramsRow}>
                 <ThemedText variant="caption" color={COLORS.textSecondary}>Servings/tablets:</ThemedText>
@@ -474,10 +470,7 @@ export default function MorningCheckin() {
                 />
               </View>
             )}
-            <View style={styles.toggleRow}>
-              <ThemedText variant="body">Adequate Protein (1g/kg)</ThemedText>
-              <Switch value={proteinAdequate} onValueChange={(v) => { setProteinAdequate(v); setDetailTouched(true); }} trackColor={{ true: COLORS.primary }} />
-            </View>
+            <YesNoButton label="Adequate Protein (1g/kg)" value={proteinAdequate} onChange={(v) => { setProteinAdequate(v); setDetailTouched(true); }} yesColor={COLORS.success} noColor={COLORS.error} />
             {proteinAdequate && (
               <View style={styles.gramsRow}>
                 <ThemedText variant="caption" color={COLORS.textSecondary}>Grams consumed:</ThemedText>
@@ -492,21 +485,12 @@ export default function MorningCheckin() {
                 <ThemedText variant="caption" color={COLORS.textMuted}>g</ThemedText>
               </View>
             )}
-            <View style={styles.toggleRow}>
-              <ThemedText variant="body">Late Caffeine</ThemedText>
-              <Switch value={lateCaffeine} onValueChange={(v) => { setLateCaffeine(v); setDetailTouched(true); }} trackColor={{ true: COLORS.primary }} />
-            </View>
-            <View style={styles.toggleRow}>
-              <ThemedText variant="body">Late Alcohol</ThemedText>
-              <Switch value={lateAlcohol} onValueChange={(v) => { setLateAlcohol(v); setDetailTouched(true); }} trackColor={{ true: COLORS.primary }} />
-            </View>
+            <YesNoButton label="Late Caffeine" value={lateCaffeine} onChange={(v) => { setLateCaffeine(v); setDetailTouched(true); }} />
+            <YesNoButton label="Late Alcohol" value={lateAlcohol} onChange={(v) => { setLateAlcohol(v); setDetailTouched(true); }} />
           </DetailSection>
 
           <DetailSection title="Flags" summary={flagsSummary()}>
-            <View style={styles.toggleRow}>
-              <ThemedText variant="body">Feeling ill</ThemedText>
-              <Switch value={feelingIll} onValueChange={(v) => { setFeelingIll(v); setDetailTouched(true); if (!v) setIllnessSymptoms([]); }} trackColor={{ true: COLORS.error }} />
-            </View>
+            <YesNoButton label="Feeling ill" value={feelingIll} onChange={(v) => { setFeelingIll(v); setDetailTouched(true); if (!v) setIllnessSymptoms([]); }} />
             {feelingIll && (
               <View style={styles.symptomGrid}>
                 <ThemedText variant="caption" color={COLORS.textMuted} style={{ marginBottom: 6 }}>
@@ -563,10 +547,7 @@ export default function MorningCheckin() {
               </View>
             )}
             {/* Heat-Related Illness */}
-            <View style={styles.toggleRow}>
-              <ThemedText variant="body">Heat-related symptoms</ThemedText>
-              <Switch value={heatIllness} onValueChange={(v) => { setHeatIllness(v); setDetailTouched(true); if (!v) setHeatSymptoms([]); }} trackColor={{ true: COLORS.error }} />
-            </View>
+            <YesNoButton label="Heat-related symptoms" value={heatIllness} onChange={(v) => { setHeatIllness(v); setDetailTouched(true); if (!v) setHeatSymptoms([]); }} />
             {heatIllness && (
               <View style={styles.symptomGrid}>
                 <ThemedText variant="caption" color={COLORS.textMuted} style={{ marginBottom: 6 }}>
@@ -621,12 +602,78 @@ export default function MorningCheckin() {
               </View>
             )}
 
-            <View style={styles.toggleRow}>
-              <ThemedText variant="body">Traveling</ThemedText>
-              <Switch value={isTraveling} onValueChange={(v) => { setIsTraveling(v); setDetailTouched(true); }} trackColor={{ true: COLORS.primary }} />
-            </View>
+            <YesNoButton label="Traveling" value={isTraveling} onChange={(v) => { setIsTraveling(v); setDetailTouched(true); }} />
             <Slider label="GI Issues" value={giIssues} onChange={(v) => { setGiIssues(v); setDetailTouched(true); }} labels={['None', 'Severe']} />
           </DetailSection>
+
+          <DetailSection title="Neurological" summary={headachePressure || dizzinessVertigo || recentHeadImpact ? 'Symptoms present' : '—'}>
+            <SegmentedRating label="Coordination/Balance" value={coordinationBalance} onChange={(v) => { setCoordinationBalance(v); setDetailTouched(true); }} />
+            <YesNoButton label="Headache / Pressure" value={headachePressure} onChange={(v) => { setHeadachePressure(v); if (!v) setHeadacheSeverity(1); setDetailTouched(true); }} />
+            {headachePressure && (
+              <SegmentedRating label="Headache Severity" value={headacheSeverity} onChange={(v) => { setHeadacheSeverity(v); setDetailTouched(true); }} inverted />
+            )}
+            <YesNoButton label="Dizziness / Vertigo" value={dizzinessVertigo} onChange={(v) => { setDizzinessVertigo(v); setDetailTouched(true); }} />
+            <YesNoButton label="Numbness / Tingling" value={numbnessTingling} onChange={(v) => { setNumbnessTingling(v); if (!v) setNumbnessTinglingLocation(''); setDetailTouched(true); }} />
+            {numbnessTingling && (
+              <TextInput
+                style={styles.crampingInput}
+                value={numbnessTinglingLocation}
+                onChangeText={(t) => { setNumbnessTinglingLocation(t); setDetailTouched(true); }}
+                placeholder="Where? (e.g., hands, feet, face)"
+                placeholderTextColor={COLORS.textMuted}
+              />
+            )}
+            <YesNoButton label="Light / Noise Sensitivity" value={lightNoiseSensitivity} onChange={(v) => { setLightNoiseSensitivity(v); setDetailTouched(true); }} />
+            <YesNoButton label="Recent Head Impact" value={recentHeadImpact} onChange={(v) => { setRecentHeadImpact(v); if (!v) setDaysSinceHeadImpact(0); setDetailTouched(true); }} />
+            {recentHeadImpact && (
+              <View style={{ paddingLeft: 8, marginTop: 4 }}>
+                <ThemedText variant="caption" color={COLORS.textMuted}>Days since impact: {daysSinceHeadImpact}</ThemedText>
+                <View style={styles.daysRow}>
+                  {[0, 1, 3, 7, 14, 30].map((d) => (
+                    <TouchableOpacity
+                      key={d}
+                      style={[styles.dayBtn, daysSinceHeadImpact === d && styles.dayBtnActive]}
+                      onPress={() => { setDaysSinceHeadImpact(d); setDetailTouched(true); }}
+                    >
+                      <ThemedText variant="caption" style={daysSinceHeadImpact === d ? styles.dayBtnTextActive : styles.dayBtnText}>{d}</ThemedText>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            )}
+            <YesNoButton label="Visual Disturbance" value={visualDisturbance} onChange={(v) => { setVisualDisturbance(v); setDetailTouched(true); }} />
+          </DetailSection>
+
+          {isConcussionActive({
+            cognitiveClarity, reactionTimeSharpness, coordinationBalance,
+            headachePressure, headacheSeverity: headachePressure ? headacheSeverity : null,
+            dizzinessVertigo, numbnessTingling, numbnessTinglingLocation,
+            lightNoiseSensitivity, recentHeadImpact, daysSinceHeadImpact: recentHeadImpact ? daysSinceHeadImpact : null,
+            visualDisturbance,
+          }) && (
+            <View style={styles.concussionBanner}>
+              <ThemedText variant="subtitle" style={styles.concussionTitle}>⚠️ CONCUSSION ALERT</ThemedText>
+              <ThemedText variant="body" style={styles.concussionText}>
+                Head impact with active symptoms detected. Training is restricted.
+              </ThemedText>
+              <ThemedText variant="caption" style={styles.concussionSectionTitle}>MUST DO (non-negotiable):</ThemedText>
+              <ThemedText variant="caption" style={styles.concussionItem}>• Stop all physical activity immediately</ThemedText>
+              <ThemedText variant="caption" style={styles.concussionItem}>• Consult a healthcare provider before returning to training</ThemedText>
+              <ThemedText variant="caption" style={styles.concussionItem}>• Avoid screens and bright lights — cognitive rest protocol</ThemedText>
+              <ThemedText variant="caption" style={styles.concussionItem}>• Do NOT take aspirin or ibuprofen (may increase bleeding risk)</ThemedText>
+              <ThemedText variant="caption" style={styles.concussionItem}>• Have someone monitor you for 24 hours</ThemedText>
+              <ThemedText variant="caption" style={styles.concussionItem}>• Do NOT drive</ThemedText>
+              <ThemedText variant="caption" style={[styles.concussionSectionTitle, { marginTop: 8 }]}>SHOULD DO (strongly recommended):</ThemedText>
+              <ThemedText variant="caption" style={styles.concussionItem}>• Rest in a quiet, dark room</ThemedText>
+              <ThemedText variant="caption" style={styles.concussionItem}>• Use red light therapy on head/neck if available (10-15 min, 810nm)</ThemedText>
+              <ThemedText variant="caption" style={styles.concussionItem}>• Practice gentle coherent breathing (5.5 breaths/min)</ThemedText>
+              <ThemedText variant="caption" style={styles.concussionItem}>• Stay hydrated — small sips of water with electrolytes</ThemedText>
+              <ThemedText variant="caption" style={styles.concussionItem}>• Sleep as much as possible — prioritize 9+ hours</ThemedText>
+              <ThemedText variant="caption" style={styles.concussionItem}>• Apply cold compress to neck if headache persists</ThemedText>
+              <ThemedText variant="caption" style={styles.concussionItem}>• Journal symptoms and severity (track progression)</ThemedText>
+              <ThemedText variant="caption" style={styles.concussionItem}>• Follow up with sports medicine specialist within 48 hours</ThemedText>
+            </View>
+          )}
         </Card>
       )}
 
@@ -866,5 +913,64 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary + '30',
     borderWidth: 1,
     borderColor: COLORS.primary,
+  },
+  daysRow: {
+    flexDirection: 'row',
+    gap: 6,
+    marginTop: 6,
+    flexWrap: 'wrap',
+  },
+  dayBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: COLORS.surfaceLight,
+  },
+  dayBtnActive: {
+    backgroundColor: COLORS.primary + '30',
+    borderWidth: 1,
+    borderColor: COLORS.primary,
+  },
+  dayBtnText: {
+    color: COLORS.textMuted,
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  dayBtnTextActive: {
+    color: COLORS.text,
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  concussionBanner: {
+    backgroundColor: COLORS.error + '20',
+    borderWidth: 2,
+    borderColor: COLORS.error,
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 12,
+    marginBottom: 8,
+  },
+  concussionTitle: {
+    color: COLORS.error,
+    fontSize: 16,
+    fontWeight: '800',
+    marginBottom: 6,
+  },
+  concussionText: {
+    color: COLORS.text,
+    fontSize: 13,
+    marginBottom: 10,
+  },
+  concussionSectionTitle: {
+    color: COLORS.error,
+    fontSize: 12,
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  concussionItem: {
+    color: COLORS.text,
+    fontSize: 12,
+    lineHeight: 18,
+    paddingLeft: 4,
   },
 });

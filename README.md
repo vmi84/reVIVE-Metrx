@@ -1,35 +1,36 @@
 # reVIVE Metrx
 
-**Integrated Athlete Condition Index (IACI) — A 6-subsystem recovery intelligence platform.**
+**Integrated Athlete Condition Index (IACI) — A 7-subsystem recovery intelligence platform.**
 
 reVIVE Metrx computes a composite readiness score from wearable data, subjective check-ins, and lab results, then prescribes personalized recovery protocols and training recommendations.
 
 ## Core Concepts
 
 ### IACI Score (0-100)
-A composite index derived from 6 physiological subsystems:
+A composite index derived from 7 physiological subsystems:
 - **Autonomic** — HRV, resting heart rate, HRV trend
 - **Musculoskeletal** — soreness mapping, stiffness, heavy legs
 - **Cardiometabolic** — cardiovascular load, strain history
 - **Sleep** — duration, quality, staging, consistency
 - **Metabolic** — hydration, nutrition, GI status, inflammation
 - **Psychological** — stress, motivation, mental fatigue
+- **Neurological** — cognitive clarity, reaction time, coordination, headache/pressure, dizziness, concussion protocol
 
-Each subsystem is scored independently, then combined with sport-specific weighting and penalty logic into a readiness tier: **Perform → Train → Maintain → Recover → Protect**.
+Each subsystem is scored independently, then combined with sport-specific weighting and penalty logic into a readiness tier: **Perform → Train → Maintain → Recover → Protect**. The neurological subsystem monitors CNS fatigue, TBI risk, and concussion symptoms — critical for contact sports, combat athletes, and endurance athletes experiencing cognitive fog from overtraining.
 
 ### Data Sources (Generic Architecture)
 The app uses a source-agnostic data pipeline:
 - **Canonical record format** — all wearable data normalizes to `CanonicalPhysiologyRecord`
 - **Adapter pattern** — each device has its own parser (e.g., `lib/adapters/whoop/`)
 - **Source registry** — UI badges, colors, and labels resolve dynamically from `DEVICE_SOURCE_REGISTRY`
-- Currently supports: **Whoop** (ZIP export + API sync)
-- Planned: Garmin, Oura, Apple Health, Polar, COROS
+- Currently supports: **Whoop** (ZIP export + API sync), **Apple Health** (HealthKit sync)
+- Planned: Garmin, Polar, COROS
 
 ### Recovery Protocols
 Based on IACI phenotype classification (e.g., Sleep-Compromised, Autonomically Stressed, Fully Recovered), the engine prescribes targeted protocols with specific modalities, durations, and intensities.
 
 ### Training Compatibility
-32 training modalities (8 performance + 24 recovery-focused) are ranked by sport-specific subsystem needs and current readiness level.
+39 training modalities (8 performance + 31 recovery-focused, including 7 neurological recovery modalities) are ranked by sport-specific subsystem needs and current readiness level.
 
 ## Tech Stack
 
@@ -107,10 +108,7 @@ The app runs fully offline without Supabase. Import a Whoop ZIP export from Prof
 npm test
 ```
 
-**93 tests** across 3 suites:
-- `lib/engine/__tests__/iaci-algorithm.test.ts` — IACI scoring math, subsystem scoring, penalties, phenotype classification, protocol assignment (82 tests)
-- `lib/adapters/__tests__/whoop-zip-parser.test.ts` — ZIP parsing, CSV field mapping, workout zone conversion, edge cases (6 tests)
-- `lib/types/__tests__/feed-types.test.ts` — Source registry, dynamic badge resolution, unknown source handling (5 tests)
+**867 tests** across 46 suites covering IACI scoring, all 7 subsystem scorers, penalty logic, phenotype classification, training compatibility, sport profiles, recovery protocols, exercise library, recovery plans, workout impact, load capacity, and data adapters.
 
 ## Architecture Decisions
 
