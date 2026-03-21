@@ -13,6 +13,10 @@ import {
   ProtocolPrescription,
   TrainingCompatibility,
   TrainingPermission,
+  TrendContext,
+  TrendDirection,
+  DriverAnalysis,
+  RecoveryDriver,
   getProtocolClass,
   getReadinessTier,
 } from '../types/iaci';
@@ -98,6 +102,22 @@ const PHENOTYPE_PROTOCOLS: Record<PhenotypeKey, PhenotypeProtocolMap> = {
   },
 };
 
+const TREND_EXPLANATIONS: Record<TrendDirection, string> = {
+  improving: '7-day trend improving — slightly expanded training options.',
+  stable: '',
+  declining: '7-day declining trend — reduced load recommended. Focus on recovery.',
+};
+
+const DRIVER_EXPLANATION_SUFFIX: Partial<Record<RecoveryDriver, string>> = {
+  sleep: ' Prioritize sleep: early bedtime, morning light, caffeine cutoff.',
+  stress: ' Stress is your top limiter: breathwork, schedule protection, nature exposure.',
+  activity_overload: ' Activity overload detected: deload, mobility, protein timing.',
+  neurological: ' CNS fatigue priority: cognitive rest, screen-free time, gentle movement.',
+  metabolic: ' Fuel gap detected: hydration, electrolytes, timed carbs.',
+  illness: ' Illness risk: full rest and symptom monitoring. No training load.',
+  multi_system: ' Multiple systems impaired: recovery day. Sleep, nutrition, gentle movement.',
+};
+
 export function prescribeProtocol(
   iaciScore: number,
   phenotype: Phenotype,
@@ -106,11 +126,16 @@ export function prescribeProtocol(
   athleteMode?: AthleteModeConfig | null,
   userEnvironment?: string[],
   preferredActivities?: string[],
+  trendContext?: TrendContext | null,
+  confidence?: number,
+  driverAnalysis?: DriverAnalysis | null,
 ): ProtocolPrescription {
   const protocolClass = getProtocolClass(iaciScore);
   const readinessTier = getReadinessTier(iaciScore);
   const phenotypeMap = PHENOTYPE_PROTOCOLS[phenotype.key];
-  const trainingCompat = getTrainingCompatibility(iaciScore, phenotype.key, subsystemScores, athleteMode);
+  const trainingCompat = getTrainingCompatibility(
+    iaciScore, phenotype.key, subsystemScores, athleteMode, trendContext,
+  );
   const sportNeeds = getSportRecoveryNeeds(sportKeys);
   const sportKeyArray = sportKeys
     ? (Array.isArray(sportKeys) ? sportKeys : [sportKeys])
@@ -125,12 +150,41 @@ export function prescribeProtocol(
     preferredActivities,
   );
 
+  // Build explanation with trend + driver context
+  let explanation = phenotypeMap.explanation;
+  const trend = trendContext?.direction ?? null;
+
+  if (trend && TREND_EXPLANATIONS[trend]) {
+    explanation += ' ' + TREND_EXPLANATIONS[trend];
+  }
+  if (driverAnalysis) {
+    const suffix = DRIVER_EXPLANATION_SUFFIX[driverAnalysis.primaryDriver];
+    if (suffix) explanation += suffix;
+  }
+
+  // Confidence note
+  let confidenceNote: string | null = null;
+  if (confidence != null && confidence < 0.5) {
+    confidenceNote = 'Low confidence — consider syncing wearable or completing full check-in for better accuracy.';
+  } else if (confidence != null && confidence < 0.75) {
+    confidenceNote = 'Moderate confidence — more data sources would improve recommendation precision.';
+  }
+
+  // Permutation key for analytics
+  const permutationKey = `band_${protocolClass}_${trend ?? 'none'}_${
+    confidence != null ? (confidence >= 0.75 ? 'high' : confidence >= 0.5 ? 'medium' : 'low') : 'unknown'
+  }_${driverAnalysis?.primaryDriver ?? 'none'}`;
+
   return {
     protocolClass,
     readinessTier,
     recommendedModalities: phenotypeMap.modalitySlugs,
     trainingCompatibility: trainingCompat,
     recommendedTraining,
-    explanation: phenotypeMap.explanation,
+    explanation,
+    trendModifier: trend,
+    confidenceNote,
+    driverInsight: driverAnalysis?.actionableInsight ?? null,
+    permutationKey,
   };
 }

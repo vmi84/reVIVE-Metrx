@@ -125,6 +125,10 @@ export interface ProtocolPrescription {
   trainingCompatibility: TrainingCompatibility;
   recommendedTraining: RankedTrainingModality[];
   explanation: string;
+  trendModifier: TrendDirection | null;
+  confidenceNote: string | null;
+  driverInsight: string | null;
+  permutationKey: string;
 }
 
 // --- Training Modalities (39 total) ---
@@ -181,6 +185,31 @@ export interface RankedTrainingModality {
   examples: string[];
 }
 
+// --- Trend Context ---
+
+export type TrendDirection = 'improving' | 'stable' | 'declining';
+
+export interface TrendContext {
+  direction: TrendDirection;
+  iaciSlope: number;
+  subsystemTrends: Partial<Record<SubsystemKey, TrendDirection>>;
+  daysOfData: number;
+}
+
+// --- Driver Analysis ---
+
+export type RecoveryDriver =
+  | 'sleep' | 'stress' | 'activity_overload' | 'neurological'
+  | 'metabolic' | 'illness' | 'multi_system';
+
+export interface DriverAnalysis {
+  primaryDriver: RecoveryDriver;
+  secondaryDriver: RecoveryDriver | null;
+  driverScore: number;
+  driverExplanation: string;
+  actionableInsight: string;
+}
+
 // --- Full IACI Result ---
 
 export interface IACIResult {
@@ -193,6 +222,11 @@ export interface IACIResult {
   protocol: ProtocolPrescription;
   baseScore: number; // Before penalties
   dataCompleteness: number; // 0-1
+  confidence: number; // 0-1 reliability estimate
+  confidenceLevel: 'high' | 'medium' | 'low';
+  confidenceFactors: string[];
+  trendContext: TrendContext | null;
+  driverAnalysis: DriverAnalysis;
 }
 
 // --- Baselines ---

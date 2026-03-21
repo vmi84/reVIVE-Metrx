@@ -66,6 +66,38 @@ export function analyzeTrends(
   };
 }
 
+// ---------------------------------------------------------------------------
+// Trend Context — converts raw trend slopes into actionable direction labels
+// ---------------------------------------------------------------------------
+
+import type { SubsystemKey, TrendDirection, TrendContext } from '../types/iaci';
+
+const TREND_THRESHOLD = 0.5; // units/day — above = improving, below negative = declining
+
+export function deriveTrendContext(trend7d: TrendResult | null): TrendContext {
+  if (!trend7d) {
+    return { direction: 'stable', iaciSlope: 0, subsystemTrends: {}, daysOfData: 0 };
+  }
+
+  const direction: TrendDirection =
+    trend7d.iaciTrend > TREND_THRESHOLD ? 'improving' :
+    trend7d.iaciTrend < -TREND_THRESHOLD ? 'declining' : 'stable';
+
+  const subsystemTrends: Partial<Record<SubsystemKey, TrendDirection>> = {};
+  for (const [key, slope] of Object.entries(trend7d.subsystemTrends)) {
+    subsystemTrends[key as SubsystemKey] =
+      slope > TREND_THRESHOLD ? 'improving' :
+      slope < -TREND_THRESHOLD ? 'declining' : 'stable';
+  }
+
+  return {
+    direction,
+    iaciSlope: trend7d.iaciTrend,
+    subsystemTrends,
+    daysOfData: 7,
+  };
+}
+
 export function computeRollingAverages(
   values: number[],
 ): { ema7: number; ema21: number; sma28: number } {
