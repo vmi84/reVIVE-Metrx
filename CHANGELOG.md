@@ -8,6 +8,33 @@ Versioning: **Major.Significant.Minor** — Major = new features/architecture, S
 
 ## [Unreleased]
 
+## [6.0.0] - 2026-03-21
+
+### BREAKING CHANGE
+- **7th Subsystem: Neurological** — `SubsystemKey` now includes `'neurological'`. All weight presets rebalanced to sum to 1.0.
+
+### Added
+- **Neurological subsystem scorer** (`lib/engine/subsystems/neurological.ts`) — 12 subjective inputs: cognitive clarity, reaction time, coordination/balance, headache/pressure + severity, dizziness/vertigo, numbness/tingling, light/noise sensitivity, recent head impact, visual disturbance
+- **Concussion protocol penalty** (15 pts) — Life-threatening, NEVER scaled by competitive mode. Triggers on recent head impact with red flag symptoms (dizziness, visual disturbance, severe headache)
+- **Neurological impairment penalty** (8 pts) — Triggers when neurological score < 35
+- **`neurologically_compromised` phenotype** — Checked FIRST in classification priority (before illness_risk). Concussion protocol restricts to walking, breathing, and meditation only
+- **7 neurological recovery modalities** — Red Light/PBM Therapy, Neurofeedback, PEMF Therapy, Vestibular Rehabilitation, Cognitive Rest Protocol, Gentle Neck Mobility, Eye Tracking Drills
+- **10 neurological recovery protocols** — red-light-therapy-head, red-light-therapy-body, pemf-session, neurofeedback-session, vestibular-balance-drills, cervical-mobility-flow, eye-tracking-exercises, cognitive-rest-protocol, grounding-earthing, sensory-deprivation
+- **12 neurological exercises** — red-light-head-protocol, vestibular-head-turns, gaze-stabilization, smooth-pursuit-tracking, tandem-stance-balance, single-leg-eyes-closed, cervical-chin-tucks, cervical-rotation, cognitive-rest-checklist, grounding-barefoot, and more
+- **12 new sport profiles** — volleyball, field hockey, ice hockey, baseball/softball, American football, cricket, badminton, squash/racquetball, table tennis, pickleball, fencing, mountain biking (42 total)
+- **Neurological stress level** added to all ~30 existing sport profiles (very_high for contact/combat, high for field sports with contact, moderate for strength/crash-risk, low for endurance/wellness)
+- **YesNoButton component** (`components/checkin/YesNoButton.tsx`) — Reusable Yes/No radio button replacing all Switch toggles in morning check-in
+- **Morning check-in neurological inputs** — Tier 1: Cognitive Clarity + Reaction Time ratings; Tier 2: full neurological detail section with all 12 inputs
+- **Concussion warning banner** — Red alert card with MUST DO (non-negotiable) and SHOULD DO (strongly recommended) protocols when concussion detected
+- **7th subsystem bar** in dashboard SubsystemBars component
+- **21 new neurological scorer tests** (867 total tests, 46 suites — all passing)
+
+### Changed
+- **Weight presets rebalanced** — DEFAULT: neuro 0.08, ENDURANCE: 0.07, POWER: 0.07, OLDER_ATHLETE: 0.10. All presets sum to exactly 1.0
+- **Training modalities** expanded from 32 to 39 (8 performance + 31 recovery)
+- **multi_system_impairment** penalty now counts neurological score in impaired subsystem tally
+- All existing test fixtures updated with neurological score/stress entries
+
 ## [5.0.3] - 2026-03-19
 
 ### Fixed
