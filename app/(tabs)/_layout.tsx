@@ -34,8 +34,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home-outline" size={size} color={color} />
           ),
-          headerRight: () => <HelpButton screen="home" />,
-          headerRightContainerStyle: { paddingRight: 16 },
+          headerLeft: () => <HelpButton screen="home" />,
+          headerLeftContainerStyle: { paddingLeft: 16 },
         }}
       />
       <Tabs.Screen
@@ -46,8 +46,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="fitness-outline" size={size} color={color} />
           ),
-          headerRight: () => <HelpButton screen="recovery" />,
-          headerRightContainerStyle: { paddingRight: 16 },
+          headerLeft: () => <HelpButton screen="recovery" />,
+          headerLeftContainerStyle: { paddingLeft: 16 },
         }}
       />
       <Tabs.Screen
@@ -58,8 +58,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="bicycle-outline" size={size} color={color} />
           ),
-          headerRight: () => <HelpButton screen="effort" />,
-          headerRightContainerStyle: { paddingRight: 16 },
+          headerLeft: () => <HelpButton screen="effort" />,
+          headerLeftContainerStyle: { paddingLeft: 16 },
         }}
       />
       <Tabs.Screen
@@ -70,8 +70,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="analytics-outline" size={size} color={color} />
           ),
-          headerRight: () => <HelpButton screen="trends" />,
-          headerRightContainerStyle: { paddingRight: 16 },
+          headerLeft: () => <HelpButton screen="trends" />,
+          headerLeftContainerStyle: { paddingLeft: 16 },
         }}
       />
       <Tabs.Screen
@@ -82,8 +82,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="settings-outline" size={size} color={color} />
           ),
-          headerRight: () => <HelpButton screen="settings" />,
-          headerRightContainerStyle: { paddingRight: 16 },
+          headerLeft: () => <HelpButton screen="settings" />,
+          headerLeftContainerStyle: { paddingLeft: 16 },
         }}
       />
     </Tabs>

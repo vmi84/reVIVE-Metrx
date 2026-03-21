@@ -13,6 +13,8 @@ export interface AdapterConfig {
   supportsOAuth: boolean;
   supportsCSV: boolean;
   supportsWebhook: boolean;
+  /** True for adapters that read from on-device data stores (HealthKit, Health Connect). */
+  supportsLocalData?: boolean;
 }
 
 export interface WearableAdapter {
@@ -23,7 +25,7 @@ export interface WearableAdapter {
   handleAuthCallback?(code: string): Promise<TokenPair>;
   refreshToken?(refreshToken: string): Promise<TokenPair>;
 
-  // Data fetching
+  // Data fetching (token-based, e.g. Whoop API)
   fetchRecovery?(
     token: string,
     date: string,
@@ -31,6 +33,14 @@ export interface WearableAdapter {
   fetchSleep?(token: string, date: string): Promise<CanonicalPhysiologyRecord>;
   fetchWorkouts?(
     token: string,
+    startDate: string,
+    endDate: string,
+  ): Promise<CanonicalPhysiologyRecord[]>;
+
+  // Local data access (HealthKit, Health Connect)
+  isAvailable?(): boolean;
+  requestPermissions?(): Promise<boolean>;
+  fetchLocalData?(
     startDate: string,
     endDate: string,
   ): Promise<CanonicalPhysiologyRecord[]>;

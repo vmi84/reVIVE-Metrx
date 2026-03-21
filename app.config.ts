@@ -16,6 +16,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'com.revivemetrx.app',
+    entitlements: {
+      'com.apple.developer.healthkit': true,
+    },
+    infoPlist: {
+      NSHealthShareUsageDescription:
+        'reVIVE Metrx reads your health data (HRV, heart rate, sleep, workouts, blood oxygen, respiratory rate) to calculate your recovery score and personalized training recommendations.',
+    },
   },
   android: {
     adaptiveIcon: {

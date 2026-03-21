@@ -23,7 +23,7 @@ import { TRAINING_RECOVERY_MAP } from '../../data/training-recovery-map';
 import { classifySessionIntensity } from '../../lib/types/training-plan';
 import { today } from '../../lib/utils/date';
 import type { PlannedSession } from '../../lib/types/training-plan';
-import type { TrainingModalityKey } from '../../lib/types/iaci';
+import type { TrainingModalityKey } from '../../data/training-recovery-map';
 
 // ─── Recovery options by workout intensity ─────────────────────────────────
 
@@ -91,7 +91,7 @@ function getRecoveryOptionsForWorkout(
     // Filter by environment
     if (envSet && profile.environment.length > 0) {
       const hasAccess = profile.environment.some(
-        e => envSet.has(e.toLowerCase()) || e.toLowerCase() === 'anywhere',
+        (e: string) => envSet.has(e.toLowerCase()) || e.toLowerCase() === 'anywhere',
       );
       if (!hasAccess) continue;
     }

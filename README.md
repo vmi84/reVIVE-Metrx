@@ -64,12 +64,13 @@ hooks/
   use-iaci.ts           # IACI computation (online + demo mode)
   use-feed.ts           # Paginated daily feed with device data integration
   use-whoop-sync.ts     # Whoop API sync
+  use-healthkit-sync.ts # Apple HealthKit local sync (iOS)
   use-load-capacity.ts  # Load capacity computation
   use-auth.ts           # Auth wrapper
 
 lib/
   engine/               # IACI scoring algorithm, subsystem scorers, penalties, phenotype
-  adapters/             # Wearable adapters (whoop/zip-parser, whoop/csv-parser, whoop/api-client)
+  adapters/             # Wearable adapters (whoop/, healthkit/)
   types/                # TypeScript interfaces (canonical, database, feed, iaci, protocols)
   utils/                # Constants, date helpers, file-storage adapter
 
@@ -108,7 +109,7 @@ The app runs fully offline without Supabase. Import a Whoop ZIP export from Prof
 npm test
 ```
 
-**867 tests** across 46 suites covering IACI scoring, all 7 subsystem scorers, penalty logic, phenotype classification, training compatibility, sport profiles, recovery protocols, exercise library, recovery plans, workout impact, load capacity, and data adapters.
+**949 tests** across 50 suites covering IACI scoring, all 7 subsystem scorers, penalty logic, phenotype classification, training compatibility, sport profiles, recovery protocols, exercise library, recovery plans, workout impact, load capacity, data adapters, confidence scoring, trend integration, driver analysis, and recommendation permutations.
 
 ## Architecture Decisions
 

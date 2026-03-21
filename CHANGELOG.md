@@ -8,6 +8,30 @@ Versioning: **Major.Significant.Minor** — Major = new features/architecture, S
 
 ## [Unreleased]
 
+## [6.0.1] - 2026-03-21
+
+### Added
+- **Confidence scoring** on every IACI output — `confidence` (0-1), `confidenceLevel` ('high'|'medium'|'low'), `confidenceFactors` array. Based on data completeness, baseline availability, trend history, and objective data presence
+- **Trend integration into recommendations** — `TrendContext` with direction + per-subsystem slopes feeds into training compatibility and protocol prescription. Declining trends near tier boundaries downgrade permissions; improving trends relax them
+- **Primary driver identification** — `DriverAnalysis` maps lowest subsystem(s) to root cause category (sleep, stress, activity_overload, neurological, metabolic, illness, multi_system) with actionable insights
+- **Recommendation permutation system** — `permutationKey` encodes band × trend × confidence × driver for analytics tracking. Same IACI score produces different recommendations based on context
+- **Apple HealthKit adapter** — Local on-device health data as second data source alongside Whoop. Sleep staging, HRV, RHR, SpO2, temperature, workouts. iOS only, no network calls
+- **Multi-device merge logic** — Primary/secondary device model with 'overwrite' and 'fill-nulls' merge strategies. Secondary device data never overwrites primary
+- **Device setup Apple Health section** — Connection status, permission request flow, 90-day historical backfill on connect
+- **HealthKit sync hook** (`hooks/use-healthkit-sync.ts`) — Morning sync, historical backfill, foreground re-sync, 15-min throttle
+- **Assessment framework tests** — 49 tests validating measurement moat, recommendation moat, score bands, trend modifiers, driver-based recs, permutation matrix (135 combos), backward compatibility
+- **HealthKit adapter tests** — Sleep staging, SpO2, workout HR zones, temperature deviation, null handling
+- **Multi-device merge tests** — Fill-nulls strategy validation
+
+### Changed
+- `ProtocolPrescription` extended with `trendModifier`, `confidenceNote`, `driverInsight`, `permutationKey`
+- `IACIResult` extended with `confidence`, `confidenceLevel`, `confidenceFactors`, `trendContext`, `driverAnalysis`
+- `getTrainingCompatibility()` accepts optional `trendContext` for boundary-aware adjustments
+- `prescribeProtocol()` accepts optional `trendContext`, `confidence`, `driverAnalysis` for permutation logic
+- Dashboard syncs from both Whoop (API) and HealthKit (local) simultaneously
+- HelpButton repositioned from right to left header
+- **949 tests** across 50 suites — all passing
+
 ## [6.0.0] - 2026-03-21
 
 ### BREAKING CHANGE

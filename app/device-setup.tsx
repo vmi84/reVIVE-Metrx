@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { View, ScrollView, StyleSheet, Alert, Linking } from 'react-native';
+import { View, ScrollView, StyleSheet, Alert, Linking, Platform } from 'react-native';
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
@@ -8,6 +8,8 @@ import Constants from 'expo-constants';
 import { useAuth } from '../hooks/use-auth';
 import { useSyncStore } from '../store/sync-store';
 import { useDailyStore } from '../store/daily-store';
+import { useSettingsStore } from '../store/settings-store';
+import { useHealthKitSync } from '../hooks/use-healthkit-sync';
 import { Card } from '../components/ui/Card';
 import { ThemedText } from '../components/ui/ThemedText';
 import { Button } from '../components/ui/Button';
@@ -19,7 +21,7 @@ type DeviceStatus = 'available' | 'beta' | 'planned';
 const WEARABLE_CATALOG: Array<{ name: string; description: string; status: DeviceStatus }> = [
   { name: 'Whoop', description: 'HRV, recovery, sleep, strain, SpO2', status: 'available' },
   { name: 'Garmin', description: 'HRV, sleep, training load, body battery', status: 'planned' },
-  { name: 'Apple Watch', description: 'HRV, sleep, activity, blood oxygen', status: 'planned' },
+  { name: 'Apple Watch', description: 'HRV, sleep, activity, blood oxygen', status: 'available' },
   { name: 'Oura Ring', description: 'HRV, sleep staging, readiness, temperature', status: 'planned' },
   { name: 'Polar', description: 'HRV, sleep, training load, orthostatic test', status: 'planned' },
   { name: 'COROS', description: 'HRV, sleep, training load, EvoLab', status: 'planned' },
@@ -35,6 +37,98 @@ export default function DeviceSetup() {
   const [connecting, setConnecting] = useState(false);
   const [disconnecting, setDisconnecting] = useState(false);
   const [whoopConnected, setWhoopConnected] = useState(false);
+
+  // ─── Apple HealthKit State ──────────────────────────────────────────────
+  const healthKitEnabled = useSettingsStore((s) => s.healthKitEnabled);
+  const { syncHistorical: hkSyncHistorical, syncing: hkSyncing, syncProgress: hkSyncProgress } = useHealthKitSync();
+  const [hkConnecting, setHkConnecting] = useState(false);
+  const [hkAvailable, setHkAvailable] = useState(false);
+
+  // Check HealthKit availability on mount
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      try {
+        const { isHealthKitAvailable } = require('../lib/adapters/healthkit/permissions');
+        setHkAvailable(isHealthKitAvailable());
+      } catch {
+        setHkAvailable(false);
+      }
+    }
+  }, []);
+
+  async function connectAppleHealth() {
+    setHkConnecting(true);
+    try {
+      const { requestHealthKitPermissions } = require('../lib/adapters/healthkit/permissions');
+      const granted = await requestHealthKitPermissions();
+      if (!granted) {
+        Alert.alert('Permissions Required', 'Please grant health data access in iOS Settings > Health > Data Access.');
+        setHkConnecting(false);
+        return;
+      }
+
+      // Update settings
+      useSettingsStore.getState().updateProfile({
+        healthKitEnabled: true,
+        primaryDevice: useSettingsStore.getState().primaryDevice ?? 'apple_health',
+      });
+
+      // Update profile (if online)
+      try {
+        const devices = [...(profile?.connected_devices ?? [])];
+        if (!devices.includes('apple_health')) devices.push('apple_health');
+        await updateProfile({
+          connected_devices: devices,
+          primary_device: devices.includes('whoop') ? 'whoop' : 'apple_health',
+        });
+      } catch {
+        // Offline mode — settings store is the source of truth
+      }
+
+      useDailyStore.getState().setDeviceSynced(true, 'apple_health');
+
+      Alert.alert(
+        'Apple Health Connected',
+        'Importing 90 days of health data. This may take a moment.',
+        [{ text: 'OK' }],
+      );
+
+      // Trigger historical backfill
+      await hkSyncHistorical(90);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Failed to connect Apple Health';
+      Alert.alert('Connection Error', msg);
+    } finally {
+      setHkConnecting(false);
+    }
+  }
+
+  function disconnectAppleHealth() {
+    Alert.alert(
+      'Disconnect Apple Health',
+      'This will stop syncing health data. Imported data will be preserved.\n\nTo fully revoke access, go to iOS Settings > Health > Data Access.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Disconnect',
+          style: 'destructive',
+          onPress: async () => {
+            useSettingsStore.getState().updateProfile({ healthKitEnabled: false });
+
+            try {
+              const devices = (profile?.connected_devices ?? []).filter(d => d !== 'apple_health');
+              await updateProfile({
+                connected_devices: devices,
+                primary_device: devices[0] ?? null,
+              });
+            } catch {
+              // Offline
+            }
+          },
+        },
+      ],
+    );
+  }
 
   const extra = Constants.expoConfig?.extra ?? {};
   const clientId = extra.whoopClientId ?? '';
@@ -307,6 +401,55 @@ export default function DeviceSetup() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      {/* ═══ Apple Health ═══ */}
+      {Platform.OS === 'ios' && (
+        <Card style={styles.section}>
+          <ThemedText variant="subtitle" style={styles.title}>Apple Health</ThemedText>
+          <ThemedText variant="body" color={COLORS.textSecondary} style={styles.description}>
+            Read HRV, resting heart rate, sleep staging, blood oxygen, respiratory rate, workouts, and temperature from Apple Health.
+          </ThemedText>
+
+          {!hkAvailable ? (
+            <ThemedText variant="caption" color={COLORS.textMuted}>
+              Apple Health is not available on this device.
+            </ThemedText>
+          ) : healthKitEnabled ? (
+            <View>
+              <View style={styles.connectedRow}>
+                <View style={styles.connectedDot} />
+                <ThemedText variant="body" color={COLORS.success}>Connected</ThemedText>
+              </View>
+              {hkSyncing && hkSyncProgress && (
+                <ThemedText variant="caption" color={COLORS.primary} style={{ marginTop: 4 }}>
+                  {hkSyncProgress}
+                </ThemedText>
+              )}
+              <Button
+                title="Re-sync Last 7 Days"
+                variant="secondary"
+                onPress={() => hkSyncHistorical(7)}
+                loading={hkSyncing}
+                style={styles.connectButton}
+              />
+              <Button
+                title="Disconnect"
+                variant="ghost"
+                onPress={disconnectAppleHealth}
+                style={{ ...styles.connectButton, opacity: 0.7 }}
+              />
+            </View>
+          ) : (
+            <Button
+              title="Connect Apple Health"
+              onPress={connectAppleHealth}
+              loading={hkConnecting}
+              style={styles.connectButton}
+            />
+          )}
+        </Card>
+      )}
+
+      {/* ═══ Whoop ═══ */}
       <Card style={styles.section}>
         <ThemedText variant="subtitle" style={styles.title}>Whoop</ThemedText>
         <ThemedText variant="body" color={COLORS.textSecondary} style={styles.description}>

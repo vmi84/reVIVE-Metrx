@@ -11,6 +11,7 @@ import { router } from 'expo-router';
 import { useFeed } from '../../hooks/use-feed';
 import { useIACI } from '../../hooks/use-iaci';
 import { useWhoopSync, checkTokenHealth } from '../../hooks/use-whoop-sync';
+import { useHealthKitSync } from '../../hooks/use-healthkit-sync';
 import { useLoadCapacity } from '../../hooks/use-load-capacity';
 import { useDailyStore } from '../../store/daily-store';
 import { usePhysiologyStore } from '../../store/physiology-store';
@@ -29,6 +30,7 @@ export default function Dashboard() {
   const { days, loading, loadingMore, hasMore, loadMore, refresh, carryForwardCheckin } = useFeed();
   const { computeToday, computeDemo } = useIACI();
   const { syncMorningData, syncHistorical, isConnected, syncing, syncProgress } = useWhoopSync();
+  const { syncMorningData: hkSyncMorning, syncHistorical: hkSyncHistorical, isConnected: isHKConnected } = useHealthKitSync();
   const { checkinCompleted, deviceSynced, iaci, athleteMode } = useDailyStore();
   const hasImportedData = usePhysiologyStore((s) => s.hasData);
   const recordCount = usePhysiologyStore((s) => Object.keys(s.records).length);
@@ -59,44 +61,61 @@ export default function Dashboard() {
   // Trigger load capacity computation when IACI is available
   useLoadCapacity();
 
-  // Auto-sync device data on mount — works in both online and offline mode
-  // 1. Check token health (refresh if needed)
-  // 2. If no data exists, full backfill; otherwise sync last 7 days
+  // Auto-sync device data on mount — Whoop (API) and/or HealthKit (local)
   useEffect(() => {
     (async () => {
+      let anySynced = false;
+
+      // ── Whoop Sync ──
       setSyncStatus('checking connection…');
-      const connected = await isConnected();
-      if (!connected) {
-        setSyncStatus('not connected');
-        return;
-      }
-
-      // Validate token health — refresh proactively if nearing expiry
-      const health = await checkTokenHealth();
-      console.log('[Dashboard] Token health:', health);
-      if (health === 'expired' || health === 'disconnected') {
-        setSyncStatus('session expired — reconnect in Settings');
-        setSyncError('Whoop session expired. Reconnect in Settings > Connect Device.');
-        return;
-      }
-      if (health === 'refreshed') {
-        setSyncStatus('token refreshed');
-      }
-
-      try {
-        if (!hasImportedData) {
-          setSyncStatus('backfilling historical data…');
-          await syncHistorical();
-          setSyncStatus(`done — ${usePhysiologyStore.getState().lastImport?.recordCount ?? 0} records`);
+      const whoopConnected = await isConnected();
+      if (whoopConnected) {
+        const health = await checkTokenHealth();
+        console.log('[Dashboard] Token health:', health);
+        if (health === 'expired' || health === 'disconnected') {
+          setSyncStatus('session expired — reconnect in Settings');
+          setSyncError('Whoop session expired. Reconnect in Settings > Connect Device.');
         } else {
-          setSyncStatus('syncing recent data…');
-          await syncHistorical(7);
-          setSyncStatus('synced');
+          if (health === 'refreshed') setSyncStatus('token refreshed');
+          try {
+            if (!hasImportedData) {
+              setSyncStatus('backfilling historical data…');
+              await syncHistorical();
+              setSyncStatus(`done — ${usePhysiologyStore.getState().lastImport?.recordCount ?? 0} records`);
+            } else {
+              setSyncStatus('syncing recent data…');
+              await syncHistorical(7);
+              setSyncStatus('synced');
+            }
+            anySynced = true;
+          } catch (err) {
+            setSyncStatus(`error: ${err instanceof Error ? err.message : String(err)}`);
+          }
         }
-        refresh();
-      } catch (err) {
-        setSyncStatus(`error: ${err instanceof Error ? err.message : String(err)}`);
       }
+
+      // ── HealthKit Sync ──
+      const hkConnected = await isHKConnected();
+      if (hkConnected) {
+        try {
+          setSyncStatus(anySynced ? 'syncing Apple Health…' : 'reading health data…');
+          if (!hasImportedData && !anySynced) {
+            await hkSyncHistorical(90);
+          } else {
+            await hkSyncMorning();
+          }
+          anySynced = true;
+          setSyncStatus('synced');
+        } catch (err) {
+          console.warn('[Dashboard] HealthKit sync error:', err);
+        }
+      }
+
+      if (!whoopConnected && !hkConnected) {
+        setSyncStatus('not connected');
+      }
+
+      if (anySynced) refresh();
     })();
   }, []);
 
@@ -127,12 +146,11 @@ export default function Dashboard() {
 
   // Pull-to-refresh: sync device data (last 7 days) then reload feed
   const handleRefresh = useCallback(async () => {
-    const connected = await isConnected();
-    if (connected) {
-      await syncHistorical(7);
-    }
+    const [whoopConn, hkConn] = await Promise.all([isConnected(), isHKConnected()]);
+    if (whoopConn) await syncHistorical(7);
+    if (hkConn) await hkSyncMorning();
     await refresh();
-  }, [isConnected, syncHistorical, refresh]);
+  }, [isConnected, isHKConnected, syncHistorical, hkSyncMorning, refresh]);
 
   // Force full re-sync: clear cached data and re-fetch everything
   const handleForceSync = useCallback(async () => {

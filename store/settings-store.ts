@@ -42,6 +42,12 @@ interface SettingsState {
   dietaryApproach: string;
   knownConditions: string;
 
+  // Device settings
+  /** Whether HealthKit integration is enabled (user hasn't "disconnected" in-app). */
+  healthKitEnabled: boolean;
+  /** Primary device for data when multiple sources have data for the same date. */
+  primaryDevice: string | null;
+
   // Actions
   setOnboardingCompleted: (val: boolean) => void;
   updateProfile: (updates: Partial<Omit<SettingsState,
@@ -68,6 +74,8 @@ const DEFAULTS = {
   trainingEnvironment: [],
   dietaryApproach: '',
   knownConditions: '',
+  healthKitEnabled: false,
+  primaryDevice: null,
 };
 
 export const useSettingsStore = create<SettingsState>()(
