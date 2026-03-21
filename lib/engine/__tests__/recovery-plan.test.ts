@@ -11,7 +11,7 @@ function makeImpact(overrides: Partial<WorkoutImpactResult> = {}): WorkoutImpact
   return {
     estimatedSubsystemImpact: {
       autonomic: -10, musculoskeletal: -15, cardiometabolic: -8,
-      sleep: -3, metabolic: -5, psychological: -2,
+      sleep: -3, metabolic: -5, psychological: -2, neurological: 0,
     },
     estimatedPostIACI: 60,
     impactedAreas: { quads: 2, hamstrings: 3, calves: 1 },
@@ -45,7 +45,7 @@ describe('generateRecoveryPlan', () => {
     const highImpact = makeImpact({
       estimatedSubsystemImpact: {
         autonomic: -15, musculoskeletal: -20, cardiometabolic: -12,
-        sleep: -5, metabolic: -8, psychological: -5,
+        sleep: -5, metabolic: -8, psychological: -5, neurological: 0,
       },
     });
     const plan = generateRecoveryPlan('2024-01-15', 'run', highImpact, makeMockLoadCapacity());
@@ -57,7 +57,7 @@ describe('generateRecoveryPlan', () => {
     const lowImpact = makeImpact({
       estimatedSubsystemImpact: {
         autonomic: -2, musculoskeletal: -3, cardiometabolic: -1,
-        sleep: 0, metabolic: -1, psychological: 0,
+        sleep: 0, metabolic: -1, psychological: 0, neurological: 0,
       },
     });
     const plan = generateRecoveryPlan('2024-01-15', 'walk', lowImpact, makeMockLoadCapacity());

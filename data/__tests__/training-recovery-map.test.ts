@@ -10,8 +10,8 @@ describe('TRAINING_RECOVERY_MAP', () => {
   const allKeys = Object.keys(TRAINING_RECOVERY_MAP);
   const allEntries = Object.values(TRAINING_RECOVERY_MAP);
 
-  it('has exactly 32 modalities', () => {
-    expect(allKeys).toHaveLength(32);
+  it('has exactly 39 modalities', () => {
+    expect(allKeys).toHaveLength(39);
   });
 
   it('each entry has required fields', () => {
@@ -28,7 +28,7 @@ describe('TRAINING_RECOVERY_MAP', () => {
   });
 
   it('all subsystem keys are valid', () => {
-    const validKeys = ['autonomic', 'musculoskeletal', 'cardiometabolic', 'sleep', 'metabolic', 'psychological'];
+    const validKeys = ['autonomic', 'musculoskeletal', 'cardiometabolic', 'sleep', 'metabolic', 'psychological', 'neurological'];
     allEntries.forEach(entry => {
       entry.primarySubsystems.forEach(k => expect(validKeys).toContain(k));
       entry.secondarySubsystems.forEach(k => expect(validKeys).toContain(k));
@@ -76,9 +76,9 @@ describe('getRecoveryModalities', () => {
     });
   });
 
-  it('returns 24 recovery modalities', () => {
+  it('returns 31 recovery modalities', () => {
     const recovery = getRecoveryModalities();
-    expect(recovery).toHaveLength(24);
+    expect(recovery).toHaveLength(31);
   });
 });
 
@@ -96,9 +96,9 @@ describe('getModalitiesByCategory', () => {
 });
 
 describe('getAllModalityKeys', () => {
-  it('returns all 32 keys', () => {
+  it('returns all 39 keys', () => {
     const keys = getAllModalityKeys();
-    expect(keys).toHaveLength(32);
+    expect(keys).toHaveLength(39);
   });
 
   it('keys match TRAINING_RECOVERY_MAP keys', () => {

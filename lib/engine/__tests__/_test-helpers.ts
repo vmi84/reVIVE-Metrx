@@ -22,6 +22,7 @@ export function makeSubsystemScores(overrides: Partial<Record<SubsystemKey, numb
     sleep: 75,
     metabolic: 75,
     psychological: 75,
+    neurological: 75,
   };
   const merged = { ...defaults, ...overrides };
   return Object.fromEntries(
@@ -68,11 +69,12 @@ export function makeMockLoadCapacity(overrides: Partial<LoadCapacityResult> = {}
     sleep: makeStressFactor('sleep', 25),
     metabolic: makeStressFactor('metabolic', 25),
     psychological: makeStressFactor('psychological', 25),
+    neurological: makeStressFactor('neurological', 25),
   };
 
   return {
     subsystemStress,
-    subsystemRanking: ['autonomic', 'musculoskeletal', 'cardiometabolic', 'sleep', 'metabolic', 'psychological'],
+    subsystemRanking: ['autonomic', 'musculoskeletal', 'cardiometabolic', 'sleep', 'metabolic', 'psychological', 'neurological'],
     systemicStress: 25,
     stressLevel: 'low',
     systemicCapacity: 75,

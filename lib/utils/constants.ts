@@ -54,6 +54,8 @@ export const PENALTIES = {
   multi_system_impairment: 8,
   heat_injury: 15,            // Highest penalty — heat stroke is life-threatening
   cramping_dehydration: 6,    // Cramping signals electrolyte/hydration failure
+  concussion_protocol: 15,    // Life-threatening — NEVER scaled by competitive mode
+  neurological_impairment: 8, // Significant CNS impairment — normal competitive scaling
 } as const;
 
 // Competitive athlete overrides

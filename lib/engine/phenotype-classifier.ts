@@ -13,6 +13,10 @@ import {
 } from '../types/iaci';
 
 const PHENOTYPE_DEFS: Record<PhenotypeKey, { label: string; descriptionTemplate: string }> = {
+  neurologically_compromised: {
+    label: 'Neurologically Compromised',
+    descriptionTemplate: 'CNS fatigue, head injury, or neurological symptoms limiting safe training. Restrict to low-risk, low-complexity activities. Concussion protocol if head impact reported.',
+  },
   fully_recovered: {
     label: 'Fully Recovered / High Readiness',
     descriptionTemplate: 'All major systems recovered. Supports high-intensity or high-force work.',
@@ -53,6 +57,7 @@ export function classifyPhenotype(
   const d = scores.sleep.score;
   const e = scores.metabolic.score;
   const f = scores.psychological.score;
+  const g = scores.neurological.score;
 
   const hasPenalty = (name: string) => penalties.some(p => p.name === name);
   const allLimiters = [
@@ -62,9 +67,19 @@ export function classifyPhenotype(
     ...scores.sleep.limitingFactors,
     ...scores.metabolic.limitingFactors,
     ...scores.psychological.limitingFactors,
+    ...scores.neurological.limitingFactors,
   ];
 
-  // Phenotype 7: Illness Risk (check first — highest priority)
+  // Phenotype 8: Neurologically Compromised (checked FIRST — highest priority)
+  if (
+    g < 30 ||
+    hasPenalty('concussion_protocol') ||
+    (g < 45 && hasPenalty('neurological_impairment'))
+  ) {
+    return buildPhenotype('neurologically_compromised', allLimiters, scores);
+  }
+
+  // Phenotype 7: Illness Risk
   if (
     (a < 35 && c < 40 && f < 45) ||
     hasPenalty('illness_caution')

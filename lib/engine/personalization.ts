@@ -44,7 +44,8 @@ function normalizeWeights(weights: SubsystemWeights): SubsystemWeights {
     weights.cardiometabolic +
     weights.sleep +
     weights.metabolic +
-    weights.psychological;
+    weights.psychological +
+    weights.neurological;
 
   if (Math.abs(total - 1.0) < 0.001) return weights;
 
@@ -55,5 +56,6 @@ function normalizeWeights(weights: SubsystemWeights): SubsystemWeights {
     sleep: weights.sleep / total,
     metabolic: weights.metabolic / total,
     psychological: weights.psychological / total,
+    neurological: weights.neurological / total,
   };
 }

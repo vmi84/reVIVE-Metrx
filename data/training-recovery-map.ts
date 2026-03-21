@@ -53,7 +53,15 @@ export type TrainingModalityKey =
   | 'hiking'
   | 'sauna'
   | 'coldExposure'
-  | 'playRecreation';
+  | 'playRecreation'
+  // Neurological recovery (7)
+  | 'redLightTherapy'
+  | 'neurofeedback'
+  | 'pemfTherapy'
+  | 'vestibularRehab'
+  | 'cognitiveRest'
+  | 'gentleNeckMobility'
+  | 'eyeTrackingDrills';
 
 export type TrainingCategory =
   | 'aerobic'
@@ -66,7 +74,8 @@ export type TrainingCategory =
   | 'aquatic'
   | 'low_impact'
   | 'lifestyle'
-  | 'skill';
+  | 'skill'
+  | 'neurological_recovery';
 
 export type ModalityEnvironment = 'home' | 'gym' | 'pool' | 'outdoors' | 'anywhere' | 'studio' | 'sauna' | 'cold_plunge';
 
@@ -711,6 +720,141 @@ export const TRAINING_RECOVERY_MAP: Record<TrainingModalityKey, TrainingRecovery
     durationRange: { min: 10, sweet: 30, max: 60 },
     iaciFloor: 10,
     examples: ['Frisbee', 'Catch', 'Playground', 'Pickup basketball (easy)', 'Kickball', 'Tag with kids'],
+  },
+
+  // ===================== NEUROLOGICAL RECOVERY (7) =====================
+
+  redLightTherapy: {
+    key: 'redLightTherapy',
+    label: 'Red Light / PBM Therapy',
+    category: 'neurological_recovery',
+    isPerformanceModality: false,
+    primarySubsystems: ['neurological', 'musculoskeletal'],
+    secondarySubsystems: ['autonomic'],
+    recoveryFraming: 'Photobiomodulation (PBM) at 630-850nm wavelengths reduces neuroinflammation, accelerates tissue repair, and supports mitochondrial function. Evidence for concussion recovery, muscle soreness reduction, and improved sleep quality.',
+    intensityGuidance: {
+      recoveryZone: 'Passive — no physical exertion. 10-20 min per session.',
+      loadingThreshold: 'N/A — completely passive modality',
+    },
+    evidenceLevel: 'strong',
+    environment: ['home', 'gym', 'studio'],
+    durationRange: { min: 5, sweet: 15, max: 20 },
+    iaciFloor: 0,
+    examples: ['Red light panel on head/neck (810nm)', 'Full-body red light session', 'Targeted joint/muscle treatment'],
+  },
+
+  neurofeedback: {
+    key: 'neurofeedback',
+    label: 'Neurofeedback Training',
+    category: 'neurological_recovery',
+    isPerformanceModality: false,
+    primarySubsystems: ['neurological', 'psychological'],
+    secondarySubsystems: ['autonomic'],
+    recoveryFraming: 'EEG-guided brain training that helps restore healthy neural patterns. Supports attention, emotional regulation, and cognitive recovery. Particularly useful after concussion or during periods of high cognitive load.',
+    intensityGuidance: {
+      recoveryZone: 'Low cognitive load — follow screen prompts. 20-30 min.',
+      loadingThreshold: 'Avoid if severe headache or acute concussion symptoms',
+    },
+    evidenceLevel: 'moderate',
+    environment: ['studio', 'home'],
+    durationRange: { min: 15, sweet: 25, max: 40 },
+    iaciFloor: 40,
+    examples: ['Alpha-theta training', 'SMR protocol', 'Peak performance training'],
+  },
+
+  pemfTherapy: {
+    key: 'pemfTherapy',
+    label: 'PEMF Therapy',
+    category: 'neurological_recovery',
+    isPerformanceModality: false,
+    primarySubsystems: ['neurological', 'musculoskeletal'],
+    secondarySubsystems: ['autonomic'],
+    recoveryFraming: 'Pulsed electromagnetic field therapy enhances cellular repair, reduces inflammation, and supports bone/tissue healing. Non-invasive and completely passive. Evidence for pain reduction and improved sleep.',
+    intensityGuidance: {
+      recoveryZone: 'Passive — lie on PEMF mat or apply pad. 15-30 min.',
+      loadingThreshold: 'N/A — completely passive modality',
+    },
+    evidenceLevel: 'moderate',
+    environment: ['home', 'gym', 'studio'],
+    durationRange: { min: 10, sweet: 20, max: 30 },
+    iaciFloor: 0,
+    examples: ['PEMF mat session', 'Targeted PEMF pad on injury', 'Pre-sleep PEMF session'],
+  },
+
+  vestibularRehab: {
+    key: 'vestibularRehab',
+    label: 'Vestibular Rehabilitation',
+    category: 'neurological_recovery',
+    isPerformanceModality: false,
+    primarySubsystems: ['neurological'],
+    secondarySubsystems: ['musculoskeletal'],
+    recoveryFraming: 'Progressive vestibular exercises restore balance, spatial orientation, and gaze stability. Critical for post-concussion recovery and athletes experiencing dizziness. Start gently and progress only when symptom-free.',
+    intensityGuidance: {
+      recoveryZone: 'Very gentle — stop immediately if symptoms worsen. 5-15 min.',
+      loadingThreshold: 'Any increase in dizziness, nausea, or headache = stop',
+    },
+    evidenceLevel: 'strong',
+    environment: ['home', 'gym', 'anywhere'],
+    durationRange: { min: 5, sweet: 10, max: 20 },
+    iaciFloor: 30,
+    examples: ['Head turns (VOR exercises)', 'Gaze stabilization', 'Tandem stance balance', 'Single-leg eyes-closed'],
+  },
+
+  cognitiveRest: {
+    key: 'cognitiveRest',
+    label: 'Cognitive Rest Protocol',
+    category: 'neurological_recovery',
+    isPerformanceModality: false,
+    primarySubsystems: ['neurological', 'psychological'],
+    secondarySubsystems: ['sleep'],
+    recoveryFraming: 'Structured screen-free rest period to reduce cognitive load and support neural recovery. Essential during concussion protocol and beneficial during periods of cognitive fog or mental burnout.',
+    intensityGuidance: {
+      recoveryZone: 'Zero cognitive load — no screens, no reading, no problem-solving.',
+      loadingThreshold: 'Any screen time or concentrated thinking adds cognitive load',
+    },
+    evidenceLevel: 'strong',
+    environment: ['home', 'anywhere'],
+    durationRange: { min: 20, sweet: 45, max: 120 },
+    iaciFloor: 0,
+    examples: ['Quiet room rest', 'Nature sit (no phone)', 'Gentle music listening', 'Guided meditation'],
+  },
+
+  gentleNeckMobility: {
+    key: 'gentleNeckMobility',
+    label: 'Gentle Neck/Cervical Mobility',
+    category: 'neurological_recovery',
+    isPerformanceModality: false,
+    primarySubsystems: ['neurological', 'musculoskeletal'],
+    secondarySubsystems: [],
+    recoveryFraming: 'Gentle cervical spine mobility work reduces neck tension that can contribute to headaches, restricted blood flow to the brain, and proprioceptive dysfunction. Safe at nearly all impairment levels.',
+    intensityGuidance: {
+      recoveryZone: 'Very gentle — slow, controlled movements within pain-free range.',
+      loadingThreshold: 'No forcing through pain. Stop if dizziness increases.',
+    },
+    evidenceLevel: 'moderate',
+    environment: ['home', 'gym', 'anywhere'],
+    durationRange: { min: 3, sweet: 8, max: 15 },
+    iaciFloor: 5,
+    examples: ['Chin tucks', 'Gentle neck rotation', 'Lateral neck tilts', 'Upper trap stretch'],
+  },
+
+  eyeTrackingDrills: {
+    key: 'eyeTrackingDrills',
+    label: 'Oculomotor / Eye Tracking Drills',
+    category: 'neurological_recovery',
+    isPerformanceModality: false,
+    primarySubsystems: ['neurological'],
+    secondarySubsystems: [],
+    recoveryFraming: 'Oculomotor exercises restore smooth pursuit, saccadic accuracy, and vergence — all commonly impaired after concussion or with CNS fatigue. Quick sessions that can be done anywhere.',
+    intensityGuidance: {
+      recoveryZone: 'Gentle — follow targets slowly. Stop if headache or nausea increases.',
+      loadingThreshold: 'Any symptom increase = stop immediately',
+    },
+    evidenceLevel: 'moderate',
+    environment: ['home', 'anywhere'],
+    durationRange: { min: 3, sweet: 8, max: 15 },
+    iaciFloor: 25,
+    examples: ['Smooth pursuit tracking (follow finger)', 'Saccadic eye movements', 'Near-far focus shifts', 'Convergence exercises'],
   },
 };
 

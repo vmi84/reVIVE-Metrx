@@ -5,7 +5,7 @@ import { SubsystemKey } from '../../types/iaci';
 function makeHighStressCapacity(overrides: Partial<Record<SubsystemKey, number>> = {}) {
   const stressValues: Record<SubsystemKey, number> = {
     autonomic: 60, musculoskeletal: 55, cardiometabolic: 50,
-    sleep: 45, metabolic: 40, psychological: 35,
+    sleep: 45, metabolic: 40, psychological: 35, neurological: 30,
     ...overrides,
   };
   const subsystemStress = Object.fromEntries(

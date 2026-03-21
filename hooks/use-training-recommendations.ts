@@ -33,6 +33,7 @@ const CATEGORY_LABELS: Record<TrainingCategory, string> = {
   low_impact: 'Low Impact',
   lifestyle: 'Lifestyle & Active Recovery',
   skill: 'Skill Work',
+  neurological_recovery: 'Neurological Recovery',
 };
 
 export function useTrainingRecommendations(): TrainingRecommendations {

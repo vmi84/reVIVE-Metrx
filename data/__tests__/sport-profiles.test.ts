@@ -39,14 +39,14 @@ describe('SPORT_PROFILES', () => {
     expect(new Set(keys).size).toBe(keys.length);
   });
 
-  it('all profiles have 6 subsystem stress entries', () => {
+  it('all profiles have 7 subsystem stress entries', () => {
     SPORT_PROFILES.forEach(p => {
-      expect(Object.keys(p.subsystemStress)).toHaveLength(6);
+      expect(Object.keys(p.subsystemStress)).toHaveLength(7);
     });
   });
 
   it('stress markers have valid subsystem references', () => {
-    const validSubsystems = ['autonomic', 'musculoskeletal', 'cardiometabolic', 'sleep', 'metabolic', 'psychological'];
+    const validSubsystems = ['autonomic', 'musculoskeletal', 'cardiometabolic', 'sleep', 'metabolic', 'psychological', 'neurological'];
     SPORT_PROFILES.forEach(p => {
       p.stressMarkers.forEach(m => {
         expect(validSubsystems).toContain(m.subsystem);

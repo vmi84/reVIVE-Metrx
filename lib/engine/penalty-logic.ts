@@ -29,6 +29,7 @@ export function computePenalties(
   heatSymptomCount: number = 0,
   heatHasEmergency: boolean = false,
   crampingReported: boolean = false,
+  concussionProtocolActive: boolean = false,
 ): PenaltyResult[] {
   const penalties: PenaltyResult[] = [];
 
@@ -38,6 +39,7 @@ export function computePenalties(
   const d = scores.sleep.score;
   const e = scores.metabolic.score;
   const f = scores.psychological.score;
+  const g = scores.neurological.score;
 
   // Autonomic < 40 AND musculoskeletal > 75 → systemic suppression penalty
   if (a < 40 && b > 75) {
@@ -91,14 +93,15 @@ export function computePenalties(
   }
 
   // Any 2+ systems < 40 simultaneously → multi-system impairment
-  const impaired = [a, b, c, d, e, f].filter(s => s < 40).length;
+  const allScores = [a, b, c, d, e, f, g];
+  const allKeys: (keyof SubsystemScores)[] = ['autonomic', 'musculoskeletal', 'cardiometabolic', 'sleep', 'metabolic', 'psychological', 'neurological'];
+  const impaired = allScores.filter(s => s < 40).length;
   if (impaired >= 2) {
     penalties.push({
       name: 'multi_system_impairment',
       points: PENALTIES.multi_system_impairment,
       reason: `${impaired} subsystems simultaneously impaired — compound recovery deficit`,
-      triggeredBy: ['autonomic', 'musculoskeletal', 'cardiometabolic', 'sleep', 'metabolic', 'psychological']
-        .filter((_, i) => [a, b, c, d, e, f][i] < 40) as any,
+      triggeredBy: allKeys.filter((_, i) => allScores[i] < 40) as any,
     });
   }
 
@@ -161,12 +164,33 @@ export function computePenalties(
     });
   }
 
+  // Concussion protocol — life-threatening, NEVER scaled (like heat_injury emergency)
+  if (concussionProtocolActive) {
+    penalties.push({
+      name: 'concussion_protocol',
+      points: PENALTIES.concussion_protocol,
+      reason: 'CONCUSSION PROTOCOL: Recent head impact with active symptoms. Do NOT train. Consult a healthcare provider before returning to activity.',
+      triggeredBy: ['neurological'],
+    });
+  }
+
+  // Neurological impairment — significant CNS issues without concussion
+  if (g < 35 && !concussionProtocolActive) {
+    penalties.push({
+      name: 'neurological_impairment',
+      points: PENALTIES.neurological_impairment,
+      reason: 'Significant neurological impairment detected — cognitive fog, coordination issues, or sensory disturbance. Restrict to low-risk, low-complexity activities.',
+      triggeredBy: ['neurological'],
+    });
+  }
+
   // Apply scaling (competitive athletes get reduced penalties)
-  // EXCEPTION: heat_injury emergency is NEVER scaled
+  // EXCEPTION: heat_injury emergency and concussion_protocol are NEVER scaled
   if (penaltyScaling !== 1.0) {
     for (const p of penalties) {
-      // Heat stroke emergency is NEVER reduced — it's life-threatening
+      // Heat stroke emergency and concussion protocol are NEVER reduced — life-threatening
       if (p.name === 'heat_injury' && heatHasEmergency) continue;
+      if (p.name === 'concussion_protocol') continue;
       p.points = Math.round(p.points * penaltyScaling);
     }
   }

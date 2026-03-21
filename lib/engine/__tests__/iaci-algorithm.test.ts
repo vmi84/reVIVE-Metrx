@@ -294,11 +294,12 @@ function buildSubsystemScores(inputs: ReturnType<typeof makeOptimalInputs>): Sub
     sleep: scoreSleepCircadian(inputs.sleep),
     metabolic: scoreMetabolic(inputs.metabolic),
     psychological: scorePsychoEmotional(inputs.psychological),
+    neurological: { key: 'neurological', score: 65, band: 'limited', inputs: {}, limitingFactors: [] },
   };
 }
 
 // ─── Helper: Build direct SubsystemScores from raw numbers ──────────────
-function makeScoresFromValues(a: number, b: number, c: number, d: number, e: number, f: number): SubsystemScores {
+function makeScoresFromValues(a: number, b: number, c: number, d: number, e: number, f: number, g: number = 65): SubsystemScores {
   const make = (key: string, score: number) => ({
     key: key as any,
     score,
@@ -313,6 +314,7 @@ function makeScoresFromValues(a: number, b: number, c: number, d: number, e: num
     sleep: make('sleep', d),
     metabolic: make('metabolic', e),
     psychological: make('psychological', f),
+    neurological: make('neurological', g),
   };
 }
 
@@ -1053,17 +1055,17 @@ describe('Variable Isolation — Each Factor Affects Score Directionally', () =>
 // ─── Composite Score Math Verification ──────────────────────────────────
 describe('Composite Score Math', () => {
   test('weighted average matches manual calculation', () => {
-    const scores = makeScoresFromValues(90, 80, 70, 60, 50, 40);
+    const scores = makeScoresFromValues(90, 80, 70, 60, 50, 40, 65);
     const result = computeIACI('2026-03-14', scores);
     const expected = Math.round(
-      90 * 0.25 + 80 * 0.20 + 70 * 0.15 + 60 * 0.15 + 50 * 0.15 + 40 * 0.10
+      90 * 0.23 + 80 * 0.18 + 70 * 0.14 + 60 * 0.14 + 50 * 0.14 + 40 * 0.09 + 65 * 0.08
     );
     expect(result.baseScore).toBe(expected);
-    console.log(`  Manual: 90×0.25 + 80×0.20 + 70×0.15 + 60×0.15 + 50×0.15 + 40×0.10 = ${expected}`);
+    console.log(`  Manual: 90×0.23 + 80×0.18 + 70×0.14 + 60×0.14 + 50×0.14 + 40×0.09 + 65×0.08 = ${expected}`);
   });
 
   test('all systems at 100 → score of 100', () => {
-    const scores = makeScoresFromValues(100, 100, 100, 100, 100, 100);
+    const scores = makeScoresFromValues(100, 100, 100, 100, 100, 100, 100);
     const result = computeIACI('2026-03-14', scores);
     expect(result.score).toBe(100);
     expect(result.baseScore).toBe(100);
@@ -1071,7 +1073,7 @@ describe('Composite Score Math', () => {
   });
 
   test('all systems at 0 → score of 0 (with penalties)', () => {
-    const scores = makeScoresFromValues(0, 0, 0, 0, 0, 0);
+    const scores = makeScoresFromValues(0, 0, 0, 0, 0, 0, 0);
     const result = computeIACI('2026-03-14', scores);
     expect(result.score).toBe(0);
     expect(getRecoveryBand(result.score)).toBe('Poor');
@@ -1079,7 +1081,7 @@ describe('Composite Score Math', () => {
 
   test('penalties subtract from base score', () => {
     // Sleep at 35 triggers restoration_deficit (10 pts)
-    const scores = makeScoresFromValues(70, 70, 70, 35, 70, 70);
+    const scores = makeScoresFromValues(70, 70, 70, 35, 70, 70, 65);
     const result = computeIACI('2026-03-14', scores);
     expect(result.score).toBeLessThan(result.baseScore);
     expect(result.baseScore - result.score).toBeGreaterThanOrEqual(10);

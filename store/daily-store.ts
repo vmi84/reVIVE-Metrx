@@ -34,6 +34,19 @@ export interface CheckinData {
   illnessSymptoms: string[];   // e.g. ['Sore throat', 'Fever', 'Congestion']
   illnessSeverityScore: number; // weighted: severe=3, moderate=2, mild=1 per symptom
   additionalSymptoms: string;  // free text
+  // Neurological (v6.0.0)
+  cognitiveClarity: number;           // 1-5
+  reactionTimeSharpness: number;      // 1-5
+  coordinationBalance: number;        // 1-5
+  headachePressure: boolean;
+  headacheSeverity: number;           // 1-5
+  dizzinessVertigo: boolean;
+  numbnessTingling: boolean;
+  numbnessTinglingLocation: string;
+  lightNoiseSensitivity: boolean;
+  recentHeadImpact: boolean;
+  daysSinceHeadImpact: number;
+  visualDisturbance: boolean;
 }
 
 interface DailyState {
